@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Mock signing session</title>
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; font-family: "Segoe UI", sans-serif; background: #f3f4f6; color: #242424; }
+  .bar { background: #0f6cbd; color: #fff; padding: 12px 20px; font-weight: 600; font-size: 15px; }
+  .wrap { padding: 20px; }
+  .doc { background: #fff; border: 1px solid #e5e7eb; border-radius: 4px; padding: 24px; min-height: 260px; }
+  .doc h1 { font-size: 16px; margin: 0 0 4px; }
+  .doc .ref { font-family: "Courier New", monospace; font-size: 12px; color: #4f5a5e; margin-bottom: 16px; }
+  .doc p { font-size: 13px; line-height: 1.6; color: #333; }
+  .sigbox { margin-top: 24px; border: 2px dashed #c7c7c7; border-radius: 4px; padding: 18px; text-align: center;
+            font-size: 13px; color: #4f5a5e; background: #fafafa; }
+  .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+  button { font-family: inherit; font-size: 13px; padding: 9px 18px; border-radius: 4px; cursor: pointer; border: 1px solid #c7c7c7; background: #fff; }
+  button.primary { background: #0f6cbd; border-color: #0f6cbd; color: #fff; font-weight: 600; }
+  button.danger { background: #fff; border-color: #d13438; color: #d13438; }
+  .note { margin-top: 14px; font-size: 11px; color: #808080; }
+</style>
+</head>
+<body>
+  <div class="bar">Mock e-signature provider — test page only</div>
+  <div class="wrap">
+    <div class="doc">
+      <h1 id="subject">IITC — Communication Flows</h1>
+      <div class="ref" id="reference">OQ8-OUT-TSD-LTR-26-00004</div>
+      <p>
+        This stands in for the document sent to the signing provider. In the real flow this frame shows
+        the provider's page for the main document of the correspondence, with the signature box placed
+        for the current approver.
+      </p>
+      <p>Step 1 · Reviewer 1 — signature required before the approval decision can be recorded.</p>
+      <div class="sigbox">Signature box for <strong id="signer">Reviewer 1</strong></div>
+      <div class="actions">
+        <button class="danger" onclick="finish('declined')">Decline</button>
+        <button onclick="finish('closed')">Close</button>
+        <button class="primary" onclick="finish('completed')">Sign document</button>
+      </div>
+      <div class="note">
+        Each button redirects this frame to the return address with the outcome, exactly as the provider
+        does, so the component can report it back to the app.
+      </div>
+    </div>
+  </div>
+<script>
+  const params = new URLSearchParams(location.search);
+  if (params.get("subject")) document.getElementById("subject").textContent = params.get("subject");
+  if (params.get("reference")) document.getElementById("reference").textContent = params.get("reference");
+  if (params.get("signer")) document.getElementById("signer").textContent = params.get("signer");
+
+  function finish(result) {
+    const base = params.get("returnUrl") || (location.origin + "/index.html");
+    const sep = base.indexOf("?") === -1 ? "?" : "&";
+    location.href = base + sep + "cormsSigning=1&signingResult=" + result;
+  }
+</script>
+</body>
+</html>

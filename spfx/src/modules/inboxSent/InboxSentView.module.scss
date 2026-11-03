@@ -1,0 +1,412 @@
+.dashboard {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--corms-content-bg);
+}
+
+.logCard {
+  background: var(--corms-card-surface);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+}
+
+// ─── Folder tabs row ─────────────────────────────────────────────────────────
+
+.folderTabsRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--corms-neutral-border);
+}
+
+.folderTab {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--corms-text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.folderTabActive {
+  background: var(--corms-brand-navy);
+  border-color: var(--corms-brand-navy);
+  color: #fff;
+  font-weight: 600;
+}
+
+.folderTabWithDelete {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.folderTabButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  // Asymmetric on purpose — the delete "×" sits on the trailing side, so the button hugs it
+  // there and keeps the full inset on the leading side. Logical so it mirrors under RTL.
+  padding-block: 6px;
+  padding-inline-start: 14px;
+  padding-inline-end: 8px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.folderTabDeleteBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-inline-end: 6px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: inherit;
+  opacity: 0.7;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.08);
+  }
+}
+
+.createFolderTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px dashed var(--corms-brand-navy);
+  border-radius: 4px;
+  color: var(--corms-brand-navy);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.folderContextBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-inline-start: auto;
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.folderContextName {
+  color: var(--corms-text-primary);
+  font-weight: 600;
+}
+
+.deleteFolderBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: var(--corms-neutral-page);
+  color: var(--corms-brand-red);
+  border: 1px solid var(--corms-brand-red);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+// ─── Quick filter tabs ───────────────────────────────────────────────────────
+
+.quickFilterRow {
+  display: flex;
+  border-bottom: 1px solid var(--corms-neutral-border);
+}
+
+.quickFilterTab {
+  padding: 8px 18px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.quickFilterTabActive {
+  border-bottom-color: var(--corms-brand-navy);
+  color: var(--corms-brand-navy);
+  font-weight: 600;
+}
+
+// ─── Bulk action bar ─────────────────────────────────────────────────────────
+
+.bulkBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  margin: 12px 16px 0;
+  background: var(--corms-rail-background-active);
+  border: 1px solid var(--corms-brand-navy);
+  border-radius: 6px;
+}
+
+.bulkCount {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--corms-brand-navy);
+}
+
+.bulkClear {
+  background: transparent;
+  border: none;
+  color: var(--corms-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.bulkDivider {
+  width: 1px;
+  height: 18px;
+  background: var(--corms-neutral-border);
+}
+
+.bulkBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  background: var(--corms-neutral-page);
+  color: var(--corms-text-primary);
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.bulkBtnDanger {
+  composes: bulkBtn;
+  color: var(--corms-brand-red);
+  border-color: var(--corms-brand-red);
+}
+
+.bulkFolderWrap {
+  position: relative;
+}
+
+.bulkFolderMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-start: 0;
+  z-index: 20;
+  min-width: 190px;
+  background: var(--corms-neutral-page);
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  padding: 4px;
+}
+
+.bulkFolderMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 7px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  font-size: 12px;
+  color: var(--corms-text-primary);
+  font-family: inherit;
+  cursor: pointer;
+  text-align: start;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--corms-neutral-panel);
+  }
+}
+
+// ─── Table / card cell content (mirrors MyCorrespondenceView) ──────────────────
+
+.tableRefNo {
+  font-family: monospace;
+  color: var(--corms-toolbar-primary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tableSubject {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subjectUnread {
+  font-weight: 700;
+  color: var(--corms-text-primary);
+}
+
+.subjectRead {
+  font-weight: 400;
+  color: var(--corms-text-primary);
+}
+
+.unreadDot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--corms-brand-red);
+  margin-inline-end: 6px;
+  flex-shrink: 0;
+}
+
+.badge {
+  display: inline-block;
+  max-width: 100%;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inlineBadge {
+  margin-inline-start: 8px;
+  vertical-align: middle;
+}
+
+// ─── Signature cell ──────────────────────────────────────────────────────────
+
+.signatureCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.signatureDash {
+  color: var(--corms-text-secondary);
+  font-size: 11px;
+}
+
+.signatureLabel {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.signatureLabelRequired {
+  composes: signatureLabel;
+  color: var(--corms-brand-navy);
+}
+
+.signatureLabelSigned {
+  composes: signatureLabel;
+  color: #107c10;
+}
+
+.signatureFooterRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+// ─── Filter row (CMS-039 AC5) ────────────────────────────────────────────────
+
+.filterRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--corms-neutral-border);
+}
+
+.filterField {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.filterLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+}
+
+.filterInput,
+.filterSelect {
+  padding: 5px 8px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  background: var(--corms-card-surface);
+  color: var(--corms-text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  min-width: 130px;
+}
+
+.clearFiltersBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--corms-text-secondary);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  &:not(:disabled):hover {
+    border-color: var(--corms-brand-navy);
+    color: var(--corms-brand-navy);
+  }
+}

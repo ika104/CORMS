@@ -1,0 +1,51 @@
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+}
+
+.valueText {
+  font-size: 12px;
+  color: var(--corms-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 2px;
+  cursor: pointer;
+  color: var(--corms-text-secondary);
+  flex-shrink: 0;
+}
+
+.iconBtnSave {
+  @extend .iconBtn;
+  color: #107c10;
+  border-color: #107c10;
+}
+
+.iconBtnCancel {
+  @extend .iconBtn;
+  color: var(--corms-brand-red);
+  border-color: var(--corms-brand-red);
+}
+
+.editInput {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 6px;
+  border: 1px solid var(--corms-toolbar-primary);
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: inherit;
+}

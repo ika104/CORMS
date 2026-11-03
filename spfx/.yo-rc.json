@@ -1,0 +1,23 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "whichFolder": "subdir",
+    "solutionName": "corms",
+    "environment": "spo",
+    "packageManager": "npm",
+    "skipFeatureDeployment": true,
+    "useGulp": false,
+    "componentType": "webpart",
+    "template": "react",
+    "componentName": "CormsApp",
+    "componentDescription": "CORMS - Correspondence & Records Management System",
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.22.2",
+    "sdksVersions": {},
+    "version": "1.23.2",
+    "libraryName": "corms",
+    "libraryId": "5727053f-c7ac-4d9a-b08a-0328637862be",
+    "solutionShortDescription": "corms description",
+    "isDomainIsolated": false
+  }
+}

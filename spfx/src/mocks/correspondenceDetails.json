@@ -1,0 +1,99 @@
+{
+  "C-2024-001": {
+    "originatingFunction": "Corporate Planning",
+    "comment": "Awaiting board sign-off before external distribution.",
+    "filePlan": { "fileNumber": "FP-OPS-2025-014", "fileName": "Annual Reporting & Board Submissions", "filePlanPosition": "3.2.1" },
+    "attachments": [
+      {
+        "id": "C-2024-001-att-1",
+        "name": "annual_report_2024.pdf",
+        "pages": 8,
+        "source": "SharePoint library",
+        "isMain": true,
+        "url": "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"
+      },
+      {
+        "id": "C-2024-001-att-2",
+        "name": "financial_annex.pdf",
+        "pages": 4,
+        "source": "RecordHub · 500012",
+        "isMain": false,
+        "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+      },
+      {
+        "id": "C-2024-001-att-3",
+        "name": "board_presentation_slides.pdf",
+        "pages": 12,
+        "source": "SharePoint library",
+        "isMain": false,
+        "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+      }
+    ],
+    "securityPrincipals": [
+      { "id": "sp-1", "principal": "Board Secretariat", "permissionLevel": "Full Control", "type": "SharePoint Group" },
+      { "id": "sp-2", "principal": "Yahya Mohamed", "permissionLevel": "Edit", "type": "User" },
+      { "id": "sp-3", "principal": "Layla Hassan", "permissionLevel": "Read", "type": "User" },
+      { "id": "sp-4", "principal": "Records Administrators", "permissionLevel": "Full Control", "type": "SharePoint Group" }
+    ],
+    "reminder": { "date": "2025-02-10", "followUpType": "1st Follow-up", "note": "No acknowledgement received from Board Secretariat yet." }
+  },
+  "C-2024-002": {
+    "originatingFunction": "Legal Affairs",
+    "priorityReason": "Vendor's contract lapses in 5 business days — legal review requested on an expedited basis.",
+    "comment": "Legal to confirm renewal terms before response is drafted.",
+    "filePlan": { "fileNumber": "FP-LEG-2025-007", "fileName": "Vendor Contracts — Active", "filePlanPosition": "2.1.4" },
+    "attachments": [
+      {
+        "id": "C-2024-002-att-1",
+        "name": "contract_renewal_request.pdf",
+        "pages": 3,
+        "source": "SharePoint library",
+        "isMain": true,
+        "url": "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"
+      },
+      {
+        "id": "C-2024-002-att-2",
+        "name": "vendor_abc_original_contract.pdf",
+        "pages": 6,
+        "source": "RecordHub · 500034",
+        "isMain": false,
+        "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+      }
+    ],
+    "securityPrincipals": [
+      { "id": "sp-1", "principal": "Legal Department", "permissionLevel": "Edit", "type": "SharePoint Group" },
+      { "id": "sp-2", "principal": "Sara Al-Mansour", "permissionLevel": "Edit", "type": "User" },
+      { "id": "sp-3", "principal": "Records Administrators", "permissionLevel": "Full Control", "type": "SharePoint Group" }
+    ]
+  },
+  "C-2024-011": {
+    "originatingFunction": "Board Secretariat",
+    "comment": "Reply received from the Board on the FY24 annual report submission.",
+    "filePlan": { "fileNumber": "FP-OPS-2025-014", "fileName": "Annual Reporting & Board Submissions", "filePlanPosition": "3.2.1" },
+    "attachments": [
+      {
+        "id": "C-2024-011-att-1",
+        "name": "board_response_letter.pdf",
+        "pages": 2,
+        "source": "SharePoint library",
+        "isMain": true,
+        "url": "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"
+      }
+    ],
+    "securityPrincipals": [
+      { "id": "sp-1", "principal": "Board Secretariat", "permissionLevel": "Full Control", "type": "SharePoint Group" },
+      { "id": "sp-2", "principal": "Yahya Mohamed", "permissionLevel": "Read", "type": "User" },
+      { "id": "sp-3", "principal": "Records Administrators", "permissionLevel": "Full Control", "type": "SharePoint Group" }
+    ]
+  },
+  "C-2024-005": {
+    "originatingFunction": "IT Security",
+    "priorityReason": "Active cybersecurity threat — requires same-day acknowledgement from all department heads.",
+    "comment": "Broadcast notice; response required to close out the incident log.",
+    "attachments": [],
+    "securityPrincipals": [
+      { "id": "sp-1", "principal": "IT Security Desk", "permissionLevel": "Edit", "type": "SharePoint Group" },
+      { "id": "sp-2", "principal": "Yahya Mohamed", "permissionLevel": "Read", "type": "User" }
+    ]
+  }
+}

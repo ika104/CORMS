@@ -1,0 +1,203 @@
+.panel {
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--corms-brand-navy);
+  margin: 0 0 4px;
+}
+
+.description {
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+  margin: 0;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: var(--corms-toolbar-primary);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.primaryButton:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--corms-neutral-border);
+  background: var(--corms-neutral-page);
+  color: var(--corms-text-primary);
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.errorBanner {
+  background: var(--corms-brand-red);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.editor {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+  background: var(--corms-card-surface);
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.editorTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+  text-transform: uppercase;
+}
+
+.input,
+.textarea {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page);
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.checkboxField {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+  cursor: pointer;
+}
+
+.editorActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th,
+.table td {
+  text-align: start;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  color: var(--corms-text-primary);
+}
+
+.table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--corms-text-secondary);
+}
+
+.actionsCol {
+  text-align: end;
+  white-space: nowrap;
+  width: 1%;
+}
+
+.statusBadge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.statusApproved {
+  background: var(--corms-status-success, #107c10);
+  color: #ffffff;
+}
+
+.statusDraft {
+  background: var(--corms-neutral-border);
+  color: var(--corms-text-secondary);
+}
+
+.iconButton,
+.iconButtonDanger {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  color: var(--corms-text-secondary);
+}
+
+.iconButton:hover {
+  background: var(--corms-neutral-border);
+  color: var(--corms-text-primary);
+}
+
+.iconButtonDanger:hover {
+  background: var(--corms-neutral-border);
+  color: var(--corms-brand-red);
+}

@@ -1,0 +1,10 @@
+[
+  { "id": "dept-1", "name": "Executive Affairs" },
+  { "id": "dept-2", "name": "Operations Management" },
+  { "id": "dept-3", "name": "Financial Control" },
+  { "id": "dept-4", "name": "Legal Affairs" },
+  { "id": "dept-5", "name": "Human Resources" },
+  { "id": "dept-6", "name": "Information Technology" },
+  { "id": "dept-7", "name": "Document Control" },
+  { "id": "dept-8", "name": "Internal Audit" }
+]

@@ -1,0 +1,93 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  background: var(--corms-neutral-hover, #f3f2f1);
+  border-radius: 6px;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--corms-text-secondary, #605e5c);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.colorRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// The visible colour "well" whose fill shows the current colour; the native input sits invisibly on
+// top so the whole well is clickable and opens the OS colour picker.
+.colorWell {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  border: 1px solid var(--corms-neutral-border, #c8c6c4);
+  cursor: pointer;
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+
+.colorInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.swatches {
+  display: flex;
+  gap: 4px;
+}
+
+.swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid var(--corms-neutral-border, #c8c6c4);
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.swatchActive {
+  outline: 2px solid var(--corms-brand-navy, #2563eb);
+  outline-offset: 1px;
+}
+
+.widthSelect {
+  height: 28px;
+  border-radius: 5px;
+  border: 1px solid var(--corms-neutral-border, #c8c6c4);
+  background: var(--corms-content-bg, #fff);
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--corms-text-primary, #201f1e);
+}
+
+.selectionHint {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--corms-brand-navy, #2563eb);
+  align-self: center;
+}

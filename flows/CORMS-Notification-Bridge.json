@@ -1,0 +1,76 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": { "defaultValue": {}, "type": "SecureObject" },
+        "$connections": { "defaultValue": {}, "type": "Object" }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "FlowUrl",
+                  "description": "notification.flowUrl from CORMS Admin Settings",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "title": "BodyJson",
+                  "description": "The notification payload, already shaped by the app",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": ["text", "text_1"]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Post_to_CORMS_notification_flow": {
+          "type": "Http",
+          "runAfter": {},
+          "inputs": {
+            "method": "POST",
+            "uri": "@triggerBody()?['text']",
+            "headers": { "Content-Type": "application/json" },
+            "body": "@json(triggerBody()?['text_1'])"
+          }
+        },
+        "Respond_to_Power_Apps": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "runAfter": { "Post_to_CORMS_notification_flow": ["Succeeded", "Failed", "TimedOut"] },
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "sent": "@{if(equals(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 200), 'true', 'false')}",
+              "status": "@{string(coalesce(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 0))}",
+              "error": "@{if(equals(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 200), '', string(coalesce(body('Post_to_CORMS_notification_flow'), '')))}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sent": { "type": "string" },
+                "status": { "type": "string" },
+                "error": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {}
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

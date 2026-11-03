@@ -1,0 +1,113 @@
+.panel {
+  padding: 20px;
+}
+
+.intro {
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+  margin-bottom: 16px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+  background: var(--corms-card-surface);
+}
+
+.cardMain {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.subject {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.ref {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--corms-toolbar-primary);
+}
+
+.change {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fromLevel {
+  color: var(--corms-text-secondary);
+}
+
+.toLevel {
+  color: var(--corms-brand-navy);
+}
+
+.justification {
+  font-size: 12px;
+  color: var(--corms-text-primary);
+}
+
+.metaLabel {
+  color: var(--corms-text-secondary);
+  font-weight: 600;
+}
+
+.meta {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.approveBtn,
+.rejectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 4px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.approveBtn {
+  background: var(--corms-status-green, #107c10);
+  color: #fff;
+}
+
+.rejectBtn {
+  background: var(--corms-card-surface);
+  color: var(--corms-brand-red);
+  border-color: var(--corms-neutral-border);
+}
+
+.approveBtn:disabled,
+.rejectBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

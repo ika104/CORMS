@@ -1,0 +1,27 @@
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+  background: var(--corms-neutral-page);
+
+  input {
+    border: none;
+    outline: none;
+    background: transparent;
+    flex: 1;
+    font-size: 13px;
+    color: var(--corms-text-primary);
+
+    &::placeholder {
+      color: var(--corms-text-secondary);
+    }
+  }
+
+  svg {
+    color: var(--corms-text-secondary);
+    flex-shrink: 0;
+  }
+}

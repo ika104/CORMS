@@ -1,0 +1,77 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid var(--corms-neutral-border);
+  background: transparent;
+  cursor: pointer;
+  // The trigger normally inherits this from AppShell, but naming the application stack here
+  // keeps it consistent with the portalled menu below.
+  font-family:
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--corms-text-secondary);
+
+  &:hover {
+    background: var(--corms-neutral-panel);
+  }
+}
+
+// Positioned via inline top/left by the component: the menu is portaled to document.body
+// so it can escape ancestors that clip overflow (the card grid, AG Grid's viewport).
+.menu {
+  position: fixed;
+  min-width: 180px;
+  background: var(--corms-card-surface);
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  padding: 4px 0;
+  // ActionsMenu is portalled to document.body to escape card/grid clipping. It therefore cannot
+  // inherit AppShell's font stack and otherwise falls back to the browser's serif body font.
+  font-family:
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--corms-text-primary);
+  cursor: pointer;
+  text-align: start;
+
+  &:hover {
+    background: var(--corms-neutral-panel);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+.divider {
+  height: 1px;
+  background: var(--corms-neutral-border);
+  margin: 4px 0;
+}

@@ -1,0 +1,374 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "corms_sharedsharepointonline_d1ca8"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "FlowUrl",
+                  "description": "signature.flowUrl from Admin Configuration",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "title": "Operation",
+                  "description": "CreateSigningRequest, GetSigningStatus or GetSignedDocument",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "title": "ExternalDocumentId",
+                  "description": "Required for status and download",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "title": "CorrespondenceId",
+                  "description": "Correspondence list item id",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_4": {
+                  "title": "ReferenceNumber",
+                  "description": "Correspondence reference number",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_5": {
+                  "title": "Subject",
+                  "description": "Correspondence subject",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_6": {
+                  "title": "FileName",
+                  "description": "Main document file name",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_7": {
+                  "title": "FilePath",
+                  "description": "Server-relative path of the main document",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_8": {
+                  "title": "SignerName",
+                  "description": "Signer display name",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_9": {
+                  "title": "SignerEmail",
+                  "description": "Signer email",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_10": {
+                  "title": "ReturnUrl",
+                  "description": "Page the signing session returns to",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_11": {
+                  "title": "PlacementJson",
+                  "description": "Signature box as JSON, or empty for the provider default",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Init_Payload": {
+          "type": "InitializeVariable",
+          "runAfter": {},
+          "inputs": {
+            "variables": [
+              {
+                "name": "Payload",
+                "type": "object",
+                "value": {}
+              }
+            ]
+          }
+        },
+        "Build_payload": {
+          "type": "If",
+          "runAfter": {
+            "Init_Payload": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@triggerBody()?['text_1']",
+              "CreateSigningRequest"
+            ]
+          },
+          "actions": {
+            "Get_main_document": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://ssloman.sharepoint.com/sites/CORMS",
+                  "path": "@triggerBody()?['text_7']"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "connectionName": "shared_sharepointonline",
+                  "operationId": "GetFileContentByPath"
+                },
+                "authentication": {
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+                  "type": "Raw"
+                }
+              }
+            },
+            "Set_create_payload": {
+              "type": "SetVariable",
+              "runAfter": {
+                "Get_main_document": [
+                  "Succeeded"
+                ]
+              },
+              "inputs": {
+                "name": "Payload",
+                "value": {
+                  "operation": "CreateSigningRequest",
+                  "correspondenceId": "@{triggerBody()?['text_3']}",
+                  "referenceNumber": "@{triggerBody()?['text_4']}",
+                  "subject": "@{triggerBody()?['text_5']}",
+                  "document": {
+                    "fileName": "@{triggerBody()?['text_6']}",
+                    "contentBase64": "@{base64(body('Get_main_document'))}"
+                  },
+                  "signers": "@json(concat('[{\"name\":\"', triggerBody()?['text_8'], '\",\"email\":\"', triggerBody()?['text_9'], '\",\"signingOrder\":1', if(empty(triggerBody()?['text_11']), '', concat(',\"placement\":', triggerBody()?['text_11'])), '}]'))",
+                  "returnUrl": "@{triggerBody()?['text_10']}"
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {
+              "Set_lookup_payload": {
+                "type": "SetVariable",
+                "runAfter": {},
+                "inputs": {
+                  "name": "Payload",
+                  "value": {
+                    "operation": "@{triggerBody()?['text_1']}",
+                    "externalDocumentId": "@{triggerBody()?['text_2']}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Call_signing_flow": {
+          "type": "Http",
+          "runAfter": {
+            "Build_payload": [
+              "Succeeded"
+            ]
+          },
+          "inputs": {
+            "method": "POST",
+            "uri": "@triggerBody()?['text']",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": "@variables('Payload')"
+          }
+        },
+        "Parse_result": {
+          "type": "ParseJson",
+          "runAfter": {
+            "Call_signing_flow": [
+              "Succeeded",
+              "Failed"
+            ]
+          },
+          "inputs": {
+            "content": "@body('Call_signing_flow')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "externalDocumentId": {
+                  "type": "string"
+                },
+                "signingUrl": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "isCompleted": {
+                  "type": "boolean"
+                },
+                "contentBase64": {
+                  "type": "string"
+                },
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Save_signed_as_main": {
+          "type": "If",
+          "runAfter": {
+            "Parse_result": [
+              "Succeeded",
+              "Failed",
+              "Skipped"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@triggerBody()?['text_1']",
+                  "GetSignedDocument"
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@coalesce(body('Parse_result')?['contentBase64'], '')",
+                    ""
+                  ]
+                }
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@coalesce(triggerBody()?['text_7'], '')",
+                    ""
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Replace_main_document": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "dataset": "https://ssloman.sharepoint.com/sites/CORMS",
+                  "folderPath": "@substring(triggerBody()?['text_7'], 0, lastIndexOf(triggerBody()?['text_7'], '/'))",
+                  "name": "@triggerBody()?['text_6']",
+                  "body": "@base64ToBinary(body('Parse_result')?['contentBase64'])"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "connectionName": "shared_sharepointonline",
+                  "operationId": "CreateFile"
+                },
+                "authentication": {
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+                  "type": "Raw"
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          }
+        },
+        "Respond_to_Power_Apps": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "runAfter": {
+            "Save_signed_as_main": [
+              "Succeeded",
+              "Failed",
+              "Skipped"
+            ]
+          },
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "externaldocumentid": "@{coalesce(body('Parse_result')?['externalDocumentId'], '')}",
+              "signingurl": "@{coalesce(body('Parse_result')?['signingUrl'], '')}",
+              "status": "@{coalesce(body('Parse_result')?['status'], '')}",
+              "iscompleted": "@{if(equals(coalesce(body('Parse_result')?['isCompleted'], false), true), 'true', 'false')}",
+              "error": "@{coalesce(body('Parse_result')?['error'], '')}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "externaldocumentid": {
+                  "type": "string"
+                },
+                "signingurl": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "iscompleted": {
+                  "type": "string"
+                },
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {}
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

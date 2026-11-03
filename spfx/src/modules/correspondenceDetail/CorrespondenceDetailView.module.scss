@@ -1,0 +1,49 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: #fff;
+}
+
+.notFound {
+  padding: 40px;
+  text-align: center;
+  color: var(--corms-text-secondary);
+  font-size: 13px;
+}
+
+.tabStrip {
+  display: flex;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  background: #fff;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.tabBtn {
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--corms-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.tabBtnActive {
+  border-bottom-color: var(--corms-toolbar-primary);
+  color: var(--corms-toolbar-primary);
+  font-weight: 700;
+}
+
+.tabBody {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}

@@ -1,0 +1,211 @@
+.steps {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  margin-bottom: 12px;
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+}
+
+.stepActive {
+  color: var(--corms-brand-navy);
+}
+
+.stepNo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--corms-neutral-border);
+  color: var(--corms-text-secondary);
+  font-size: 11px;
+}
+
+.stepActive .stepNo {
+  background: var(--corms-brand-navy);
+  color: #fff;
+}
+
+.dispatchFor {
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+  margin-bottom: 12px;
+}
+
+// ─── Method step ────────────────────────────────────────────────────────────
+.methodList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.methodCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+  background: var(--corms-card-surface);
+  cursor: pointer;
+  text-align: start;
+}
+
+.methodCardActive {
+  border-color: var(--corms-brand-navy);
+  box-shadow: 0 0 0 1px var(--corms-brand-navy);
+  background: var(--corms-neutral-panel);
+}
+
+.methodIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--corms-neutral-panel);
+  color: var(--corms-brand-navy);
+  flex-shrink: 0;
+}
+
+.methodCardActive .methodIcon {
+  background: var(--corms-brand-navy);
+  color: #fff;
+}
+
+.methodText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.methodName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.methodDesc {
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--corms-neutral-border);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.methodCardActive .radio {
+  background: var(--corms-brand-navy);
+  border-color: var(--corms-brand-navy);
+}
+
+// ─── Details step ───────────────────────────────────────────────────────────
+.detailsForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chosenMethod {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--corms-text-primary);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--corms-text-secondary);
+}
+
+.req {
+  color: var(--corms-brand-red);
+}
+
+.muted {
+  color: var(--corms-text-secondary);
+  font-weight: 400;
+  text-transform: none;
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.input,
+.textarea {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  width: 100%;
+}
+
+.textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+// ─── Footer buttons ─────────────────────────────────────────────────────────
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: var(--corms-brand-navy);
+  color: #fff;
+  border-radius: 4px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--corms-neutral-border);
+  background: var(--corms-card-surface);
+  color: var(--corms-text-primary);
+  border-radius: 4px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}

@@ -1,0 +1,10 @@
+[
+  { "id": "u-1001", "name": "Zeyad El Maghraby", "department": "Administration", "clearanceTier": 5 },
+  { "id": "u-2001", "name": "Yahya Mohamed", "department": "System Admin", "clearanceTier": 5 },
+  { "id": "u-2002", "name": "Layla Hassan", "department": "Document Control", "clearanceTier": 4 },
+  { "id": "u-2003", "name": "Omar Al Farsi", "department": "Legal Affairs", "clearanceTier": 4 },
+  { "id": "u-2004", "name": "Mariam Al Suwaidi", "department": "Human Resources", "clearanceTier": 2 },
+  { "id": "u-2005", "name": "Khalid Al Balushi", "department": "Financial Control", "clearanceTier": 3 },
+  { "id": "u-2006", "name": "Fatima Al Zadjali", "department": "Operations Management", "clearanceTier": 2 },
+  { "id": "u-2007", "name": "Ahmed Al Harthy", "department": "Internal Audit", "clearanceTier": 1 }
+]

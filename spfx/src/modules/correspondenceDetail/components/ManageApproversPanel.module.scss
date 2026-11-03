@@ -1,0 +1,42 @@
+.collapsed {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.panel {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+  background: var(--corms-card-surface);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.helper {
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+.error {
+  font-size: 12px;
+  color: #c50f1f;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

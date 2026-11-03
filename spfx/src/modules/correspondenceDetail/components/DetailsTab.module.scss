@@ -1,0 +1,138 @@
+.tab {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+}
+
+/* CMS-008 — declared-record banner (immutable + serial). */
+.declaredBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border: 1px solid #5c2d91;
+  border-radius: 6px;
+  background: #f4eafb;
+  color: #5c2d91;
+}
+
+.declaredInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.declaredTitle {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.declaredMeta {
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+.fieldList {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--corms-neutral-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:nth-child(even) {
+    background: var(--corms-neutral-panel);
+  }
+}
+
+.label {
+  width: 180px;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+}
+
+.valueWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.valueText {
+  font-size: 12px;
+  color: var(--corms-text-primary);
+  overflow-wrap: break-word;
+}
+
+.pencilBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 2px;
+  cursor: pointer;
+  color: var(--corms-text-secondary);
+  flex-shrink: 0;
+}
+
+.editInput {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid var(--corms-toolbar-primary);
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+// Native dropdown for the Originating Function edit — same look as the text/date editors.
+.editSelect {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid var(--corms-toolbar-primary);
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: inherit;
+  background: var(--corms-neutral-surface, #fff);
+}
+
+// CMS-040 — Save staged Details edits. Sits under the field list, before Delivery Options.
+.saveRow {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 0;
+}
+
+.saveBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  background: var(--corms-toolbar-primary);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}

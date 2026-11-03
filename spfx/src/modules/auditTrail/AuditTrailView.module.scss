@@ -1,0 +1,62 @@
+.dashboard {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--corms-content-bg);
+}
+
+.centered {
+  flex: 1;
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabsRow {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--corms-neutral-border);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tabActive {
+  color: var(--corms-brand-navy);
+  border-bottom-color: var(--corms-brand-navy);
+}
+
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--corms-neutral-panel);
+  color: var(--corms-text-secondary);
+}
+
+.tabActive .tabBadge {
+  background: var(--corms-brand-navy);
+  color: #ffffff;
+}

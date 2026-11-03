@@ -1,0 +1,153 @@
+.tab {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+}
+
+.refRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--corms-neutral-panel);
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 2px;
+  margin-bottom: 10px;
+  font-size: 11px;
+}
+
+.refLabel {
+  color: var(--corms-text-secondary);
+  font-weight: 600;
+}
+
+.refValue {
+  font-family: monospace;
+  color: var(--corms-text-primary);
+}
+
+.navRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background: #fff;
+    border: 1px solid var(--corms-neutral-border);
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--corms-text-primary);
+    cursor: pointer;
+    font-family: inherit;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.rail {
+  position: relative;
+}
+
+.item {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  text-align: start;
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  font-family: inherit;
+
+  &:hover {
+    background: var(--corms-neutral-panel);
+  }
+}
+
+.itemCurrent {
+  background: #e8f0fb;
+  cursor: default;
+
+  &:hover {
+    background: #e8f0fb;
+  }
+}
+
+.badgeNo {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--corms-neutral-panel);
+  color: var(--corms-text-secondary);
+}
+
+.itemCurrent .badgeNo {
+  background: var(--corms-toolbar-primary);
+  color: #fff;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.subjectRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.subject {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.date {
+  font-size: 10px;
+  color: var(--corms-text-secondary);
+  white-space: nowrap;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.metaRef {
+  font-family: monospace;
+}
+
+.metaType {
+  color: var(--corms-text-secondary);
+}
+
+.metaDirection {
+  font-weight: 600;
+  color: var(--corms-brand-navy);
+  text-transform: uppercase;
+  font-size: 10px;
+}

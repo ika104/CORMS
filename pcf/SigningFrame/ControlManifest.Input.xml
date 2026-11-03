@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="CORMS" constructor="SigningFrame" version="0.0.1"
+           display-name-key="CORMS Signing Frame"
+           description-key="Shows an e-signature session inside the app and reports when the signer finishes, declines or closes it."
+           control-type="standard">
+    <!--
+      The frame loads the signing provider's page, so this component connects to an external
+      service directly in the browser. Microsoft classes such components as premium: the app
+      needs Power Apps per-app or per-user licences. Domains must list every host the frame
+      may load.
+    -->
+    <external-service-usage enabled="true">
+      <domain>signnow.com</domain>
+      <domain>app.signnow.com</domain>
+      <domain>eu.signnow.com</domain>
+    </external-service-usage>
+
+    <!-- The signing URL returned by the signing flow. Empty shows the idle message. -->
+    <property name="SigningUrl" display-name-key="Signing URL"
+              description-key="Signing session URL returned by the signing flow for this approval task"
+              of-type="SingleLine.Text" usage="bound" required="true" />
+
+    <!-- Same-origin address the provider redirects to when the session ends (a SharePoint URL). -->
+    <property name="ReturnUrl" display-name-key="Return URL"
+              description-key="Same-origin page the signing session returns to, e.g. https://ssloman.sharepoint.com/_layouts/15/images/blank.gif?cormsSigning=1"
+              of-type="SingleLine.Text" usage="input" required="false" />
+
+    <!-- completed | declined | closed, set once the frame lands back on the return URL. -->
+    <property name="SigningResult" display-name-key="Signing result"
+              description-key="completed, declined or closed once the signing session ends."
+              of-type="SingleLine.Text" usage="output" required="false" />
+
+    <!-- Changes every time a result is reported, so the app can react to a repeat outcome. -->
+    <property name="ResultAt" display-name-key="Result timestamp"
+              description-key="ISO timestamp of the reported result."
+              of-type="SingleLine.Text" usage="output" required="false" />
+
+    <property name="IdleMessage" display-name-key="Idle message"
+              description-key="Shown when no signing URL is set."
+              of-type="SingleLine.Text" usage="input" required="false" />
+
+    <resources>
+      <code path="index.ts" order="1"/>
+      <css path="css/SigningFrame.css" order="1" />
+    </resources>
+  </control>
+</manifest>

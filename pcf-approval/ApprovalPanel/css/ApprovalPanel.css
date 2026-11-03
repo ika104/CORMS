@@ -1,0 +1,147 @@
+.corms-ap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-family: "Segoe UI", sans-serif;
+  color: #242424;
+  box-sizing: border-box;
+}
+
+.corms-ap__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 13px;
+  color: #4f5a5e;
+  background: #f3f4f6;
+}
+
+/* body */
+.corms-ap__body { flex: 1 1 auto; overflow-y: auto; padding: 20px; }
+
+.corms-ap__summary {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 24px; margin: 0 0 18px;
+}
+.corms-ap__summary dt {
+  font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: #4f5a5e; margin-bottom: 2px;
+}
+.corms-ap__summary dd { margin: 0; font-size: 14px; }
+.corms-ap__overdue { color: #c4302b; font-weight: 600; }
+
+.corms-ap__section { margin-bottom: 18px; }
+.corms-ap__sectionTitle { margin: 0 0 8px; font-size: 14px; font-weight: 600; }
+
+.corms-ap__taskRow {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  border: 1px solid #e5e7eb; border-radius: 4px; padding: 12px 14px; background: #fff;
+}
+.corms-ap__taskName { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.corms-ap__taskMeta { font-size: 12px; color: #4f5a5e; display: flex; gap: 10px; flex-wrap: wrap; }
+.corms-ap__signature { color: #0f6cbd; }
+
+.corms-ap__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.corms-ap__step {
+  display: flex; align-items: center; gap: 12px;
+  border: 1px solid #e5e7eb; border-radius: 4px; padding: 10px 14px;
+}
+.corms-ap__step--current { border-color: #4b53bc; box-shadow: 0 0 0 1px #4b53bc inset; }
+.corms-ap__stepOrder {
+  flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
+  background: #4b53bc; color: #fff; font-size: 12px; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.corms-ap__stepName { flex: 1 1 auto; font-size: 14px; }
+
+.corms-ap__badge {
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 4px; white-space: nowrap;
+}
+.corms-ap__badge--ok    { background: #dff6dd; color: #107c10; }
+.corms-ap__badge--bad   { background: #fde7e9; color: #c4302b; }
+.corms-ap__badge--warn  { background: #fff4ce; color: #c46e00; }
+.corms-ap__badge--info  { background: #deecf9; color: #0f6cbd; }
+.corms-ap__badge--muted { background: #f3f2f1; color: #4f5a5e; }
+
+.corms-ap__link {
+  border: 0; background: transparent; padding: 0; cursor: pointer;
+  color: #1267b5; font-size: 13px; font-weight: 700; font-family: inherit;
+}
+.corms-ap__link:hover { text-decoration: underline; }
+
+/* footer */
+.corms-ap__foot {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding: 14px 20px; background: #f3f4f6; border-top: 1px solid #e5e7eb;
+}
+
+.corms-ap__btn {
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  padding: 9px 20px; border-radius: 4px; cursor: pointer;
+  border: 1px solid #c7c7c7; background: #fff; color: #242424;
+}
+.corms-ap__btn:disabled { opacity: .5; cursor: default; }
+.corms-ap__btn--primary { background: #4b53bc; border-color: #4b53bc; color: #fff; }
+.corms-ap__btn--danger  { background: #d13438; border-color: #d13438; color: #fff; }
+
+/* decision dialog */
+.corms-ap__overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,.35);
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.corms-ap__dialog {
+  background: #fff; border-radius: 6px; padding: 18px 20px;
+  width: min(620px, 100%); max-height: 100%; overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+}
+.corms-ap__dialogTitle { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+.corms-ap__field { display: block; margin-bottom: 12px; }
+.corms-ap__fieldLabel { display: block; font-size: 12px; color: #4f5a5e; margin-bottom: 4px; }
+.corms-ap__textarea {
+  width: 100%; box-sizing: border-box; font-family: inherit; font-size: 13px;
+  padding: 8px 10px; border: 1px solid #c7c7c7; border-radius: 4px; resize: vertical;
+}
+.corms-ap__error { color: #c4302b; font-size: 12px; margin-bottom: 10px; }
+.corms-ap__dialogActions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+
+/* signing */
+.corms-ap__signing { margin-bottom: 14px; }
+.corms-ap__signingNote { font-size: 13px; color: #4f5a5e; margin-bottom: 8px; }
+.corms-ap__signingOk { font-size: 13px; color: #107c10; font-weight: 600; margin-bottom: 8px; }
+.corms-ap__signingWarn { font-size: 13px; color: #c46e00; margin-bottom: 8px; }
+.corms-ap__frame { width: 100%; height: 420px; border: 1px solid #e5e7eb; border-radius: 4px; }
+
+.corms-ap__build { font-size: 11px; color: #9aa0a6; margin-right: auto; align-self: center; }
+
+.corms-ap__stepNote { font-size: 12px; color: #4f5a5e; margin-top: 2px; white-space: pre-wrap; }
+
+.corms-ap__signingWait { font-size: 12px; color: #4f5a5e; margin-top: 8px; text-align: center; }
+
+/* confirming the signature with the provider */
+.corms-ap__confirm {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; height: 420px; border: 1px solid #e5e7eb; border-radius: 4px; background: #fafafa;
+}
+.corms-ap__confirmText { font-size: 13px; color: #4f5a5e; }
+.corms-ap__spinner {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 3px solid #e5e7eb; border-top-color: #4b53bc;
+  animation: corms-ap-spin 0.9s linear infinite;
+}
+@keyframes corms-ap-spin { to { transform: rotate(360deg); } }
+
+.corms-ap__roundLabel { font-size: 12px; color: #4f5a5e; margin: -4px 0 8px; }
+
+.corms-ap__required { color: #c4302b; }
+
+/* the signing session needs room to read the document */
+.corms-ap__dialog--wide { width: min(1180px, 98%); }
+.corms-ap__dialog--wide .corms-ap__frame,
+.corms-ap__dialog--wide .corms-ap__confirm { height: 72vh; min-height: 520px; }
+.corms-ap__overlay { padding: 8px; }

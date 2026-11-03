@@ -1,0 +1,30 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.icon {
+  color: var(--corms-text-secondary);
+}
+
+.select {
+  border: 1px solid var(--corms-neutral-border);
+  background: var(--corms-neutral-page);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: var(--corms-text-primary);
+  cursor: pointer;
+}
+
+.inheritedBadge {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--corms-text-secondary);
+  background: var(--corms-neutral-page);
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 8px;
+  padding: 1px 6px;
+}

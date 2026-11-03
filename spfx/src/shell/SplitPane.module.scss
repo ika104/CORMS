@@ -1,0 +1,32 @@
+.splitPane {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.listPanel {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  flex-shrink: 0;
+  border-inline-end: 1px solid var(--corms-neutral-border);
+  overflow-y: auto;
+  background: var(--corms-neutral-page);
+
+  .listSearch {
+    padding: 12px;
+    border-bottom: 1px solid var(--corms-neutral-border);
+  }
+
+  .listBody {
+    flex: 1;
+    overflow-y: auto;
+  }
+}
+
+.detailPanel {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--corms-neutral-page);
+}

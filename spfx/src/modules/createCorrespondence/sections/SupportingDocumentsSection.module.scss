@@ -1,0 +1,298 @@
+.description {
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+// Surfaced when a CORMS_Attachments / CORMS_PhysicalAttachments write rejects — these handlers
+// talk to real SharePoint lists, so a failure has to be visible rather than a silent no-op.
+.persistError {
+  margin: 0;
+  font-size: 12px;
+  color: var(--corms-status-danger);
+}
+
+.tabsRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tabs {
+  display: flex;
+  flex: 1;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tab {
+  flex: 1;
+  border: none;
+  background: var(--corms-neutral-page);
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--corms-text-primary);
+}
+
+.tabActive {
+  background: var(--corms-brand-navy);
+  color: #ffffff;
+}
+
+.scanButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: var(--corms-brand-navy);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dropzone {
+  border: 2px dashed var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--corms-text-secondary);
+  cursor: pointer;
+  text-align: center;
+}
+
+.dropzoneTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.dropzoneHelper {
+  font-size: 11px;
+}
+
+.docList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.docRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+.docInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.docName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.docMeta {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.docPill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--corms-neutral-panel);
+  color: var(--corms-text-secondary);
+  white-space: nowrap;
+}
+
+.docRemove {
+  border: none;
+  background: none;
+  color: var(--corms-brand-red);
+  cursor: pointer;
+  font-size: 12px;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.picker {
+  position: relative;
+}
+
+.pickerInputRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 0 10px;
+  background: var(--corms-neutral-page);
+}
+
+.pickerInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px 0;
+  font-size: 13px;
+  background: transparent;
+  color: var(--corms-text-primary);
+}
+
+.pickerBadge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: #f4eafb;
+  color: #5c2d91;
+  white-space: nowrap;
+}
+
+.pickerDropdown {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  background: var(--corms-neutral-page);
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.pickerRow {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  padding: 8px 10px;
+  border: none;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  background: none;
+  cursor: pointer;
+  text-align: start;
+  font-size: 12px;
+}
+
+.pickerRow:hover {
+  background: var(--corms-neutral-panel);
+}
+
+.pickerRow:last-child {
+  border-bottom: none;
+}
+
+.pickerRowAdded {
+  background: #dff6dd;
+}
+
+.pickerRowAdded:hover {
+  background: #cdf0c9;
+}
+
+.pickerRowNumber {
+  color: var(--corms-toolbar-primary);
+  font-family: monospace;
+  flex-shrink: 0;
+}
+
+.pickerRowName {
+  flex: 1;
+  color: var(--corms-text-primary);
+}
+
+.pickerAddState {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--corms-toolbar-primary);
+  font-weight: 600;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.pickerAddedState {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #107c10;
+  font-weight: 600;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.pickerEmpty {
+  padding: 10px;
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+.physicalToggle {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  color: var(--corms-toolbar-primary);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0;
+}
+
+.physicalForm {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+}
+
+.input {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.addButton {
+  border: 1px solid var(--corms-neutral-border);
+  background: var(--corms-neutral-page);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}

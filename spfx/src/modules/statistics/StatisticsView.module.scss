@@ -1,0 +1,45 @@
+.dashboard {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--corms-content-bg);
+}
+
+.centered {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ─── Embedded Power BI report ──────────────────────────────────────────────
+// SPFx web parts size to their content, so a flex:1 fill collapses to near-zero height and Power
+// BI shrinks the report to fit. Give the frame an explicit, viewport-based height so it fills the
+// page like a normal dashboard and Power BI scales the report up to full width (100%). min-height
+// keeps it usable on short windows (the page scrolls to reach the rest).
+.reportFrame {
+  position: relative;
+  height: calc(100vh - 170px);
+  min-height: 900px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--corms-card-surface);
+}
+
+.iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.frameOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--corms-card-surface);
+}

@@ -1,0 +1,150 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.required {
+  color: var(--corms-brand-red);
+}
+
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: var(--corms-toolbar-primary);
+  color: #ffffff;
+}
+
+.input,
+.select,
+.textarea {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page);
+}
+
+.input[readonly] {
+  background: var(--corms-neutral-panel);
+  color: var(--corms-text-secondary);
+}
+
+.textarea {
+  min-height: 72px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.error {
+  font-size: 11px;
+  color: var(--corms-brand-red);
+}
+
+.helper {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.segmentButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--corms-neutral-border);
+  background: var(--corms-neutral-page);
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--corms-text-primary);
+}
+
+.segmentButtonActive {
+  background: var(--corms-brand-navy);
+  border-color: var(--corms-brand-navy);
+  color: #ffffff;
+}
+
+.deliveryOptionsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.checkboxHelper {
+  display: block;
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+// Physical Mail dispatch summary shown under the checkbox once (or until) the wizard is filled.
+.dispatchSummary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: 24px;
+  padding: 8px 10px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  background: var(--corms-neutral-page);
+  font-size: 12px;
+}
+
+.dispatchSummaryIcon {
+  color: var(--corms-status-green, #107c10);
+  flex-shrink: 0;
+}
+
+.dispatchSummaryText {
+  flex: 1;
+  color: var(--corms-text-primary);
+}
+
+.dispatchEditBtn {
+  border: none;
+  background: transparent;
+  color: var(--corms-brand-navy);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}

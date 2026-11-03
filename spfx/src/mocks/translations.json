@@ -1,0 +1,26 @@
+[
+  {
+    "code": "en",
+    "label": "English",
+    "json": {
+      "common.search": "Search",
+      "common.cancel": "Cancel",
+      "common.close": "Close",
+      "myCorrespondence.newCorrespondence": "New Correspondence",
+      "myCorrespondence.exportCsv": "Export CSV",
+      "grid.toolbar.refresh": "Refresh"
+    }
+  },
+  {
+    "code": "ar",
+    "label": "Arabic",
+    "json": {
+      "common.search": "بحث",
+      "common.cancel": "إلغاء",
+      "common.close": "إغلاق",
+      "myCorrespondence.newCorrespondence": "مراسلة جديدة",
+      "myCorrespondence.exportCsv": "تصدير CSV",
+      "grid.toolbar.refresh": "تحديث"
+    }
+  }
+]

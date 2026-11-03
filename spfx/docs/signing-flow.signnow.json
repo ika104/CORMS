@@ -1,0 +1,768 @@
+{
+  "$schema": "https://power-automate-tools.local/flow-editor.json#",
+  "connectionReferences": {
+    "shared_sharepointonline": {
+      "connectionName": "PASTE_SHAREPOINT_CONNECTION_NAME",
+      "source": "Embedded",
+      "id": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+      "tier": "NotSpecified",
+      "apiName": "sharepointonline"
+    }
+  },
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "contentVersion": "1.2.0.0",
+    "parameters": {
+      "$connections": {
+        "defaultValue": {},
+        "type": "Object"
+      },
+      "$authentication": {
+        "defaultValue": {},
+        "type": "SecureObject"
+      }
+    },
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Http",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "required": ["operation"],
+            "properties": {
+              "operation": {
+                "type": "string",
+                "enum": ["CreateSigningRequest", "GetSigningStatus", "GetSignedDocument"]
+              },
+              "externalDocumentId": {
+                "type": "string"
+              },
+              "correspondenceId": {
+                "type": "string"
+              },
+              "referenceNumber": {
+                "type": "string"
+              },
+              "subject": {
+                "type": "string"
+              },
+              "document": {
+                "type": "object",
+                "properties": {
+                  "fileName": {
+                    "type": "string"
+                  },
+                  "contentBase64": {
+                    "type": "string"
+                  }
+                }
+              },
+              "signers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "signingOrder": {
+                      "type": "integer"
+                    },
+                    "placement": {
+                      "type": "object",
+                      "description": "Signature box: page (1-based) and x/y/width/height as percentages of the page.",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        },
+                        "width": {
+                          "type": "number"
+                        },
+                        "height": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "returnUrl": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "actions": {
+      "Get_provider_settings": {
+        "type": "OpenApiConnection",
+        "description": "Reads the signature.provider* rows from CORMS Admin Configuration. Set Site Address to the CORMS site.",
+        "inputs": {
+          "host": {
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+            "connectionName": "shared_sharepointonline",
+            "operationId": "GetItems"
+          },
+          "parameters": {
+            "dataset": "https://ssloman.sharepoint.com/sites/CORMS",
+            "table": "CORMS_AdminConfig",
+            "$filter": "startswith(Title, 'signature.provider')",
+            "$top": 20
+          },
+          "authentication": "@parameters('$authentication')"
+        },
+        "runtimeConfiguration": {
+          "secureData": {
+            "properties": ["outputs"]
+          }
+        },
+        "runAfter": {}
+      },
+      "Filter_base_url": {
+        "type": "Query",
+        "inputs": {
+          "from": "@outputs('Get_provider_settings')?['body/value']",
+          "where": "@equals(item()?['Title'], 'signature.providerBaseUrl')"
+        },
+        "runtimeConfiguration": {
+          "secureData": {
+            "properties": ["inputs", "outputs"]
+          }
+        },
+        "runAfter": {
+          "Get_provider_settings": ["Succeeded"]
+        }
+      },
+      "Filter_client_credentials": {
+        "type": "Query",
+        "inputs": {
+          "from": "@outputs('Get_provider_settings')?['body/value']",
+          "where": "@equals(item()?['Title'], 'signature.providerClientCredentials')"
+        },
+        "runtimeConfiguration": {
+          "secureData": {
+            "properties": ["inputs", "outputs"]
+          }
+        },
+        "runAfter": {
+          "Filter_base_url": ["Succeeded"]
+        }
+      },
+      "Filter_username": {
+        "type": "Query",
+        "inputs": {
+          "from": "@outputs('Get_provider_settings')?['body/value']",
+          "where": "@equals(item()?['Title'], 'signature.providerUsername')"
+        },
+        "runtimeConfiguration": {
+          "secureData": {
+            "properties": ["inputs", "outputs"]
+          }
+        },
+        "runAfter": {
+          "Filter_client_credentials": ["Succeeded"]
+        }
+      },
+      "Filter_password": {
+        "type": "Query",
+        "inputs": {
+          "from": "@outputs('Get_provider_settings')?['body/value']",
+          "where": "@equals(item()?['Title'], 'signature.providerPassword')"
+        },
+        "runtimeConfiguration": {
+          "secureData": {
+            "properties": ["inputs", "outputs"]
+          }
+        },
+        "runAfter": {
+          "Filter_username": ["Succeeded"]
+        }
+      },
+      "Provider_settings": {
+        "type": "Compose",
+        "inputs": {
+          "baseUrl": "@{trim(coalesce(first(body('Filter_base_url'))?['Value'], ''))}",
+          "clientCredentials": "@{replace(replace(replace(replace(coalesce(first(body('Filter_client_credentials'))?['Value'], ''), 'Basic ', ''), ' ', ''), decodeUriComponent('%0D'), ''), decodeUriComponent('%0A'), '')}",
+          "username": "@{trim(coalesce(first(body('Filter_username'))?['Value'], ''))}",
+          "password": "@{replace(replace(coalesce(first(body('Filter_password'))?['Value'], ''), decodeUriComponent('%0D'), ''), decodeUriComponent('%0A'), '')}"
+        },
+        "runtimeConfiguration": {
+          "secureData": {
+            "properties": ["inputs"]
+          }
+        },
+        "runAfter": {
+          "Filter_password": ["Succeeded"]
+        }
+      },
+      "Check_provider_settings": {
+        "type": "If",
+        "expression": {
+          "or": [
+            {
+              "equals": ["@outputs('Provider_settings')?['baseUrl']", ""]
+            },
+            {
+              "equals": ["@outputs('Provider_settings')?['clientCredentials']", ""]
+            },
+            {
+              "equals": ["@outputs('Provider_settings')?['username']", ""]
+            },
+            {
+              "equals": ["@outputs('Provider_settings')?['password']", ""]
+            }
+          ]
+        },
+        "actions": {
+          "Response_settings_missing": {
+            "type": "Response",
+            "kind": "Http",
+            "inputs": {
+              "statusCode": 500,
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "body": {
+                "error": "Signing provider settings are incomplete. Complete the signature.provider* rows in Admin Configuration."
+              }
+            },
+            "runAfter": {}
+          },
+          "Stop_settings_missing": {
+            "type": "Terminate",
+            "inputs": {
+              "runStatus": "Failed",
+              "runError": {
+                "code": "SettingsMissing",
+                "message": "Signing provider settings are incomplete."
+              }
+            },
+            "runAfter": {
+              "Response_settings_missing": ["Succeeded"]
+            }
+          }
+        },
+        "else": {
+          "actions": {}
+        },
+        "runAfter": {
+          "Provider_settings": ["Succeeded"]
+        }
+      },
+      "Init_ExternalDocumentId": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "ExternalDocumentId",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        },
+        "runAfter": {
+          "Check_provider_settings": ["Succeeded"]
+        }
+      },
+      "Init_SigningUrl": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "SigningUrl",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        },
+        "runAfter": {
+          "Init_ExternalDocumentId": ["Succeeded"]
+        }
+      },
+      "Init_SigningStatus": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "SigningStatus",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        },
+        "runAfter": {
+          "Init_SigningUrl": ["Succeeded"]
+        }
+      },
+      "Init_SignedContent": {
+        "type": "InitializeVariable",
+        "inputs": {
+          "variables": [
+            {
+              "name": "SignedContent",
+              "type": "string",
+              "value": ""
+            }
+          ]
+        },
+        "runAfter": {
+          "Init_SigningStatus": ["Succeeded"]
+        }
+      },
+      "Try_signing_provider": {
+        "type": "Scope",
+        "runAfter": {
+          "Init_SignedContent": ["Succeeded"]
+        },
+        "actions": {
+          "Get_access_token": {
+            "type": "Http",
+            "inputs": {
+              "method": "POST",
+              "uri": "@{outputs('Provider_settings')?['baseUrl']}/oauth2/token",
+              "headers": {
+                "Authorization": "Basic @{outputs('Provider_settings')?['clientCredentials']}",
+                "Content-Type": "application/x-www-form-urlencoded"
+              },
+              "body": "grant_type=password&scope=*&username=@{encodeUriComponent(outputs('Provider_settings')?['username'])}&password=@{encodeUriComponent(outputs('Provider_settings')?['password'])}"
+            },
+            "runtimeConfiguration": {
+              "secureData": {
+                "properties": ["inputs", "outputs"]
+              }
+            },
+            "runAfter": {}
+          },
+          "Parse_token": {
+            "type": "ParseJson",
+            "inputs": {
+              "content": "@body('Get_access_token')",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "access_token": {
+                    "type": "string"
+                  },
+                  "token_type": {
+                    "type": "string"
+                  },
+                  "expires_in": {
+                    "type": "integer"
+                  },
+                  "refresh_token": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "runtimeConfiguration": {
+              "secureData": {
+                "properties": ["inputs"]
+              }
+            },
+            "runAfter": {
+              "Get_access_token": ["Succeeded"]
+            }
+          },
+          "Route_operation": {
+            "type": "Switch",
+            "expression": "@triggerBody()?['operation']",
+            "cases": {
+              "Get_signing_status": {
+                "case": "GetSigningStatus",
+                "actions": {
+                  "Get_document_status": {
+                    "type": "Http",
+                    "inputs": {
+                      "method": "GET",
+                      "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{encodeUriComponent(triggerBody()?['externalDocumentId'])}",
+                      "headers": {
+                        "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                      }
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": ["inputs"]
+                      }
+                    },
+                    "runAfter": {}
+                  },
+                  "Set_status_document_id": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "ExternalDocumentId",
+                      "value": "@{triggerBody()?['externalDocumentId']}"
+                    },
+                    "runAfter": {
+                      "Get_document_status": ["Succeeded"]
+                    }
+                  },
+                  "Set_status": {
+                    "type": "SetVariable",
+                    "description": "Maps the provider's field-invite state to the CORMS status vocabulary.",
+                    "inputs": {
+                      "name": "SigningStatus",
+                      "value": "@{if(equals(toLower(coalesce(first(body('Get_document_status')?['field_invites'])?['status'], '')), 'fulfilled'), 'Completed', 'Pending')}"
+                    },
+                    "runAfter": {
+                      "Set_status_document_id": ["Succeeded"]
+                    }
+                  }
+                }
+              },
+              "Get_signed_document": {
+                "case": "GetSignedDocument",
+                "actions": {
+                  "Download_signed_document": {
+                    "type": "Http",
+                    "inputs": {
+                      "method": "GET",
+                      "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{encodeUriComponent(triggerBody()?['externalDocumentId'])}/download?type=collapsed",
+                      "headers": {
+                        "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                      }
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": ["inputs", "outputs"]
+                      }
+                    },
+                    "runAfter": {}
+                  },
+                  "Set_signed_document_id": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "ExternalDocumentId",
+                      "value": "@{triggerBody()?['externalDocumentId']}"
+                    },
+                    "runAfter": {
+                      "Download_signed_document": ["Succeeded"]
+                    }
+                  },
+                  "Set_signed_content": {
+                    "type": "SetVariable",
+                    "description": "The signed PDF, base64-encoded.",
+                    "inputs": {
+                      "name": "SignedContent",
+                      "value": "@{body('Download_signed_document')?['$content']}"
+                    },
+                    "runAfter": {
+                      "Set_signed_document_id": ["Succeeded"]
+                    }
+                  },
+                  "Set_signed_status": {
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "SigningStatus",
+                      "value": "Completed"
+                    },
+                    "runAfter": {
+                      "Set_signed_content": ["Succeeded"]
+                    }
+                  }
+                }
+              }
+            },
+            "default": {
+              "actions": {
+                "Upload_document": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@{outputs('Provider_settings')?['baseUrl']}/document",
+                    "headers": {
+                      "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                    },
+                    "body": {
+                      "$content-type": "multipart/form-data",
+                      "$multipart": [
+                        {
+                          "headers": {
+                            "Content-Disposition": "form-data; name=\"file\"; filename=\"@{triggerBody()?['document']?['fileName']}\""
+                          },
+                          "body": {
+                            "$content-type": "application/octet-stream",
+                            "$content": "@{triggerBody()?['document']?['contentBase64']}"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": ["inputs"]
+                    }
+                  },
+                  "runAfter": {}
+                },
+                "Get_uploaded_document": {
+                  "type": "Http",
+                  "description": "Reads the page sizes needed to turn CORMS's percentage placement into SignNow coordinates.",
+                  "inputs": {
+                    "method": "GET",
+                    "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{body('Upload_document')?['id']}",
+                    "headers": {
+                      "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                    }
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": ["inputs"]
+                    }
+                  },
+                  "runAfter": {
+                    "Upload_document": ["Succeeded"]
+                  }
+                },
+                "Signature_placement": {
+                  "type": "Compose",
+                  "description": "The box chosen in CORMS (page 1-based, % of the page); CORMS's default when none was sent.",
+                  "inputs": "@coalesce(triggerBody()?['signers'][0]?['placement'], json('{\"page\":1,\"x\":70,\"y\":85,\"width\":20,\"height\":8}'))",
+                  "runAfter": {
+                    "Get_uploaded_document": ["Succeeded"]
+                  }
+                },
+                "Page_index": {
+                  "type": "Compose",
+                  "inputs": "@sub(int(formatNumber(float(coalesce(outputs('Signature_placement')?['page'], 1)), '0', 'en-US')), 1)",
+                  "runAfter": {
+                    "Signature_placement": ["Succeeded"]
+                  }
+                },
+                "Page_size": {
+                  "type": "Compose",
+                  "description": "That page's size from SignNow; US Letter when the document does not report it.",
+                  "inputs": "@coalesce(first(skip(coalesce(body('Get_uploaded_document')?['pages'], json('[]')), outputs('Page_index')))?['size'], json('{\"width\":612,\"height\":792}'))",
+                  "runAfter": {
+                    "Page_index": ["Succeeded"]
+                  }
+                },
+                "Signature_field": {
+                  "type": "Compose",
+                  "inputs": {
+                    "x": "@int(formatNumber(div(mul(float(outputs('Signature_placement')?['x']), float(outputs('Page_size')?['width'])), 100), '0', 'en-US'))",
+                    "y": "@int(formatNumber(div(mul(float(outputs('Signature_placement')?['y']), float(outputs('Page_size')?['height'])), 100), '0', 'en-US'))",
+                    "width": "@int(formatNumber(div(mul(float(outputs('Signature_placement')?['width']), float(outputs('Page_size')?['width'])), 100), '0', 'en-US'))",
+                    "height": "@int(formatNumber(div(mul(float(outputs('Signature_placement')?['height']), float(outputs('Page_size')?['height'])), 100), '0', 'en-US'))",
+                    "page_number": "@outputs('Page_index')",
+                    "role": "Signer 1",
+                    "required": true,
+                    "type": "signature",
+                    "name": "SignatureField1"
+                  },
+                  "runAfter": {
+                    "Page_size": ["Succeeded"]
+                  }
+                },
+                "Add_signature_field": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "PUT",
+                    "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{body('Upload_document')?['id']}",
+                    "headers": {
+                      "Authorization": "Bearer @{body('Parse_token')?['access_token']}",
+                      "Content-Type": "application/json"
+                    },
+                    "body": {
+                      "fields": ["@outputs('Signature_field')"]
+                    }
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": ["inputs"]
+                    }
+                  },
+                  "runAfter": {
+                    "Signature_field": ["Succeeded"]
+                  }
+                },
+                "Get_document": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "GET",
+                    "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{body('Upload_document')?['id']}",
+                    "headers": {
+                      "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                    }
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": ["inputs"]
+                    }
+                  },
+                  "runAfter": {
+                    "Add_signature_field": ["Succeeded"]
+                  }
+                },
+                "Signing_invite": {
+                  "type": "Compose",
+                  "description": "The signer's invite. When CORMS sends a returnUrl, the signing page returns there on finish, decline or close so the in-app signing window can close itself.",
+                  "inputs": {
+                    "email": "@{triggerBody()?['signers'][0]?['email']}",
+                    "role_id": "@{body('Get_document')?['roles'][0]?['unique_id']}",
+                    "order": 1,
+                    "auth_method": "none",
+                    "first_name": "@{triggerBody()?['signers'][0]?['name']}",
+                    "last_name": ""
+                  },
+                  "runAfter": {
+                    "Get_document": ["Succeeded"]
+                  }
+                },
+                "Return_url_prefix": {
+                  "type": "Compose",
+                  "inputs": "@{if(empty(triggerBody()?['returnUrl']), '', concat(triggerBody()?['returnUrl'], if(contains(triggerBody()?['returnUrl'], '?'), '&', '?'), 'signingResult='))}",
+                  "runAfter": {
+                    "Signing_invite": ["Succeeded"]
+                  }
+                },
+                "Create_embedded_invite": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@{outputs('Provider_settings')?['baseUrl']}/v2/documents/@{body('Upload_document')?['id']}/embedded-invites",
+                    "headers": {
+                      "Authorization": "Bearer @{body('Parse_token')?['access_token']}",
+                      "Content-Type": "application/json"
+                    },
+                    "body": {
+                      "invites": [
+                        "@if(empty(outputs('Return_url_prefix')), outputs('Signing_invite'), addProperty(addProperty(addProperty(addProperty(outputs('Signing_invite'), 'redirect_uri', concat(outputs('Return_url_prefix'), 'completed')), 'decline_redirect_uri', concat(outputs('Return_url_prefix'), 'declined')), 'close_redirect_uri', concat(outputs('Return_url_prefix'), 'closed')), 'redirect_target', 'self'))"
+                      ]
+                    }
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": ["inputs"]
+                    }
+                  },
+                  "runAfter": {
+                    "Return_url_prefix": ["Succeeded"]
+                  }
+                },
+                "Create_signing_link": {
+                  "type": "Http",
+                  "inputs": {
+                    "method": "POST",
+                    "uri": "@{outputs('Provider_settings')?['baseUrl']}/v2/documents/@{body('Upload_document')?['id']}/embedded-invites/@{body('Create_embedded_invite')?['data'][0]?['id']}/link",
+                    "headers": {
+                      "Authorization": "Bearer @{body('Parse_token')?['access_token']}",
+                      "Content-Type": "application/json"
+                    },
+                    "body": {
+                      "auth_method": "none"
+                    }
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": ["inputs"]
+                    }
+                  },
+                  "runAfter": {
+                    "Create_embedded_invite": ["Succeeded"]
+                  }
+                },
+                "Set_created_document_id": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "ExternalDocumentId",
+                    "value": "@{body('Upload_document')?['id']}"
+                  },
+                  "runAfter": {
+                    "Create_signing_link": ["Succeeded"]
+                  }
+                },
+                "Set_created_signing_url": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "SigningUrl",
+                    "value": "@{body('Create_signing_link')?['data']?['link']}"
+                  },
+                  "runAfter": {
+                    "Set_created_document_id": ["Succeeded"]
+                  }
+                },
+                "Set_created_status": {
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "SigningStatus",
+                    "value": "Pending"
+                  },
+                  "runAfter": {
+                    "Set_created_signing_url": ["Succeeded"]
+                  }
+                }
+              }
+            },
+            "runAfter": {
+              "Parse_token": ["Succeeded"]
+            }
+          }
+        }
+      },
+      "Response_success": {
+        "type": "Response",
+        "kind": "Http",
+        "runAfter": {
+          "Try_signing_provider": ["Succeeded"]
+        },
+        "inputs": {
+          "statusCode": 200,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "externalDocumentId": "@{variables('ExternalDocumentId')}",
+            "signingUrl": "@{variables('SigningUrl')}",
+            "status": "@{variables('SigningStatus')}",
+            "isCompleted": "@equals(variables('SigningStatus'), 'Completed')",
+            "contentBase64": "@{variables('SignedContent')}"
+          }
+        }
+      },
+      "Failed_steps": {
+        "type": "Select",
+        "description": "Only action names and status codes are returned to CORMS; provider responses stay in the run history.",
+        "inputs": {
+          "from": "@result('Try_signing_provider')",
+          "select": {
+            "step": "@item()?['name']",
+            "status": "@item()?['status']",
+            "code": "@item()?['code']"
+          }
+        },
+        "runAfter": {
+          "Try_signing_provider": ["Failed", "TimedOut"]
+        }
+      },
+      "Response_error": {
+        "type": "Response",
+        "kind": "Http",
+        "runAfter": {
+          "Failed_steps": ["Succeeded"]
+        },
+        "inputs": {
+          "statusCode": 502,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "Signing provider request failed",
+            "steps": "@body('Failed_steps')"
+          }
+        }
+      }
+    }
+  }
+}

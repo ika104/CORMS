@@ -1,0 +1,25 @@
+.panel { padding: 20px; }
+.header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.title { font-size: 16px; font-weight: 600; color: var(--corms-toolbar-primary); margin: 0 0 4px; }
+.description { font-size: 13px; color: var(--corms-text-secondary); margin: 0; max-width: 72ch; }
+.primaryButton, .secondaryButton { display: inline-flex; align-items: center; gap: 6px; border-radius: 4px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.primaryButton { border: none; background: var(--corms-toolbar-primary); color: #ffffff; }
+.secondaryButton { border: 1px solid var(--corms-neutral-border); background: var(--corms-neutral-page); color: var(--corms-text-primary); }
+.primaryButton:disabled, .secondaryButton:disabled, .iconButton:disabled, .iconButtonDanger:disabled { opacity: 0.6; cursor: default; }
+.errorBanner { background: var(--corms-brand-red); color: #ffffff; border-radius: 4px; padding: 8px 12px; font-size: 13px; margin-bottom: 12px; }
+.editor { border: 1px solid var(--corms-neutral-border); border-radius: 6px; background: var(--corms-card-surface); padding: 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 14px; }
+.editorTitle, .workflowName { color: var(--corms-text-primary); margin: 0; }
+.editorTitle { font-size: 14px; font-weight: 600; }
+.field { display: flex; flex-direction: column; gap: 6px; max-width: 520px; }
+.label, .builderLabel { font-size: 12px; font-weight: 600; color: var(--corms-text-secondary); text-transform: uppercase; }
+.input { border: 1px solid var(--corms-neutral-border); border-radius: 4px; padding: 8px 10px; font: inherit; color: var(--corms-text-primary); background: var(--corms-neutral-page); }
+.editorActions { display: flex; justify-content: flex-end; gap: 8px; }
+.workflowList { display: flex; flex-direction: column; border-top: 1px solid var(--corms-neutral-border); }
+.workflowRow { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px; border-bottom: 1px solid var(--corms-neutral-border); }
+.workflowName { font-size: 14px; font-weight: 600; }
+.workflowMeta { margin: 3px 0 0; color: var(--corms-text-secondary); font-size: 12px; }
+.actions { display: flex; gap: 4px; }
+.iconButton, .iconButtonDanger { border: none; background: transparent; color: var(--corms-text-secondary); cursor: pointer; padding: 6px; border-radius: 4px; }
+.iconButton:hover { background: var(--corms-neutral-panel); color: var(--corms-toolbar-primary); }
+.iconButtonDanger:hover { background: var(--corms-neutral-panel); color: var(--corms-brand-red); }
+@media (max-width: 640px) { .header { flex-direction: column; } .workflowRow { align-items: flex-start; } }

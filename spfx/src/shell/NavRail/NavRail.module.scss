@@ -1,0 +1,218 @@
+.rail {
+  display: flex;
+  flex-direction: column;
+  // The app is embedded in a SharePoint page whose own container scrolls (not this app), so the
+  // NavRail is pinned to the top of that scrollport with position:sticky rather than relying on a
+  // fixed app height. align-self:flex-start stops the flex row from stretching it to full content
+  // height (which would leave sticky no room to travel); its own nav list scrolls within 100vh.
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  max-height: 100vh;
+  width: 44px;
+  background: var(--corms-sidebar-bg, #ffffff);
+  border-inline-end: 1px solid var(--corms-neutral-border);
+  transition: width 0.2s ease;
+  overflow: hidden;
+  flex-shrink: 0;
+  z-index: 10;
+
+  &.expanded {
+    width: 216px;
+  }
+}
+
+// ─── Header row ─────────────────────────────────────────────────────────────
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  flex-shrink: 0;
+
+  .expanded & {
+    justify-content: space-between;
+  }
+}
+
+.headerLabel {
+  color: var(--corms-sidebar-active-text, #2563eb);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding-inline-start: 4px;
+  white-space: nowrap;
+}
+
+.headerControls {
+  display: flex;
+  gap: 4px;
+}
+
+.controlBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--corms-sidebar-text, #374151);
+  font-size: 14px;
+  line-height: 1;
+  padding: 3px;
+  border-radius: 4px;
+
+  &:hover {
+    background: var(--corms-sidebar-active, #eff6ff);
+  }
+}
+
+.controlBtnActive {
+  color: var(--corms-sidebar-active-text, #2563eb);
+}
+
+// ─── Nav groups ─────────────────────────────────────────────────────────────
+.groups {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 4px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 20px;
+  border: none;
+  background: transparent;
+  color: var(--corms-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    color: var(--corms-sidebar-active-text, #2563eb);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  .groupLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .groupChevron {
+    display: flex;
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+
+    :global([dir='rtl']) & {
+      transform: rotate(180deg);
+    }
+
+    &.open {
+      transform: rotate(90deg);
+
+      :global([dir='rtl']) & {
+        transform: rotate(90deg);
+      }
+    }
+  }
+}
+
+// ─── User footer ────────────────────────────────────────────────────────────
+.userFooter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--corms-neutral-border);
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--corms-sidebar-active, #eff6ff);
+  color: var(--corms-sidebar-active-text, #2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.avatarPhoto {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--corms-sidebar-text, #374151);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.role {
+  font-size: 10px;
+  color: var(--corms-text-secondary);
+}
+
+// ─── Utility controls ──────────────────────────────────────────────────────
+.utilityControls {
+  display: flex;
+  gap: 4px;
+  padding: 4px 12px 8px;
+  border-top: 1px solid var(--corms-neutral-border);
+  flex-shrink: 0;
+}
+
+.langBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  background: none;
+  border: 1px solid var(--corms-neutral-border);
+  cursor: pointer;
+  color: var(--corms-sidebar-text, #374151);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--corms-sidebar-active, #eff6ff);
+    color: var(--corms-sidebar-active-text, #2563eb);
+  }
+}

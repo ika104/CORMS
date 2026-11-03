@@ -1,0 +1,201 @@
+{
+  "EnvironmentVariables": [
+    {
+      "SchemaName": "new_shared_sharepointonline_01455abdf9e74001b385f1be3ccc9eb6",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_UserRoles",
+        "ByLcid": {
+          "1033": "CORMS_UserRoles"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_0ac25ac605c54096b43559e1e44fd655",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_SigningSessions",
+        "ByLcid": {
+          "1033": "CORMS_SigningSessions"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_15eb33ef1bd545eab766623250d8288e",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_AuditLog",
+        "ByLcid": {
+          "1033": "CORMS_AuditLog"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_39f9161a015244d68915d0194823f536",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_Timeline",
+        "ByLcid": {
+          "1033": "CORMS_Timeline"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_3c087a2a3c1b45eaa366a0a9ba14b677",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_ApprovalTasks",
+        "ByLcid": {
+          "1033": "CORMS_ApprovalTasks"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_7f9d56398e534c3ba07f917e38573b53",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_Delegations",
+        "ByLcid": {
+          "1033": "CORMS_Delegations"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_Attachments",
+        "ByLcid": {
+          "1033": "CORMS_Attachments"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS - https://ssloman.sharepoint.com/sites/CORMS",
+        "ByLcid": {
+          "1033": "CORMS - https://ssloman.sharepoint.com/sites/CORMS"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "dataset",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_c53c5a63715c45818e8eb4d3b5e548a5",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_AdminConfig",
+        "ByLcid": {
+          "1033": "CORMS_AdminConfig"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_d2f9f57a69aa41b2b3c5611f65e36719",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_Correspondence",
+        "ByLcid": {
+          "1033": "CORMS_Correspondence"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_f65693355dfe4fe3b41a68917be77e50",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_Templates",
+        "ByLcid": {
+          "1033": "CORMS_Templates"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_fcf52443a8474cd1b2f8ff34a9e5642e",
+      "Value": "",
+      "Name": {
+        "Default": "CORMS_Tasks",
+        "ByLcid": {
+          "1033": "CORMS_Tasks"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    }
+  ],
+  "ConnectionReferences": [
+    {
+      "LogicalName": "corms_sharedoffice365_63afd",
+      "ConnectionId": "",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+    },
+    {
+      "LogicalName": "corms_sharedteams_0a33b",
+      "ConnectionId": "",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_teams"
+    },
+    {
+      "LogicalName": "new_sharedsharepointonline_00d04",
+      "ConnectionId": "",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    }
+  ],
+  "CopilotAgents": []
+}

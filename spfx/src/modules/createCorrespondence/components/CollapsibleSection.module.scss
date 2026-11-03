@@ -1,0 +1,78 @@
+.section {
+  background: var(--corms-card-surface);
+  border: 1px solid var(--corms-card-border);
+  border-radius: 4px;
+  /* No overflow:hidden here — searchable dropdowns inside the body are absolutely positioned
+     and need to escape this box; corner rounding is instead carried by header/body below. */
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--corms-neutral-panel);
+  border: none;
+  cursor: pointer;
+  text-align: start;
+  border-radius: 4px 4px 0 0;
+}
+
+.header:last-child {
+  border-radius: 4px;
+}
+
+.chevron {
+  display: inline-flex;
+  transition: transform 0.15s;
+  color: var(--corms-text-secondary);
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+/* CMS-005 AC10 / CMS-038 — the numbered step indicator tracks the active application theme colour. */
+.stepIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--corms-toolbar-primary);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--corms-brand-navy);
+  flex: 1;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--corms-toolbar-primary);
+  color: #ffffff;
+}
+
+.badgeMuted {
+  background: var(--corms-neutral-border);
+  color: var(--corms-text-secondary);
+}
+
+.body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-radius: 0 0 4px 4px;
+}

@@ -1,0 +1,1824 @@
+{
+  "app": {
+    "title": "كورمز"
+  },
+  "nav": {
+    "group": {
+      "workspace": "مساحة العمل",
+      "system": "النظام"
+    },
+    "myCorrespondence": "مراسلاتي",
+    "myTasks": "مهامي",
+    "tasks": "المهام",
+    "approvalTasks": "مهام الموافقة",
+    "inboxSent": "الوارد / الصادر",
+    "inbox": "الوارد",
+    "sent": "الصادر",
+    "drafts": "المسودات",
+    "triageRouting": "الفرز والتوجيه",
+    "docControl": "مراقبة الوثائق",
+    "delegation": "التفويض",
+    "delegationManagement": "إدارة التفويض",
+    "teamInbox": "بريد الفريق",
+    "search": "بحث",
+    "statistics": "الإحصائيات",
+    "administration": "الإدارة",
+    "workflowMatrix": "مصفوفة سير العمل",
+    "approvalWorkflows": "مسارات الموافقات",
+    "adminConfig": "إعدادات الإدارة",
+    "translations": "الترجمات",
+    "dataSources": "مصادر البيانات",
+    "provisionLists": "توفير القوائم",
+    "navigationMenu": "قائمة التنقل",
+    "userPermissions": "صلاحيات المستخدمين",
+    "auditTrail": "سجل التدقيق",
+    "reclassifications": "إعادة التصنيف",
+    "templates": "قوالب المراسلات",
+    "signingDashboard": "لوحة التوقيع"
+  },
+  "role": {
+    "administrator": "مسؤول النظام",
+    "auditor": "مدقق",
+    "originator": "منشئ المراسلة",
+    "reviewer": "مراجع",
+    "recipient": "مستلم",
+    "documentControl": "مراقبة الوثائق",
+    "ceoTriageOfficer": "مسؤول فرز المكتب التنفيذي",
+    "supervisorManager": "مشرف / مدير",
+    "systemAdministrator": "مسؤول النظام"
+  },
+  "theme": {
+    "light": "فاتح",
+    "brandDark": "شريط داكن (العلامة التجارية)"
+  },
+  "language": {
+    "toggle": "تبديل اللغة",
+    "en": "الإنجليزية",
+    "ar": "العربية"
+  },
+  "rail": {
+    "navigation": "القائمة",
+    "pin": "تثبيت القائمة",
+    "unpin": "إلغاء تثبيت القائمة",
+    "collapse": "طي القائمة",
+    "expand": "توسيع القائمة",
+    "expandGroup": "توسيع {{label}}",
+    "collapseGroup": "طي {{label}}"
+  },
+  "common": {
+    "comingSoon": "قريباً",
+    "comingSoonDescription": "هذه الوحدة قيد الإنشاء وستكون متاحة قريباً.",
+    "notFound": "الصفحة غير موجودة",
+    "notFoundDescription": "الصفحة التي تبحث عنها غير موجودة.",
+    "primaryAction": "جديد",
+    "search": "بحث",
+    "loading": "جارٍ التحميل...",
+    "close": "إغلاق",
+    "cancel": "إلغاء",
+    "requiredField": "هذا الحقل مطلوب.",
+    "save": "حفظ",
+    "yes": "نعم",
+    "no": "لا",
+    "edit": "تعديل",
+    "show": "إظهار",
+    "hide": "إخفاء"
+  },
+  "grid": {
+    "column": {
+      "reference": "الرقم المرجعي",
+      "subject": "الموضوع",
+      "sender": "من",
+      "status": "الحالة"
+    },
+    "toolbar": {
+      "refresh": "تحديث",
+      "viewToggle": "وضع العرض",
+      "cards": "بطاقات",
+      "table": "جدول"
+    },
+    "pagination": {
+      "rowsPerPage": "صفوف لكل صفحة:",
+      "range": "{{start}}–{{end}} من {{total}}",
+      "pageOf": "{{current}} / {{total}}",
+      "first": "الصفحة الأولى",
+      "previous": "الصفحة السابقة",
+      "next": "الصفحة التالية",
+      "last": "الصفحة الأخيرة"
+    },
+    "empty": {
+      "default": "لا توجد بيانات للعرض."
+    },
+    "selection": {
+      "selectAllOnPage": "تحديد الكل في هذه الصفحة",
+      "deselectAllOnPage": "إلغاء تحديد الكل في هذه الصفحة",
+      "selectRow": "تحديد الصف"
+    },
+    "locale": {
+      "page": "صفحة",
+      "of": "من",
+      "to": "إلى",
+      "noRowsToShow": "لا توجد بيانات للعرض",
+      "loading": "جارٍ التحميل...",
+      "filterOoo": "تصفية...",
+      "equals": "يساوي",
+      "notEqual": "لا يساوي",
+      "contains": "يحتوي",
+      "notContains": "لا يحتوي",
+      "startsWith": "يبدأ بـ",
+      "endsWith": "ينتهي بـ",
+      "blank": "فارغ",
+      "notBlank": "غير فارغ",
+      "lessThan": "أقل من",
+      "greaterThan": "أكبر من",
+      "lessThanOrEqual": "أقل من أو يساوي",
+      "greaterThanOrEqual": "أكبر من أو يساوي",
+      "inRange": "في النطاق",
+      "andCondition": "و",
+      "orCondition": "أو",
+      "applyFilter": "تطبيق",
+      "resetFilter": "إعادة تعيين",
+      "clearFilter": "مسح",
+      "sortAscending": "ترتيب تصاعدي",
+      "sortDescending": "ترتيب تنازلي",
+      "sortUnSort": "إلغاء الترتيب"
+    },
+    "demo": {
+      "title": "عرض الجدول التجريبي",
+      "name": "الاسم",
+      "department": "القسم",
+      "status": "الحالة",
+      "amount": "المبلغ",
+      "date": "التاريخ"
+    }
+  },
+  "correspondenceActions": {
+    "openFullPreview": "فتح المعاينة الكاملة",
+    "editInWord": "التحرير في Word Online",
+    "shareLink": "مشاركة الرابط",
+    "annotate": "التعليقات التوضيحية",
+    "viewAttachments": "عرض المرفقات",
+    "viewTimeline": "عرض الجدول الزمني",
+    "approve": "اعتماد",
+    "reject": "رفض",
+    "reassignRoute": "إعادة التعيين / التوجيه",
+    "setReminder": "ضبط تذكير",
+    "delegate": "تفويض"
+  },
+  "myCorrespondence": {
+    "actions": "إجراءات",
+    "viewDetails": "عرض التفاصيل",
+    "openPreview": "فتح المعاينة",
+    "reply": "رد",
+    "forward": "إعادة توجيه",
+    "download": "تحميل",
+    "print": "طباعة",
+    "kpi": {
+      "all": "جميع المراسلات",
+      "pending": "قيد الانتظار",
+      "overdue": "متأخرة",
+      "mine": "مراسلاتي",
+      "teamOverdue": "متأخرات الفريق",
+      "teamSubmissions": "طلبات الفريق"
+    },
+    "masterLog": "سجل المراسلات الرئيسي",
+    "newCorrespondence": "مراسلة جديدة",
+    "exportCsv": "تصدير CSV",
+    "noItems": "لا توجد مراسلات.",
+    "col": {
+      "refNo": "الرقم المرجعي",
+      "subject": "الموضوع",
+      "fromTo": "من / إلى",
+      "security": "التصنيف الأمني",
+      "status": "الحالة",
+      "date": "التاريخ",
+      "actions": "إجراءات"
+    },
+    "draftNotRegistered": "مسودة — لم يتم التسجيل بعد",
+    "field": {
+      "type": "النوع",
+      "status": "الحالة",
+      "security": "التصنيف الأمني",
+      "date": "التاريخ"
+    },
+    "signed": "موقّع",
+    "signatureRequired": "يتطلب توقيع",
+    "searchPlaceholder": "ابحث بالموضوع أو الرقم المرجعي…",
+    "advancedSearch": "بحث متقدم",
+    "groupsIndicator": "المجموعات: {{count}}",
+    "departmentFilter": "مُصفّى حسب: {{department}}",
+    "threadCount": "{{count}} في السلسلة"
+  },
+  "inboxSent": {
+    "folder": {
+      "inbox": "الوارد (وارد)",
+      "sent": "الصادر (صادر)",
+      "drafts": "المسودات",
+      "createFolder": "إنشاء مجلد",
+      "deleteFolder": "حذف المجلد",
+      "deleteFolderConfirmTitle": "حذف المجلد",
+      "deleteFolderConfirmMessage": "حذف المجلد \"{{name}}\"؟ لن يؤدي هذا إلى حذف أي مراسلة — تبقى العناصر في الوارد.",
+      "deleteFolderConfirm": "حذف",
+      "cancel": "إلغاء"
+    },
+    "quickFilter": {
+      "all": "الكل",
+      "unread": "غير مقروء",
+      "highPriority": "أولوية عالية"
+    },
+    "toolbar": {
+      "newCorrespondence": "مراسلة جديدة",
+      "searchPlaceholder": "ابحث في الموضوع أو الرقم المرجعي"
+    },
+    "col": {
+      "refNo": "الرقم المرجعي",
+      "subject": "الموضوع",
+      "fromTo": "من / إلى",
+      "security": "المستوى الأمني",
+      "status": "الحالة",
+      "date": "التاريخ / الوقت",
+      "attachment": "مرفق",
+      "signature": "التوقيع",
+      "actions": "إجراءات"
+    },
+    "field": {
+      "fromTo": "من / إلى",
+      "date": "التاريخ / الوقت",
+      "attachment": "مرفق"
+    },
+    "signature": {
+      "required": "مطلوب",
+      "signed": "موقّع"
+    },
+    "noItems": "لا توجد عناصر مطابقة للفلاتر الحالية.",
+    "actions": "إجراءات العنصر",
+    "action": {
+      "pinToFolder": "تثبيت في مجلد…",
+      "removeFromFolder": "إزالة من هذا المجلد",
+      "editDraft": "تعديل المسودة"
+    },
+    "bulk": {
+      "selected": "{{count}} محدد",
+      "clear": "مسح التحديد",
+      "markRead": "تعليم كمقروء",
+      "markUnread": "تعليم كغير مقروء",
+      "expedite": "تعجيل",
+      "export": "تصدير",
+      "delete": "حذف",
+      "addToFolder": "إضافة إلى مجلد",
+      "deleteConfirmTitle": "حذف المسودات",
+      "deleteConfirmMessage": "حذف {{count}} مسودة محددة؟ لا يمكن التراجع عن هذا الإجراء.",
+      "deleteConfirm": "حذف",
+      "cancel": "إلغاء"
+    },
+    "createFolderModal": {
+      "title": "إنشاء مجلد مخصص",
+      "folderName": "اسم المجلد",
+      "folderNamePlaceholder": "مثال: عاجل من المالية",
+      "helper": "معايير بحث محفوظة — يظهر العنصر الوارد في هذا المجلد عند مطابقته لجميع المعايير المحددة. اترك الحقل فارغاً لتجاهله.",
+      "status": "الحالة",
+      "security": "المستوى الأمني",
+      "priority": "الأولوية",
+      "classification": "تصنيف السجل",
+      "sender": "المرسل",
+      "senderPlaceholder": "يحتوي على الاسم…",
+      "any": "أي",
+      "cancel": "إلغاء",
+      "create": "إنشاء المجلد"
+    },
+    "pinModal": {
+      "title": "تثبيت في مجلد",
+      "choose": "اختر مجلداً مخصصاً لتثبيت هذا العنصر فيه. سيبقى في الوارد أيضاً.",
+      "noFolders": "لم تقم بإنشاء أي مجلدات مخصصة بعد.",
+      "pinned": "مثبّت",
+      "cancel": "إلغاء"
+    },
+    "criteria": {
+      "allIncoming": "جميع الوارد",
+      "priority": "أولوية {{priority}}",
+      "sender": "من \"{{sender}}\""
+    },
+    "filters": {
+      "dateFrom": "من",
+      "dateTo": "إلى",
+      "status": "الحالة",
+      "security": "مستوى السرية",
+      "team": "الفريق",
+      "any": "الكل",
+      "clear": "مسح عوامل التصفية"
+    }
+  },
+  "module": {
+    "myCorrespondence": {
+      "title": "مراسلاتي"
+    },
+    "myTasks": {
+      "title": "مهامي"
+    },
+    "inboxSent": {
+      "title": "الوارد / الصادر"
+    },
+    "triageRouting": {
+      "title": "الفرز والتوجيه"
+    },
+    "delegation": {
+      "title": "التفويض"
+    },
+    "teamInbox": {
+      "title": "بريد الفريق"
+    },
+    "search": {
+      "title": "بحث"
+    },
+    "docControl": {
+      "title": "مراقبة الوثائق"
+    },
+    "statistics": {
+      "title": "الإحصائيات"
+    },
+    "administration": {
+      "title": "الإدارة"
+    },
+    "auditTrail": {
+      "title": "سجل التدقيق"
+    }
+  },
+  "dataSource": {
+    "panelTitle": "مصادر البيانات (بيئة التطوير)",
+    "devModeBanner": "وضع التطوير — بعض الميزات تعرض بيانات وهمية.",
+    "accessDenied": "هذه اللوحة متاحة فقط لمسؤولي النظام في بيئة التطوير.",
+    "master": {
+      "label": "الوضع الرئيسي",
+      "allMock": "الكل وهمي",
+      "allLive": "الكل مباشر",
+      "perFeature": "لكل ميزة"
+    },
+    "connection": {
+      "label": "اتصال RecordsHub",
+      "test": "اختبار الاتصال",
+      "testing": "جارٍ الاختبار…",
+      "success": "متصل",
+      "error": "فشل الاتصال"
+    },
+    "column": {
+      "feature": "الميزة",
+      "consumedBy": "تُستخدم في",
+      "dependency": "اعتمادية RecordsHub",
+      "transport": "طريقة النقل",
+      "mode": "الوضع",
+      "listName": "اسم قائمة RecordsHub",
+      "test": "اختبار"
+    },
+    "transport": {
+      "spRest": "SP REST",
+      "elastic": "Elasticsearch"
+    },
+    "mode": {
+      "mock": "وهمي",
+      "live": "مباشر"
+    },
+    "test": {
+      "notImplemented": "لا يوجد تنفيذ مباشر بعد",
+      "success": "نجاح — {{count}} عنصر",
+      "error": "خطأ"
+    },
+    "actions": {
+      "save": "حفظ",
+      "reset": "إعادة تعيين"
+    },
+    "feature": {
+      "menu": "تسمية القائمة / التنقل",
+      "metadata": "النوع / الاتجاه / الأولوية / الأمان / الأقسام",
+      "numbering": "قائمة الترقيم والآلية",
+      "externalOrgs": "الجهات الخارجية",
+      "securityTiers": "المستويات الأمنية وتصنيفات السجلات",
+      "config": "قائمة الإعدادات",
+      "audit": "بنية سجل التدقيق",
+      "search": "أداة بناء استعلامات Elastic",
+      "templates": "قوالب المستندات",
+      "orgHierarchy": "التسلسل الإداري / المرؤوسين"
+    },
+    "section": {
+      "recordsHub": "بيانات مرجعية من RecordsHub",
+      "recordsHubHint": "بيانات يملكها RecordsHub ويستهلكها CORMS فقط — كل صف أدناه يُبدَّل بشكل مستقل في وضع \"لكل ميزة\".",
+      "app": "بيانات تطبيق CORMS",
+      "appHint": "بيانات يملكها CORMS نفسه. بخلاف صفوف RecordsHub أعلاه، هذا ليس اعتمادية على RecordsHub — إنما يتحكم فيما إذا كانت شاشتا مراسلاتي والوارد/الصادر تعرضان مجموعة البيانات التجريبية المضمّنة أو صفوف CORMS_Correspondence الحقيقية."
+    },
+    "appDataSource": {
+      "feature": "قوائم مراسلاتي والوارد/الصادر",
+      "taskFeature": "قائمة صندوق المهام (مهامي)",
+      "delegationFeature": "إدارة التفويض وصندوق الفريق (بما في ذلك إعادة الإسناد)",
+      "saving": "جارٍ الحفظ…"
+    }
+  },
+  "createCorrespondence": {
+    "back": "رجوع",
+    "title": "مراسلة جديدة",
+    "subtitle": "أكمل جميع الأقسام أدناه. يتم تعيين الرقم المرجعي تلقائياً عند الإرسال.",
+    "replyBanner": "هذا رد — سيتم ربطه بالسلسلة {{ref}} عند الإرسال.",
+    "saveDraft": "حفظ كمسودة",
+    "send": "إرسال",
+    "autosave": {
+      "saving": "جارٍ حفظ المسودة…",
+      "saved": "تم حفظ المسودة",
+      "error": "تعذّر الحفظ التلقائي — استخدم حفظ كمسودة"
+    },
+    "overlay": {
+      "savingDraft": "جارٍ حفظ المسودة…",
+      "sending": "جارٍ الإرسال…"
+    },
+    "badge": {
+      "required": "مطلوب",
+      "recordHubApi": "RecordHub API",
+      "securityLevelsApi": "Security Levels API",
+      "orgUnitsApi": "RecordHub API (وحدات تنظيمية)",
+      "recordHubSearchApi": "RecordHub Search API"
+    },
+    "section": {
+      "coreMetadata": "البيانات الأساسية",
+      "composeDocument": "إنشاء المستند",
+      "supportingDocuments": "المستندات الداعمة",
+      "approvalWorkflow": "سير عمل الموافقات"
+    },
+    "validation": {
+      "required": "هذا الحقل مطلوب.",
+      "destinationRequired": "اختر وجهة واحدة على الأقل.",
+      "recordClassificationRequired": "اختر تصنيف السجل قبل الإرسال — فهو مطلوب قبل إصدار رقم متحكم به.",
+      "recordClassificationInactive": "تصنيف السجل المحدد غير نشط أو مُلغى ولم يعد قابلاً للاستخدام. يرجى اختيار تصنيف نشط.",
+      "classifiedCaptureNotVetted": "التقاط المراسلات عند هذا المستوى الأمني مقصور على المستخدمين المعتمدين. اختر مستوى أدنى أو اطلب من مستخدم معتمد التقاطها.",
+      "composeDocumentRequired": "أضف مستند المراسلة — تحميل أو مسح ضوئي أو قالب يحتوي على محتوى — قبل الإرسال.",
+      "groupMembersRequired": "تحتاج كل مجموعة موافقة إلى عضو واحد على الأقل.",
+      "signaturesOverlap": "يوجد توقيعان في المكان نفسه من المستند. انقل أحدهما ليكون لكل توقيع موضعه الخاص.",
+      "summary": "يرجى إكمال جميع الحقول المطلوبة قبل الإرسال.",
+      "saveDraftFailed": "تعذر حفظ المسودة. يرجى المحاولة مرة أخرى.",
+      "sendFailed": "تعذر إرسال هذه المراسلة. يرجى المحاولة مرة أخرى.",
+      "attachmentsFinalizeFailed": "تم الحفظ، لكن تعذر ربط المرفقات بالمراسلة. يرجى مراجعة تبويب الملفات.",
+      "routingFailed": "تم الإرسال، لكن تعذر إنشاء مهام الموافقة. يرجى مراجعة تبويب الموافقات."
+    },
+    "field": {
+      "correspondenceType": "نوع المراسلة",
+      "outgoing": "صادر",
+      "incoming": "وارد",
+      "priority": "الأولوية",
+      "normal": "عادية",
+      "high": "عالية",
+      "contentType": "نوع المحتوى",
+      "contentTypePlaceholder": "البحث عن نوع المحتوى…",
+      "channel": "القناة",
+      "channelPlaceholder": "اختر قناة…",
+      "subject": "الموضوع",
+      "subjectPlaceholder": "أدخل موضوعاً واضحاً ووصفياً…",
+      "originatingFunction": "الجهة المُصدرة",
+      "selectFunctionPlaceholder": "-- اختر الجهة --",
+      "referenceNumber": "الرقم المرجعي",
+      "referenceNumberPlaceholder": "يُنشأ تلقائياً عند الإرسال",
+      "sender": "المرسل",
+      "recipient": "المستلم",
+      "recipientPlaceholder": "البحث عن المستلم بالاسم…",
+      "dateCreated": "تاريخ الإنشاء",
+      "dueDate": "تاريخ الاستحقاق",
+      "securityLevel": "المستوى الأمني",
+      "securityLevelHelper": "أقصى تصريح لديك: {{tier}}",
+      "classifiedCaptureRestricted": "المستويات الأمنية الأعلى مقصورة على المستخدمين المعتمدين.",
+      "recordClassification": "تصنيف السجل",
+      "recordClassificationPlaceholder": "البحث برقم السجل أو الاسم…",
+      "recordClassificationHelper": "الصيغة: [معرّف SharePoint] - [التصنيف الرئيسي]",
+      "recordClassificationLoadError": "تعذّر تحميل التصنيفات. تحقق من اتصال سجل المواقع ومصدر البيانات المباشر.",
+      "destinationType": "نوع الوجهة",
+      "internal": "داخلي",
+      "external": "خارجي",
+      "destinationDepartments": "الأقسام المستهدفة",
+      "destinationDepartmentsPlaceholder": "اختر قسماً أو أكثر…",
+      "externalOrganizations": "الجهات الخارجية",
+      "externalOrganizationsPlaceholder": "اختر جهة خارجية أو أكثر…",
+      "deliveryOptions": "خيارات التسليم",
+      "email": "البريد الإلكتروني",
+      "emailHelper": "— يُرسل تلقائياً بعد الموافقة",
+      "physicalMail": "البريد الفعلي",
+      "physicalMailHelper": "— اختر طريقة التسليم في معالج التوصيل",
+      "comments": "ملاحظات / تعليقات (اختياري)",
+      "commentsPlaceholder": "أضف أي ملاحظات داخلية أو سياق لهذه المراسلة…"
+    },
+    "attachmentClassification": {
+      "label": "تصنيف المرفق",
+      "placeholder": "توريث من المراسلة",
+      "inherited": "موروث"
+    },
+    "compose": {
+      "scanIncomingTitle": "مسح النسخة الورقية الواردة",
+      "scanIncomingHelper": "انقر لمسح المستند المستلم",
+      "uploadDocument": "رفع مستند",
+      "useTemplate": "استخدام قالب",
+      "signed": "موقّع",
+      "signedHelper": "المستند يحمل توقيعاته بالفعل. سيُرسل بحالة موقّع ولا يحتاج إلى معتمدين.",
+      "scanDocument": "مسح مستند",
+      "dropzoneTitle": "اسحب وأفلت أو انقر للتصفح",
+      "dropzoneHelperCompose": "يُقبل PDF وDOCX · يُخزّن في مكتبة مستندات SharePoint",
+      "selectTemplate": "اختر القالب",
+      "header": "الترويسة",
+      "headerPlaceholder": "مثال: سري",
+      "footer": "التذييل",
+      "footerPlaceholder": "مثال: OQ8 — للاستخدام الداخلي",
+      "signOff": "التوقيع",
+      "selectTemplateFirst": "اختر قالباً معتمداً أعلاه لبدء التحرير. تُطبَّق الترويسة تلقائياً ويُحفظ النص عند تبديل القوالب.",
+      "bodyPlaceholder": "اختر قالباً أعلاه أو اكتب هنا…",
+      "imageUrlPrompt": "رابط الصورة",
+      "bold": "غامق",
+      "italic": "مائل",
+      "underline": "تسطير",
+      "richTextEditor": "محرر النصوص المنسقة",
+      "scannedDocument": "مستند ممسوح ضوئيًا",
+      "existingDocument": "إرفاق مستند موجود",
+      "existingDropzoneTitle": "استعراض وإرفاق مستند موجود",
+      "existingDropzoneHelper": "اربط مستنداً من مكتبة SharePoint كمستند المراسلة الرئيسي",
+      "fromExistingDocument": "من مستند موجود"
+    },
+    "supportingDocs": {
+      "description": "ارفع ملفات محلية أو أرفق مستندات موجودة من RecordHub. يتم تخزين المراجع فقط — بدون تكرار.",
+      "uploadFromComputer": "رفع من الجهاز",
+      "attachFromRecordHub": "إرفاق من RecordHub",
+      "dropzoneTitle": "اسحب وأفلت أو انقر لتصفح الملفات",
+      "dropzoneHelper": "يُقبل PDF وDOCX وXLSX وPNG وJPG",
+      "searchRecordHub": "البحث برقم السجل أو اسم الملف…",
+      "attachedDocuments": "المستندات المرفقة ({{count}})",
+      "recordHubRef": "RecordHub #{{number}}",
+      "recordHubPill": "RecordHub",
+      "added": "تمت الإضافة",
+      "addPhysicalItem": "تسجيل عنصر ورقي (غير قابل للرقمنة)",
+      "physicalDescription": "الوصف",
+      "physicalStorageLocation": "موقع التخزين",
+      "physicalResourceId": "معرّف المورد",
+      "resourceIdPending": "يُحدد عند الحفظ",
+      "add": "إضافة",
+      "persistFailed": "تعذر حفظ هذا التغيير. يرجى المحاولة مرة أخرى.",
+      "remove": "إزالة"
+    },
+    "approval": {
+      "presetStandard": "موافقة قياسية",
+      "presetBoard": "موافقة على مستوى المجلس",
+      "presetFastTrack": "مسار سريع",
+      "stepsCount": "{{count}} خطوات",
+      "emptyState": "لم تتم إضافة خطوات توجيه. انقر على + إضافة مراجع، + إضافة قسم، أو + إضافة مجموعة لبناء سلسلة الموافقات.",
+      "requireSignature": "يتطلب توقيعاً رقمياً",
+      "approvalMode": "وضع الموافقة:",
+      "singleAny": "فردي / أي",
+      "all": "الكل",
+      "departmentAllDisclaimer": "تسلسلي — يوافق كل عضو",
+      "departmentAnyDisclaimer": "يكفي موافقة عضو واحد",
+      "groupAllDisclaimer": "يجب أن يوافق جميع الأعضاء ({{count}})",
+      "groupAnyDisclaimer": "تكفي موافقة 1 من {{count}}",
+      "page": "الصفحة",
+      "width": "العرض",
+      "addReviewer": "إضافة مراجع",
+      "addDepartment": "إضافة قسم",
+      "addGroup": "إضافة مجموعة",
+      "searchReviewer": "البحث عن مراجع…",
+      "searchDepartment": "البحث عن قسم…",
+      "addNewGroup": "إضافة مجموعة جديدة",
+      "closePicker": "إغلاق",
+      "groupReviewers": "مجموعة المراجعين",
+      "groupTitle": "مجموعة المراجعين ({{count}})",
+      "addMember": "إضافة",
+      "removeMember": "إزالة {{name}}",
+      "groupMembersRequired": "أضف عضوًا واحدًا على الأقل إلى هذه المجموعة.",
+      "editSignaturePosition": "تعديل الموضع",
+      "signatureOverlap": "يتداخل مع توقيع آخر — انقله",
+      "departmentRouting": "توجيه إلى إدارة",
+      "clearanceNote": "يمكن إضافة الموظفين المصرّح لهم بمستوى {{level}} أو أعلى فقط.",
+      "clearanceTooLow": "التصريح غير كافٍ",
+      "signaturePlacementHint": "اسحب المربع وغيّر حجمه لتحديد موضع ختم التوقيع.",
+      "signatureHere": "التوقيع",
+      "previousPage": "الصفحة السابقة",
+      "nextPage": "الصفحة التالية",
+      "pageN": "صفحة {{page}}",
+      "signatureBoxAria": "مربع موضع التوقيع عند {{x}}٪ من اليسار و{{y}}٪ من الأعلى. استخدم مفاتيح الأسهم للتحريك.",
+      "signatureReadout": "صفحة {{page}} · {{x}}٪، {{y}}٪ · {{width}}×{{height}}٪"
+    },
+    "confirmation": {
+      "title": "تم إرسال المراسلة",
+      "description": "تم تعيين الرقم المرجعي وبدأ سير عمل الموافقات.",
+      "goToMyCorrespondence": "الذهاب إلى مراسلاتي"
+    },
+    "editTitle": "تعديل المسودة",
+    "editSubtitle": "راجع المسودة، ثم تابع التعديل أو قم بإرسالها."
+  },
+  "delegation": {
+    "panelA": {
+      "title": "إدارة التفويض",
+      "createButton": "إنشاء تفويض"
+    },
+    "panelB": {
+      "title": "تدقيق وسجل التفويض"
+    },
+    "col": {
+      "from": "من",
+      "delegateTo": "تفويض إلى",
+      "reason": "السبب",
+      "period": "الفترة",
+      "status": "الحالة",
+      "actions": "إجراءات",
+      "userName": "اسم المستخدم",
+      "team": "الفريق",
+      "totalCreated": "إجمالي المُنشأ",
+      "accepted": "مقبول",
+      "rejected": "مرفوض"
+    },
+    "action": {
+      "revoke": "إلغاء"
+    },
+    "status": {
+      "active": "نشط",
+      "pending": "قيد الانتظار",
+      "rejected": "مرفوض",
+      "revoked": "ملغى"
+    },
+    "noItems": "لا توجد تفويضات.",
+    "noAuditItems": "لا توجد سجلات تدقيق.",
+    "modal": {
+      "title": "إنشاء تفويض",
+      "delegateFrom": "تفويض من",
+      "delegateTo": "تفويض إلى",
+      "reason": "السبب",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "endBeforeStart": "يجب أن يكون تاريخ الانتهاء في نفس تاريخ البدء أو بعده.",
+      "supportingDocuments": "المستندات الداعمة",
+      "attachDocument": "إرفاق مستند",
+      "attachHelper": "PDF, DOCX, XLSX, PNG (بحد أقصى 10 ميغابايت)",
+      "infoNote": "يمنح التفويض السلطة الكاملة للمفوَّض إليه خلال الفترة المحددة.",
+      "selectPlaceholder": "-- اختر --",
+      "selectDelegatePlaceholder": "-- اختر المفوَّض إليه --",
+      "cancel": "إلغاء",
+      "save": "حفظ التفويض"
+    }
+  },
+  "teamInbox": {
+    "viewing": "عرض:",
+    "allSubordinates": "جميع المرؤوسين",
+    "col": {
+      "owner": "مُسند إلى",
+      "refNo": "الرقم المرجعي",
+      "subject": "الموضوع",
+      "type": "النوع",
+      "priority": "الأولوية",
+      "security": "مستوى الأمان",
+      "status": "الحالة",
+      "date": "التاريخ",
+      "actions": "إجراءات"
+    },
+    "status": {
+      "new": "جديد",
+      "inProgress": "قيد التنفيذ",
+      "pendingResponse": "بانتظار الرد"
+    },
+    "priority": {
+      "normal": "عادي",
+      "high": "مرتفع"
+    },
+    "action": {
+      "reassign": "إعادة تعيين"
+    },
+    "actions": "إجراءات العنصر",
+    "noItems": "لا توجد عناصر.",
+    "reassignedIndicator": "أُعيد تعيينه إلى {{name}}"
+  },
+  "reassign": {
+    "modal": {
+      "title": "إعادة تعيين المراسلة",
+      "currentlyAssigned": "مُسند حالياً إلى: {{name}}",
+      "reassignTo": "إعادة التعيين إلى",
+      "reason": "السبب",
+      "selectPlaceholder": "-- اختر مرؤوساً --",
+      "clearanceHint": "التصريح الأمني أقل من مستوى العنصر",
+      "noEligible": "لا يوجد مرؤوس يملك التصريح الأمني الكافي لهذا العنصر.",
+      "cancel": "إلغاء",
+      "confirm": "إعادة تعيين"
+    },
+    "success": "أُعيد تعيينه إلى {{name}}"
+  },
+  "approvalTasks": {
+    "tile": {
+      "all": "كل الموافقات",
+      "toDo": "للتنفيذ",
+      "waiting": "بالانتظار",
+      "overdue": "متأخرة",
+      "completed": "مكتملة"
+    },
+    "state": {
+      "ToDo": "للتنفيذ",
+      "Waiting": "بالانتظار"
+    },
+    "col": {
+      "subject": "الموضوع",
+      "reference": "الرقم المرجعي",
+      "step": "الخطوة",
+      "assignee": "مُسندة إلى",
+      "state": "الحالة",
+      "signature": "التوقيع",
+      "dueDate": "تاريخ الاستحقاق"
+    },
+    "field": {
+      "reference": "الرقم المرجعي",
+      "sender": "المرسل",
+      "dueDate": "تاريخ الاستحقاق",
+      "security": "مستوى السرية",
+      "correspondenceStatus": "حالة المراسلة"
+    },
+    "stepLabel": "الخطوة {{order}} · {{name}}",
+    "myTasksTitle": "مهام الموافقة الخاصة بي",
+    "allTasksTitle": "كل مهام الموافقة",
+    "searchPlaceholder": "ابحث في الموضوع أو الرقم المرجعي أو الخطوة أو المعتمد…",
+    "exportCsv": "تصدير CSV",
+    "noItems": "لا توجد مهام موافقة.",
+    "queue": {
+      "title": "بانتظار إجرائك ({{count}})",
+      "empty": "لا يوجد ما ينتظر موافقتك أو توقيعك."
+    },
+    "modal": {
+      "title": "مهمة موافقة",
+      "yourTask": "المهمة",
+      "progress": "تقدّم الموافقة",
+      "openCorrespondence": "فتح المراسلة",
+      "decisionFailed": "تعذّر تسجيل القرار. حاول مرة أخرى.",
+      "savingDecision": "جارٍ حفظ قرارك..."
+    }
+  },
+  "myTasks": {
+    "tile": {
+      "all": "جميع المهام",
+      "pending": "المهام المعلقة",
+      "overdue": "المهام المتأخرة",
+      "mine": "مهامي",
+      "team": "مهام الفريق"
+    },
+    "masterLog": "سجل المهام الرئيسي",
+    "newTask": "مهمة جديدة",
+    "newTaskDisabled": "لم يتم تهيئة \"مهمة جديدة\" بعد — قم بتعيين powerAppsTaskFormUrl في إعدادات الإدارة.",
+    "searchPlaceholder": "البحث في المهام…",
+    "exportCsv": "تصدير CSV",
+    "noItems": "لا توجد مهام.",
+    "col": {
+      "subject": "الموضوع",
+      "type": "النوع",
+      "priority": "الأولوية",
+      "status": "الحالة",
+      "dueDate": "تاريخ الاستحقاق",
+      "assignee": "المسؤول",
+      "attachment": "مرفق",
+      "actions": "إجراءات"
+    },
+    "field": {
+      "type": "النوع",
+      "priority": "الأولوية",
+      "status": "الحالة",
+      "dueDate": "تاريخ الاستحقاق",
+      "assignee": "المسؤول",
+      "attachment": "مرفق"
+    },
+    "action": {
+      "viewDetails": "عرض التفاصيل",
+      "viewDetailsDisabled": "لم يتم تهيئة \"عرض تفاصيل المهمة\" بعد — قم بتعيين powerAppsTaskDetailUrl في إعدادات الإدارة.",
+      "delete": "حذف"
+    },
+    "actions": "إجراءات المهمة",
+    "type": {
+      "toDo": "قائمة مهام",
+      "followUp": "مهمة متابعة",
+      "reminder": "تذكير"
+    },
+    "priority": {
+      "low": "منخفضة",
+      "normal": "عادية",
+      "high": "مرتفعة"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "inProgress": "قيد التنفيذ",
+      "overdue": "متأخرة",
+      "completed": "مكتملة"
+    },
+    "queue": {
+      "title": "قائمة مهامي ({{count}})",
+      "empty": "لا توجد عناصر في قائمتك."
+    },
+    "deleteConfirm": {
+      "title": "حذف المهمة",
+      "message": "هل أنت متأكد أنك تريد حذف \"{{subject}}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+      "confirm": "حذف",
+      "cancel": "إلغاء"
+    }
+  },
+  "correspondenceDetail": {
+    "notFound": "عنصر المراسلة غير موجود.",
+    "actionsMenu": "إجراءات العنصر",
+    "accessDenied": {
+      "title": "الوصول مرفوض",
+      "description": "تصريح غير كافٍ — هذه الوثيقة مصنفة {{level}}، وهو ما يتطلب مستوى أمنياً أعلى.",
+      "descriptionGeneric": "تصريح غير كافٍ لعرض هذه الوثيقة."
+    },
+    "tab": {
+      "preview": "معاينة",
+      "annotate": "التعليقات التوضيحية",
+      "details": "التفاصيل",
+      "files": "الملفات",
+      "file": "خطة الحفظ",
+      "security": "الأمان",
+      "audit": "التدقيق",
+      "timeline": "الجدول الزمني",
+      "thread": "السلسلة",
+      "reminder": "التذكير",
+      "approvals": "الموافقات"
+    },
+    "filePlan": {
+      "enclosingFile": "الملف الحاضن للنشاط",
+      "fileName": "الملف",
+      "fileNumber": "رقم الملف",
+      "position": "الموقع في خطة الحفظ",
+      "classification": "تصنيف السجل",
+      "unfiled": "لم يتم حفظ هذه المراسلة ضمن تصنيف سجل بعد."
+    },
+    "approvals": {
+      "emptyTitle": "لم تُوجَّه للموافقة",
+      "emptyDescription": "لا توجد سلسلة موافقة لهذه المراسلة. تُنشأ مهام الموافقة عند إرسال مسودة صادرة تحتوي على مراجعين.",
+      "manage": {
+        "open": "إضافة معتمدين",
+        "title": "إضافة معتمدين",
+        "helper": "تُنفَّذ الخطوات الجديدة بعد سلسلة الموافقة الحالية. يمكنك وحدك، بصفتك مقدّم الطلب، إضافة معتمدين.",
+        "save": "إضافة إلى سلسلة الموافقة",
+        "error": "تعذّرت إضافة المعتمدين. حاول مرة أخرى.",
+        "moveUp": "نقل الخطوة للأعلى",
+        "moveDown": "نقل الخطوة للأسفل",
+        "reorderError": "تعذّر تغيير ترتيب الموافقة. حدّث الصفحة وحاول مرة أخرى.",
+        "emptyDescription": "لا يوجد معتمدون بعد. أضف الأشخاص أو الإدارات أو المجموعات التي يجب أن تعتمد هذه المراسلة وتوقّعها."
+      },
+      "loadErrorTitle": "تعذّر تحميل مهام الموافقة",
+      "loadErrorDescription": "تحقق من إعداد قائمة CORMS_ApprovalTasks ومن صلاحيتك لقراءتها.",
+      "overall": "حالة الموافقة",
+      "unassigned": "غير مُسنَد",
+      "signatureRequired": "التوقيع مطلوب",
+      "commentPlaceholder": "تعليق (مطلوب للإرجاع)",
+      "approve": "موافقة",
+      "reject": "رفض",
+      "return": "إرجاع",
+      "returnNeedsComment": "أضف تعليقاً للإرجاع إلى المُنشئ.",
+      "decisionTitle": "{{action}} — التعليق مطلوب",
+      "signatureStepTitle": "أضف توقيعك الإلكتروني أولاً",
+      "signatureStepHelp": "تُفتح صفحة التوقيع الآمنة هنا داخل CORMS. أكمل التوقيع فيها، وسيتم التحقق منه تلقائيًا قبل أن تتمكن من إضافة تعليق أو الموافقة.",
+      "signatureAction": "أضف توقيعاً رقمياً",
+      "signatureSending": "جارٍ فتح صفحة التوقيع…",
+      "signatureCheckHelp": "أكمل توقيع المستند، ثم تحقّق من اكتماله. ستبقى الموافقة مقفلة حتى يؤكد Power Automate التوقيع المكتمل.",
+      "signatureReopen": "فتح صفحة التوقيع",
+      "signatureDeclined": "لقد رفضت التوقيع، لذا لا يمكن متابعة هذه الموافقة. افتح صفحة التوقيع مرة أخرى للتوقيع.",
+      "signatureCheckAction": "تحقق من اكتمال التوقيع",
+      "signatureChecking": "جارٍ التحقق من حالة التوقيع…",
+      "signaturePending": "لم تؤكد خدمة التوقيع أن المستند موقّع بعد. أكمل التوقيع، ثم تحقّق مرة أخرى.",
+      "signatureSuccess": "تم التحقق من توقيعك المكتمل بنجاح. يمكنك الآن إضافة تعليقك والموافقة.",
+      "signatureIdentityMissing": "يلزم اسمك وبريدك الإلكتروني لطلب توقيعك الرقمي.",
+      "waiting": "بالانتظار — يجب أن يوقّع عضو أدنى رتبة أولاً",
+      "released": "أُطلق — وقّع عضو آخر",
+      "outcome": {
+        "InProgress": "قيد المراجعة",
+        "Approved": "تمت الموافقة",
+        "Rejected": "مرفوض",
+        "Returned": "أُعيد إلى المُنشئ"
+      },
+      "status": {
+        "Pending": "معلّق",
+        "Approved": "تمت الموافقة",
+        "Rejected": "مرفوض",
+        "Returned": "أُعيد",
+        "Cancelled": "ملغاة"
+      },
+      "onBehalfOf": "نيابةً عن {{name}}",
+      "decideInApprovalTasks": "يوقّع المعتمدون ويتخذون قراراتهم من",
+      "awaitingDecision": "بانتظار القرار",
+      "stepType": {
+        "Reviewer": "مراجع ومعتمد",
+        "Department": "قسم",
+        "Group": "مجموعة"
+      },
+      "mode": {
+        "Any": "تكفي موافقة واحدة",
+        "All": "يجب موافقة الجميع"
+      }
+    },
+    "action": {
+      "openDocument": "فتح المستند"
+    },
+    "signature": {
+      "sign": "توقيع",
+      "signed": "موقّع"
+    },
+    "eSignature": {
+      "action": "إرسال للتوقيع الإلكتروني",
+      "title": "إرسال للتوقيع الإلكتروني",
+      "help": "سيتم إرسال المستند عبر خدمة التوقيع المهيأة. ستُفتح صفحة التوقيع هنا داخل CORMS وسيظهر الطلب في لوحة التوقيع.",
+      "signerName": "اسم الموقّع",
+      "signerNamePlaceholder": "الاسم الكامل للموقّع",
+      "signerEmail": "بريد الموقّع الإلكتروني",
+      "signerEmailPlaceholder": "name@example.com",
+      "send": "إرسال للتوقيع",
+      "sending": "جارٍ الإرسال…",
+      "noDocument": "لا يوجد مستند رئيسي لإرساله للتوقيع.",
+      "failed": "تعذّر إرسال المستند للتوقيع.",
+      "frameTitle": "توقيع المستند",
+      "frameLoading": "جارٍ تحميل صفحة التوقيع…",
+      "openInNewTab": "فتح في علامة تبويب جديدة",
+      "done": "تم",
+      "saveSignedFailed": "اكتمل التوقيع، لكن تعذّر على CORMS حفظ المستند الموقّع كمستند رئيسي. تحقّق مرة أخرى لإعادة المحاولة."
+    },
+    "preview": {
+      "pages": "الصفحات",
+      "pageShort": "صفحة {{page}}",
+      "pageOf": "صفحة {{page}} من {{total}}",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "zoomReset": "إعادة ضبط التكبير",
+      "toggleWatermark": "تبديل العلامة المائية",
+      "watermarkRequired": "مطلوب بحسب التصنيف",
+      "watermarked": "تمت إضافة علامة مائية",
+      "notAvailable": "المعاينة غير متاحة",
+      "notAvailableDescription": "لا يمكن معاينة هذا النوع من المرفقات في المتصفح. افتحه بدلاً من ذلك.",
+      "openInWord": "فتح للتحرير في Word",
+      "groupDocsNotConfigured": "لم يتم تهيئة GroupDocs Preview بعد — يتم عرض المعاينة الأساسية بدلاً من ذلك.",
+      "loading": "جارٍ تحميل المعاينة…",
+      "page": "صفحة"
+    },
+    "annotate": {
+      "initializing": "جارٍ تهيئة محرك التعليقات التوضيحية…",
+      "establishingSession": "جارٍ إنشاء جلسة GroupDocs آمنة…",
+      "title": "GroupDocs Annotation",
+      "saveAnnotations": "حفظ التعليقات التوضيحية",
+      "saving": "جارٍ حفظ التعليقات التوضيحية…",
+      "saveCommentTitle": "حفظ التعليقات التوضيحية",
+      "saveCommentLabel": "التعليق",
+      "saveCommentPlaceholder": "صِف هذه التعليقات التوضيحية (مثل ما قمت بتحديده ولماذا)…",
+      "saveCommentHint": "يُسجَّل في سجل تدقيق المراسلة مع اسمك ووقت الحفظ.",
+      "canvasHint": "لوحة التعليقات التوضيحية — دمج GroupDocs Annotation SDK قيد الإنجاز.",
+      "tool": {
+        "pen": "قلم",
+        "text": "نص",
+        "sticky": "ملاحظة لاصقة",
+        "highlight": "تظليل",
+        "rect": "مستطيل",
+        "circle": "بيضاوي",
+        "arrow": "سهم",
+        "eraser": "ممحاة"
+      },
+      "style": {
+        "group": "ألوان التعليق",
+        "stroke": "الحدّ",
+        "fill": "التعبئة",
+        "text": "النص",
+        "width": "العرض",
+        "widthValue": "{{width}} بكسل",
+        "fontSize": "حجم الخط",
+        "fontSizeValue": "{{size}} بكسل",
+        "editingSelection": "تحرير التعليق المحدد"
+      },
+      "clearAll": "مسح الكل",
+      "remove": "إزالة",
+      "resize": "تغيير حجم التعليق",
+      "notePlaceholder": "اكتب ملاحظة…",
+      "emptyNote": "(ملاحظة فارغة)",
+      "attribution": "{{author}} · {{date}}",
+      "saveFailed": "تعذّر حفظ التعليقات."
+    },
+    "details": {
+      "expedite": "تعجيل",
+      "share": "مشاركة",
+      "declareRecord": "تصنيف كسجل",
+      "annotateShortcut": "تعليق توضيحي",
+      "save": "حفظ التغييرات",
+      "saveModalTitle": "حفظ التغييرات على المراسلة",
+      "saveFailed": "تعذّر حفظ التغييرات. حاول مرة أخرى."
+    },
+    "declare": {
+      "confirm": "تصنيف {{ref}} كسجل نهائي؟ يؤدي ذلك إلى تجميد المراسلة وجميع مرفقاتها كوحدة غير قابلة للتعديل ووسمها برقم تسلسلي للسجل. لا يمكن التراجع عن ذلك.",
+      "failed": "تعذّر تصنيف السجل. يرجى المحاولة مرة أخرى.",
+      "templateRequired": "لم تُنشأ هذه المراسلة الصادرة من قالب معتمد، لذا لا يمكن تصنيفها كسجل أو تسليمها. أعد إنشاءها باستخدام قالب معتمد.",
+      "bannerTitle": "مُصنّف كسجل نهائي — مجمّد (غير قابل للتعديل)",
+      "serial": "الرقم التسلسلي للسجل",
+      "by": "صُنّف بواسطة {{name}}"
+    },
+    "field": {
+      "subject": "الموضوع",
+      "type": "النوع",
+      "direction": "الاتجاه",
+      "contentType": "نوع المحتوى",
+      "channel": "القناة",
+      "departmentTo": "القسم / إلى",
+      "priority": "الأولوية",
+      "status": "الحالة",
+      "securityLevel": "المستوى الأمني",
+      "recordClassification": "تصنيف السجل",
+      "createdAt": "تاريخ الإنشاء",
+      "dueDate": "تاريخ الاستحقاق",
+      "sender": "المرسل",
+      "recipient": "المستلم",
+      "originatingFunction": "الجهة المصدرة",
+      "currentReviewer": "المراجع الحالي",
+      "currentDepartment": "القسم الحالي",
+      "assignedTo": "مسند إلى",
+      "comment": "تعليق / ملاحظات",
+      "refNo": "الرقم المرجعي",
+      "department": "القسم"
+    },
+    "files": {
+      "visibleCount": "{{count}} مرفق(ات) مرئية حسب تصريحك الأمني.",
+      "none": "لا توجد مرفقات مرئية.",
+      "main": "رئيسي",
+      "pages": "{{count}} صفحات",
+      "physicalHeader": "{{count}} عنصر (عناصر) مادي",
+      "physicalBadge": "مادي"
+    },
+    "security": {
+      "col": {
+        "principal": "الجهة",
+        "permissionLevel": "مستوى الصلاحية",
+        "type": "النوع"
+      },
+      "reclassify": "إعادة تصنيف المستوى الأمني",
+      "reclassifySubmit": "إرسال",
+      "newLevel": "المستوى الأمني الجديد",
+      "justification": "المبرر / السبب",
+      "justificationPlaceholder": "اشرح سبب الحاجة إلى هذا التغيير.",
+      "goesDirectNote": "أنت مسؤول إدارة السجلات — يُطبَّق هذا التغيير فوراً.",
+      "goesApprovalNote": "سيتم إرسال هذا التغيير لاعتماد المُنشئ والمُراجع قبل تطبيقه."
+    },
+    "audit": {
+      "loading": "جارٍ تحميل إدخالات التدقيق…",
+      "col": {
+        "seq": "#",
+        "action": "الإجراء",
+        "actor": "المستخدم",
+        "details": "التفاصيل",
+        "timestamp": "الوقت"
+      }
+    },
+    "timeline": {
+      "intro": "سجل النشاط الزمني لهذه المراسلة.",
+      "kind": {
+        "created": "تم الإنشاء",
+        "edited": "تم التعديل",
+        "submitted": "تم الإرسال",
+        "referenceAssigned": "تم تعيين الرقم المرجعي",
+        "routed": "تم التوجيه",
+        "approved": "تمت الموافقة",
+        "rejected": "مرفوض",
+        "signatureRequested": "طُلب التوقيع",
+        "signed": "تم التوقيع",
+        "emailSent": "تم إرسال البريد الإلكتروني",
+        "reminder": "تذكير",
+        "reply": "تم استلام الرد",
+        "expedited": "تم التعجيل",
+        "delivered": "تم التسليم",
+        "acknowledged": "تم الإقرار بالاستلام",
+        "reassigned": "تمت إعادة الإسناد"
+      }
+    },
+    "thread": {
+      "reference": "الرقم المرجعي للسلسلة",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "reminder": {
+      "notice": "قم بتعيين تذكير متابعة إذا لم يتلقَّ هذا العنصر المُرسل رداً بعد.",
+      "followUpType": "نوع المتابعة",
+      "date": "تاريخ التذكير",
+      "note": "ملاحظة",
+      "notePlaceholder": "مثال: لم يتم استلام رد بعد 7 أيام.",
+      "save": "حفظ التذكير",
+      "edit": "تعديل",
+      "clear": "مسح",
+      "due": "الاستحقاق {{date}}",
+      "type": {
+        "first": "المتابعة الأولى",
+        "second": "خطاب المتابعة الثاني",
+        "third": "خطاب المتابعة الثالث (نهائي)",
+        "escalation": "إشعار تصعيد"
+      }
+    },
+    "reply": {
+      "continue": "متابعة",
+      "threadNote": "سيتم ربط هذا الرد بنفس سلسلة المراسلة الأصلية.",
+      "newThreadNote": "سيبدأ هذا الرد سلسلة جديدة مرتبطة بالمراسلة الأصلية."
+    },
+    "share": {
+      "copy": "نسخ",
+      "copied": "تم النسخ",
+      "revoke": "إلغاء",
+      "generate": "إنشاء رابط",
+      "intro": "إنشاء رابط قابل للمشاركة لهذه المراسلة.",
+      "notPermitted": "ليس لديك صلاحية لمشاركة هذا العنصر.",
+      "clearanceNote": "يجب على أي شخص يفتح هذا الرابط أن يستوفي التصريح الأمني لهذا العنصر."
+    },
+    "direction": {
+      "Incoming": "وارد",
+      "Outgoing": "صادر",
+      "External": "خارجي"
+    }
+  },
+  "triageRouting": {
+    "accessDenied": {
+      "title": "الوصول مقيد",
+      "description": "قائمة الفرز والتوجيه متاحة فقط للأدوار المستلمة المخوّلة (إدارة الوثائق، مسؤول النظام، مكتب الرئيس التنفيذي)."
+    },
+    "stage": {
+      "incoming": {
+        "label": "قائمة الوارد",
+        "description": "عناصر غير مصنّفة بانتظار الفرز وتعيين البيانات الوصفية والتوجيه."
+      },
+      "underReview": {
+        "label": "قيد المراجعة",
+        "description": "عناصر تجاوزت الاستلام، في مراجعة ثانوية أو تصريح قبل الإرسال النهائي."
+      },
+      "byClassification": {
+        "label": "حسب التصنيف",
+        "description": "مجموعة الفرز الكاملة، مصفّاة حسب نوع السجل والتصنيف الأمني."
+      }
+    },
+    "section": {
+      "incoming": "قائمة الوارد",
+      "underReview": "قيد المراجعة",
+      "byClassification": "حسب التصنيف"
+    },
+    "itemCount": {
+      "pending": "{{count}} عنصر بانتظار الفرز",
+      "underReview": "{{count}} عنصر قيد المراجعة"
+    },
+    "searchPlaceholder": "ابحث في القائمة بالكلمة المفتاحية أو الموضوع أو الرقم المرجعي…",
+    "advancedSearch": "بحث متقدم",
+    "filter": {
+      "allRecordTypes": "جميع أنواع السجلات",
+      "allClassifications": "جميع التصنيفات"
+    },
+    "noItems": "لا توجد عناصر في هذه القائمة.",
+    "card": {
+      "priority": "الأولوية",
+      "security": "المستوى الأمني",
+      "type": "النوع",
+      "received": "تاريخ الاستلام",
+      "expedited": "مُستعجل",
+      "new": "جديد",
+      "complete": "إكمال الفرز"
+    },
+    "myWorkQueue": {
+      "title": "قائمة عملي ({{count}})",
+      "empty": "لا توجد عناصر في قائمة عملك."
+    },
+    "classify": {
+      "urgencyNote": "⚡ يستحق خلال {{days}} يومًا",
+      "classifyAndRoute": "تصنيف وتوجيه المراسلة",
+      "classificationDetails": "التصنيف",
+      "classificationHelper": "أكد بيانات السجل قبل إسناد المراسلة إلى المالك التالي.",
+      "routingDetails": "التوجيه",
+      "routingHelper": "اختر من يستلم المراسلة والإجراء المطلوب منه.",
+      "contentType": "نوع المحتوى",
+      "priority": "الأولوية",
+      "securityLevel": "المستوى الأمني",
+      "selectPlaceholder": "-- اختر --",
+      "recordClassification": "تصنيف السجل",
+      "recordClassificationLoadError": "تعذر تحميل تصنيفات السجلات. تحقق من رابط قائمة تصنيفات RecordsHub في إعدادات المسؤول ثم أعد المحاولة.",
+      "nextActionOption": {
+        "Review": "مراجعة",
+        "Approve": "اعتماد",
+        "Sign": "توقيع",
+        "Distribute": "توزيع",
+        "Archive": "أرشفة"
+      },
+      "responseDeadline": "مهلة المعالجة",
+      "responseDeadlineHelper": "تُشغّل مؤقتات التصعيد بمجرد دخول العنصر حيّز العمل.",
+      "amend": "تعديل",
+      "changeSecurity": "تغيير…",
+      "lockedNote": "تم توجيه هذا العنصر — تصنيفه مقفل هنا.",
+      "fieldLabel": {
+        "type": "نوع المحتوى",
+        "priority": "الأولوية",
+        "securityTier": "المستوى الأمني",
+        "recordClassification": "تصنيف السجل",
+        "responseDeadline": "مهلة المعالجة"
+      }
+    },
+    "newCount": "{{count}} جديد",
+    "live": {
+      "label": "مباشر",
+      "title": "تتحدّث القائمة تلقائيًا عند وصول مراسلات جديدة.",
+      "updatedAt": "حُدِّثت {{time}}"
+    },
+    "preview": {
+      "action": "معاينة",
+      "title": "معاينة المراسلة",
+      "openFull": "فتح السجل الكامل",
+      "expedited": "مُستعجل — {{reason}}",
+      "field": {
+        "reference": "الرقم المرجعي",
+        "type": "النوع",
+        "status": "الحالة",
+        "priority": "الأولوية",
+        "security": "المستوى الأمني",
+        "department": "القسم",
+        "received": "تاريخ الاستلام",
+        "sender": "المُرسِل",
+        "recipient": "المُستلِم"
+      }
+    },
+    "amend": {
+      "title": "تعديل التصنيف",
+      "submit": "حفظ التعديل",
+      "contentImmutableNote": "صحّح أو حدّث البيانات الوصفية أدناه. لا يمكن تغيير محتوى المستند نفسه.",
+      "changesTitle": "التغييرات المُسجّلة",
+      "noChanges": "لا توجد تغييرات بعد — عدّل حقلًا أعلاه.",
+      "reasonLabel": "سبب التعديل",
+      "reasonPlaceholder": "مثال: أُعيد التصنيف من سري إلى سري للغاية وفق توجيه المدير العام رقم 12",
+      "reasonRequired": "السبب مطلوب وسيُسجّل في سجل التدقيق.",
+      "saving": "جارٍ حفظ التعديل…",
+      "savedTitle": "تم حفظ التعديل",
+      "savedDescription": "تم تسجيل تغيير التصنيف في سجل التدقيق.",
+      "saveFailed": "تعذر حفظ التعديل. تحقق من الاتصال ثم أعد المحاولة."
+    },
+    "securityChange": {
+      "title": "تغيير مستوى الأمان",
+      "helper": "حدّث مستوى الأمان للمراسلة {{subject}}. سيتم تسجيل التغيير في سجل التدقيق.",
+      "changeSummary": "التغيير المطلوب",
+      "submit": "حفظ تغيير الأمان",
+      "saving": "جارٍ حفظ تغيير الأمان…",
+      "savedTitle": "تم تحديث مستوى الأمان",
+      "savedDescription": "تم تسجيل تغيير الأمان في سجل التدقيق.",
+      "saveFailed": "تعذر حفظ تغيير الأمان. تحقق من الاتصال ثم أعد المحاولة."
+    },
+    "route": {
+      "step2": "الخطوة 2 — التوجيه",
+      "applyMatrix": "تطبيق توجيه المصفوفة",
+      "matrixHint": "تقترح المصفوفة: {{recipients}} · {{action}}",
+      "departments": "الأقسام",
+      "individuals": "الأفراد",
+      "individualsPlaceholder": "ابحث عن أشخاص…",
+      "nextAction": "الإجراء التالي",
+      "nextActionHelper": "يظهر للمستلم بوصفه خطوته التالية.",
+      "routeButton": "توجيه",
+      "routing": "جارٍ التوجيه…",
+      "matrixApplied": "من المصفوفة",
+      "failed": "فشل التوجيه. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "workflowMatrix": {
+    "banner": "مصفوفة التوجيه هي إعداد مملوك لـ CORMS ومخزَّن في قائمة SharePoint المسماة CORMS_WorkflowMatrix. أما مخططات الترقيم والمستويات الأمنية وتصنيفات السجلات فهي بيانات مرجعية مملوكة لـ RecordsHub ومخزَّنة ومُدارة من RecordsHub — وتُستهلك هنا للقراءة فقط.",
+    "panelTitle": "مصفوفة سير العمل",
+    "accessDenied": "مصفوفة سير العمل متاحة لمسؤولي النظام فقط.",
+    "testMode": "وضع الاختبار",
+    "addRule": "إضافة قاعدة",
+    "actions": "إجراءات القاعدة",
+    "col": {
+      "type": "النوع",
+      "direction": "الاتجاه",
+      "flow": "التدفق",
+      "approver": "المعتمِد",
+      "rule": "القاعدة",
+      "note": "ملاحظة",
+      "actions": "إجراءات",
+      "routeTo": "التوجيه إلى"
+    },
+    "action": {
+      "edit": "تعديل القاعدة",
+      "delete": "حذف القاعدة"
+    },
+    "condition": {
+      "any": "أي",
+      "external": "خارجي"
+    },
+    "modal": {
+      "addTitle": "إضافة قاعدة توجيه",
+      "editTitle": "تعديل قاعدة توجيه",
+      "save": "حفظ القاعدة",
+      "department": "يُوجَّه إلى القسم",
+      "flowPlaceholder": "مثال: مراجعة، تصنيف، اعتماد، توقيع",
+      "flowHelper": "خطوات التدفق مرتّبة، مفصولة بفواصل أو →.",
+      "order": "الترتيب",
+      "orderHelper": "الأرقام الأصغر تُنفَّذ أولًا (تطبَّق أول قاعدة مطابقة).",
+      "matchMode": "نمط المطابقة",
+      "matchModeFirst": "أول مطابقة",
+      "matchModeAll": "كل المطابقات",
+      "departmentCondition": "القسم المصدر",
+      "routeToKind": "التوجيه إلى (النوع)",
+      "routeTo": "التوجيه إلى",
+      "routeToPlaceholder": "اسم الفرد أو الدور"
+    },
+    "test": {
+      "title": "اختبار التوجيه (محاكاة فقط — لا يؤثر على العناصر الفعلية)",
+      "matchedRule": "القاعدة المطابقة: {{rule}}",
+      "resolvedDepartment": "يُوجَّه إلى: {{department}}",
+      "resolvedFlow": "التدفق: {{flow}}",
+      "noMatch": "لا توجد قاعدة مطابقة لهذه الشروط.",
+      "firstMatchHeader": "أول قاعدة مطابقة",
+      "allMatchHeader": "{{count}} قاعدة مطابقة"
+    },
+    "noRules": "لا توجد قواعد توجيه مُعدَّة.",
+    "deleteConfirm": {
+      "title": "حذف قاعدة التوجيه",
+      "message": "هل تريد حذف القاعدة \"{{rule}}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+      "confirm": "حذف"
+    },
+    "targetKind": {
+      "department": "قسم",
+      "individual": "فرد",
+      "role": "مجموعة أدوار"
+    },
+    "matchMode": {
+      "label": "نمط المطابقة",
+      "first": "أول تطابق",
+      "all": "كل التطابقات"
+    }
+  },
+  "search": {
+    "subtitle": "ابحث في المراسلات والمهام باستخدام عوامل تصفية متقدمة.",
+    "whatAreYouSearchingFor": "عمّاذا تبحث؟",
+    "type": {
+      "correspondence": "المراسلات",
+      "tasks": "المهام"
+    },
+    "filter": {
+      "all": "الكل",
+      "refNo": "الرقم المرجعي",
+      "subject": "الموضوع",
+      "sender": "المُرسِل",
+      "recipient": "المُستلِم",
+      "type": "النوع",
+      "priority": "الأولوية",
+      "team": "الفريق",
+      "dateFrom": "من تاريخ",
+      "dateTo": "إلى تاريخ",
+      "routing": "التوجيه"
+    },
+    "searchBoxPlaceholder": "ابحث بالموضوع أو الرقم المرجعي أو الكلمة المفتاحية…",
+    "searchButton": "بحث",
+    "resetFilters": "إعادة تعيين عوامل التصفية",
+    "emptyState": "اختر نوعًا، وأدخل معايير البحث، ثم اضغط بحث لعرض النتائج.",
+    "resultsFound": "{{count}} نتيجة",
+    "noResults": "لا توجد نتائج.",
+    "col": {
+      "refNo": "الرقم المرجعي",
+      "subject": "الموضوع",
+      "fromTo": "من / إلى",
+      "security": "المستوى الأمني",
+      "status": "الحالة",
+      "date": "التاريخ"
+    },
+    "rail": {
+      "title": "عمليات البحث المحفوظة",
+      "newSearch": "بحث جديد",
+      "deleteTab": "حذف البحث"
+    },
+    "tab": {
+      "titleAllRecords": "{{type}}: كل السجلات",
+      "titleQuery": "{{type}}: \"{{query}}\"",
+      "titleFiltered": "{{type}}: مصفّى",
+      "titleWithResults": "{{base}} — {{count}} نتيجة",
+      "subtitleNotSearched": "لم يتم البحث بعد",
+      "subtitleResults": "{{count}} نتيجة"
+    }
+  },
+  "pendingResponse": {
+    "modal": {
+      "title": "وضع علامة بانتظار الرد",
+      "awaitedParty": "الجهة المنتظَرة",
+      "flagItem": "وضع العلامة"
+    },
+    "action": {
+      "flag": "وضع علامة بانتظار الرد",
+      "clear": "إزالة علامة بانتظار الرد"
+    },
+    "badge": "بانتظار الرد",
+    "escalationBadge": "تصعيد مستحق"
+  },
+  "expedite": {
+    "modal": {
+      "title": "تعجيل {{count}} عنصر",
+      "reason": "السبب",
+      "reasonPlaceholder": "اشرح سبب الحاجة إلى تعجيل هذا العنصر…",
+      "confirm": "تعجيل"
+    },
+    "action": {
+      "set": "تعجيل",
+      "remove": "إزالة التعجيل"
+    },
+    "badge": "معجَّل",
+    "reasonTooltip": "مستعجل — {{reason}}"
+  },
+  "delivery": {
+    "title": "التسليم",
+    "none": "لا توجد قنوات تسليم مسجّلة لهذه المراسلة.",
+    "cc": "نسخة",
+    "channel": {
+      "Email": "البريد الإلكتروني",
+      "PhysicalMail": "البريد الورقي"
+    },
+    "status": {
+      "Sent": "أُرسل",
+      "Delivered": "تم التسليم",
+      "Failed": "فشل"
+    },
+    "dispatch": {
+      "courier": "مندوب توصيل — {{name}} ({{tracking}})",
+      "inPerson": "تسليم مباشر — {{name}}، {{date}}",
+      "postal": "بريد رسمي — {{service}} ({{receipt}})"
+    },
+    "acknowledgedBy": "أقرّ بالاستلام {{actor}} في {{timestamp}}",
+    "recordAcknowledgement": "تسجيل الإقرار بالاستلام",
+    "ackConfirm": {
+      "title": "تسجيل الإقرار بالاستلام",
+      "message": "تسجيل الإقرار بالاستلام باسم {{actor}}، بتوقيت الآن؟",
+      "confirm": "تسجيل"
+    }
+  },
+  "docControl": {
+    "tab": {
+      "pendingDistributions": "التوزيعات المعلقة",
+      "archival": "الأرشفة",
+      "incomingRegister": "سجل الوارد",
+      "outgoingRegister": "سجل الصادر",
+      "memoMinutesRegister": "سجل المذكرات / المحاضر"
+    },
+    "register": {
+      "col": {
+        "refNo": "الرقم المرجعي",
+        "subject": "الموضوع",
+        "type": "النوع",
+        "date": "التاريخ",
+        "status": "الحالة",
+        "department": "القسم",
+        "securityLevel": "مستوى الأمان"
+      },
+      "noItems": "لا توجد سجلات في هذا السجل."
+    }
+  },
+  "statistics": {
+    "loading": "جارٍ تحميل اللوحة…",
+    "notConfigured": "لم يتم تكوين رابط تقرير Power BI في إعدادات الإدارة."
+  },
+  "adminConfig": {
+    "panelTitle": "إعدادات النظام",
+    "col": {
+      "key": "المفتاح",
+      "value": "القيمة",
+      "description": "الوصف",
+      "owner": "المالك"
+    },
+    "owner": {
+      "recordsHub": "RecordsHub",
+      "corms": "CORMS"
+    },
+    "toggle": {
+      "on": "مُفعّل",
+      "off": "مُعطّل",
+      "ariaLabel": "تبديل {{key}}"
+    },
+    "ownership": {
+      "corms": "إعدادات CORMS مخزَّنة في قائمة SharePoint المسماة CORMS_AdminConfig، وهي مملوكة ومُدارة من قِبل CORMS.",
+      "recordsHub": "الصفوف الموسومة بـ RecordsHub تربط CORMS ببيانات مرجعية مملوكة لـ RecordsHub (مخططات الترقيم، المستويات الأمنية، تصنيفات السجلات)، وهي مخزَّنة ومُدارة من RecordsHub."
+    },
+    "category": {
+      "general": "عام",
+      "integration": "تكامل"
+    },
+    "add": {
+      "button": "إضافة إعداد",
+      "title": "إضافة قيمة إعداد",
+      "submit": "إضافة",
+      "category": "الفئة",
+      "keyRequired": "مفتاح الإعداد مطلوب.",
+      "duplicate": "مفتاح الإعداد \"{{key}}\" موجود بالفعل."
+    },
+    "audit": {
+      "valueChanged": "تم تغيير القيمة من \"{{before}}\" إلى \"{{after}}\"",
+      "secretChanged": "تم تغيير القيمة السرية (القيمة مخفية)",
+      "added": "تمت إضافة الإعداد \"{{key}}\" = \"{{value}}\"",
+      "secretAdded": "تمت إضافة إعداد سري (القيمة مخفية)"
+    },
+    "edit": {
+      "title": "تعديل الإعداد",
+      "invalidJson": "القيمة ليست JSON صالحة. صحّحها قبل الحفظ."
+    }
+  },
+  "approvalWorkflows": {
+    "panelTitle": "مسارات الموافقات",
+    "description": "إدارة مسارات الموافقات الجاهزة المعروضة عند إنشاء مراسلة. تُحفظ التغييرات في إعدادات الإدارة بصيغة JSON وتصبح متاحة فوراً لنماذج المراسلات الجديدة.",
+    "add": "مسار جديد",
+    "addTitle": "إنشاء مسار موافقة",
+    "editTitle": "تعديل مسار الموافقة",
+    "name": "اسم المسار",
+    "namePlaceholder": "مثال: موافقة تنفيذية",
+    "steps": "خطوات الموافقة",
+    "stepCount": "{{count}} خطوات موافقة",
+    "delete": "حذف المسار",
+    "confirmDelete": "حذف \"{{name}}\"؟ لا يمكن التراجع عن ذلك.",
+    "nameRequired": "أدخل اسم مسار الموافقة.",
+    "nameDuplicate": "يوجد مسار بهذا الاسم بالفعل.",
+    "saveFailed": "تعذر حفظ إعدادات مسارات الموافقة. يرجى المحاولة مرة أخرى."
+  },
+  "userPermissions": {
+    "panelTitle": "صلاحيات المستخدمين",
+    "description": "إدارة صلاحيات كل مستخدم ككائن JSON يتحكم في العروض والتبويبات والأزرار ولوحات المعلومات التي يمكن لكل مستخدم رؤيتها. تبقى الميزات غير المدرجة مرئية (السماح افتراضيًا) — اضبط المفتاح على false لإخفائها لهذا المستخدم. يُطبَّق التحكم في رؤية العروض عبر التنقل؛ وتستشير التبويبات والأزرار ولوحات المعلومات القواعد نفسها عند اعتمادها.",
+    "col": {
+      "user": "المستخدم",
+      "permissions": "الصلاحيات (JSON)",
+      "action": "إجراء"
+    },
+    "export": "تصدير",
+    "editTitle": "تعديل الصلاحيات — {{user}}",
+    "editHint": "الشكل: { \"views\": { \"key\": false }, \"tabs\": {…}, \"buttons\": {…}, \"dashboards\": {…} }. المفتاح المضبوط على false يخفي تلك الميزة لهذا المستخدم؛ وما يُحذف يبقى مرئيًا.",
+    "invalidJson": "صيغة JSON غير صالحة — يرجى تقديم كائن صلاحيات صالح قبل الحفظ.",
+    "audit": {
+      "updated": "تم تحديث صلاحيات {{user}}"
+    }
+  },
+  "translations": {
+    "panelTitle": "الترجمات",
+    "col": {
+      "language": "اللغة",
+      "jsonData": "بيانات JSON",
+      "action": "إجراء"
+    },
+    "export": "تصدير",
+    "editTitle": "تعديل الترجمة — {{label}}",
+    "invalidJson": "صيغة JSON غير صالحة — يرجى تصحيحها قبل الحفظ.",
+    "audit": {
+      "updated": "تم تحديث مجموعة ترجمة {{label}}"
+    }
+  },
+  "provisionLists": {
+    "panelTitle": "توفير قوائم SharePoint",
+    "description": "ينشئ أو يحدّث قوائم SharePoint التي يحتاجها CORMS على هذا الموقع. آمن للتشغيل بشكل متكرر — لا يتم أبدًا الكتابة فوق القوائم أو البيانات الموجودة.",
+    "accessDenied": "التوفير متاح فقط لمسؤولي النظام.",
+    "actions": {
+      "provisionAll": "إنشاء / تحديث جميع القوائم",
+      "provisionOne": "توفير هذه القائمة",
+      "seedSampleTasks": "إضافة مهام تجريبية"
+    },
+    "seedTasks": {
+      "confirmTitle": "إضافة مهام تجريبية",
+      "confirmMessage": "سيضيف هذا بيانات مهام تجريبية للاختبار. لا تقم بتشغيل هذا على بيئة إنتاج فعلية.",
+      "confirmMessageNonDev": "هذه البيئة غير مهيأة كبيئة تطوير (DEV) ({{environment}}). سيضيف هذا بيانات مهام تجريبية للاختبار — لا تقم بتشغيل هذا على بيئة إنتاج فعلية.",
+      "confirm": "إضافة المهام التجريبية",
+      "cancel": "إلغاء",
+      "running": "جارٍ إضافة المهام التجريبية…",
+      "success": "تمت إضافة {{inserted}} مهمة تجريبية؛ {{skippedExisting}} كانت موجودة بالفعل.",
+      "error": "تعذّرت إضافة المهام التجريبية: {{message}}"
+    },
+    "column": {
+      "listName": "اسم القائمة",
+      "status": "الحالة",
+      "fieldCount": "عدد الحقول",
+      "lastProvisioned": "آخر توفير",
+      "actions": "إجراءات"
+    },
+    "status": {
+      "notCreated": "لم يتم الإنشاء",
+      "exists": "موجودة",
+      "fieldsIncomplete": "الحقول غير مكتملة"
+    },
+    "log": {
+      "title": "سجل التوفير",
+      "empty": "شغّل التوفير لعرض التقدم المباشر هنا."
+    },
+    "step": {
+      "error": "خطأ: {{message}}"
+    },
+    "tally": "تم الإنشاء: {{created}} · موجود مسبقًا: {{exists}} · تمت الإزالة: {{removed}} · أخطاء: {{errors}}",
+    "neverRun": "—"
+  },
+  "navigationMenu": {
+    "panelTitle": "قائمة التنقل",
+    "description": "التحكم في عناصر التنقل الظاهرة والأدوار التي تراها. تُطبَّق التغييرات فورًا دون الحاجة لإعادة نشر.",
+    "accessDenied": "إعدادات قائمة التنقل متاحة فقط لمسؤولي النظام.",
+    "column": {
+      "key": "المفتاح",
+      "translationKey": "مفتاح الترجمة",
+      "icon": "الأيقونة",
+      "route": "المسار",
+      "sortOrder": "ترتيب الفرز",
+      "visible": "ظاهر",
+      "requiredRoles": "الأدوار المطلوبة",
+      "actions": "إجراءات"
+    },
+    "requiredRoles": {
+      "all": "جميع الأدوار"
+    },
+    "action": {
+      "delete": "حذف"
+    },
+    "rolesModal": {
+      "title": "الأدوار المطلوبة — {{key}}",
+      "hint": "فقط الأدوار المحددة يمكنها رؤية هذا العنصر. اترك الكل غير محدد لإظهاره لجميع الأدوار."
+    },
+    "deleteConfirmTitle": "حذف عنصر التنقل",
+    "deleteConfirmMessage": "هل تريد حذف عنصر التنقل \"{{key}}\"؟ لا يمكن التراجع عن هذا الإجراء."
+  },
+  "auditTrail": {
+    "col": {
+      "seq": "#",
+      "objectId": "معرف الكائن",
+      "actor": "الفاعل",
+      "action": "الإجراء",
+      "details": "التفاصيل",
+      "timestamp": "الطابع الزمني",
+      "chainStatus": "حالة السلسلة"
+    },
+    "category": {
+      "all": "جميع الإجراءات",
+      "correspondence": "إجراءات المراسلات",
+      "system": "أحداث النظام والإعدادات",
+      "access": "أحداث الوصول والأمان"
+    },
+    "chainStatus": {
+      "valid": "سليمة",
+      "broken": "مقطوعة"
+    },
+    "exportDownload": "تصدير / تنزيل",
+    "noEntries": "لا توجد إدخالات تدقيق.",
+    "loading": "جارٍ تحميل إدخالات التدقيق…"
+  },
+  "scan": {
+    "scanning": "جارٍ المسح…",
+    "success": "تم المسح بنجاح",
+    "notConfigured": "لم يتم إعداد المسح الضوئي بعد — يرجى التواصل مع المسؤول.",
+    "persistFailed": "تعذر حفظ المستند الممسوح. يرجى المحاولة مرة أخرى.",
+    "qualityGate": {
+      "title": "فشل فحص جودة المسح",
+      "dpiFailed": "الدقة أقل من 300 نقطة في البوصة المطلوبة.",
+      "formatFailed": "تنسيق الإخراج ليس TIFF أو PDF/A.",
+      "completenessFailed": "تبدو صفحة واحدة أو أكثر فارغة أو غير مكتملة.",
+      "reason": "سبب التجاوز",
+      "reasonPlaceholder": "اشرح سبب قبول هذا المسح رغم ذلك…",
+      "registerAnyway": "تسجيل على أي حال"
+    }
+  },
+  "physicalMail": {
+    "title": "تسليم البريد الورقي",
+    "stepMethod": "الطريقة",
+    "stepDetails": "التفاصيل",
+    "dispatchFor": "الإرسال لـ:",
+    "newCorrespondence": "مراسلة جديدة",
+    "next": "التالي",
+    "back": "رجوع",
+    "submit": "تأكيد الإرسال",
+    "courier": "شركة التوصيل",
+    "selectCourier": "— اختر شركة التوصيل —",
+    "bearerName": "اسم المُسلِّم / المندوب",
+    "bearerNamePlaceholder": "اسم الشخص الذي سيقوم بالتسليم",
+    "deliveryDateTime": "تاريخ ووقت التسليم",
+    "postalService": "خدمة البريد",
+    "postalServicePlaceholder": "مثال: بريد عُمان",
+    "receiptNumber": "رقم الإيصال / المرجع",
+    "optional": "اختياري",
+    "comment": "ملاحظة",
+    "commentPlaceholder": "أي ملاحظة حول هذا الإرسال — تُحفظ في سجل التدقيق…",
+    "editDetails": "تعديل تفاصيل الإرسال",
+    "openWizard": "فتح معالج التسليم",
+    "noneSelected": "لم يتم اختيار طريقة إرسال بعد.",
+    "method": {
+      "Courier": {
+        "name": "التوصيل عبر شركة شحن / سريع",
+        "desc": "إرسال متتبَّع عبر شركة توصيل",
+        "short": "شركة توصيل"
+      },
+      "InPerson": {
+        "name": "التسليم باليد",
+        "desc": "يُسلَّم بواسطة مندوب أو حامل",
+        "short": "باليد"
+      },
+      "Postal": {
+        "name": "خدمة البريد",
+        "desc": "يُرسل عبر البريد الوطني",
+        "short": "بريد"
+      }
+    },
+    "trackingRef": "رقم التتبع / الإرسال",
+    "trackingRefHelper": "يُنشأ من طرفنا — وليس رقم شركة التوصيل.",
+    "autoGenerated": "يُنشأ تلقائيًا",
+    "select": "— اختر —"
+  },
+  "deliveryOptions": {
+    "title": "خيارات التسليم",
+    "method": "طريقة الإرسال",
+    "dispatchPending": "تم اختيار البريد الورقي — لم تُسجَّل تفاصيل الإرسال.",
+    "undeclaredBlocked": "لا يمكن التسليم إلى جهات خارجية حتى يتم تصنيف هذا السجل."
+  },
+  "powerApps": {
+    "openInNewTab": "فتح في تبويب جديد",
+    "loading": "جارٍ تحميل النموذج…"
+  },
+  "reclassifications": {
+    "panelTitle": "طلبات إعادة التصنيف",
+    "intro": "طلبات إعادة تصنيف مستوى الأمان المعلّقة بانتظار الموافقة. تؤدي الموافقة إلى تطبيق المستوى الجديد فورًا؛ ولا يتم تغيير تصنيف خطة الملفات.",
+    "emptyTitle": "لا توجد طلبات معلّقة",
+    "emptyDescription": "لا توجد طلبات إعادة تصنيف بانتظار القرار.",
+    "justification": "المبرر",
+    "requestedBy": "مقدَّم من {{name}}",
+    "approve": "موافقة",
+    "reject": "رفض"
+  },
+  "templates": {
+    "panelTitle": "قوالب المراسلات",
+    "panelDescription": "مُعدّة ومقدَّمة من SSL عُمان. تُتاح للمنشئين القوالب المعتمدة فقط؛ وتُطبَّق التحديثات على المراسلات المُحرَّرة بعد ذلك.",
+    "add": "قالب جديد",
+    "addTitle": "قالب جديد",
+    "editTitle": "تعديل القالب",
+    "name": "الاسم",
+    "namePlaceholder": "مثال: خطاب قياسي",
+    "nameRequired": "أدخل اسم القالب.",
+    "headerField": "الترويسة",
+    "footerField": "التذييل",
+    "bodyField": "المتن",
+    "placeholderHint": "استخدم العناصر النائبة {{sender}} و{{recipient}} و{{referenceNumber}} و{{date}} و{{subject}} و{{role}} — تُستبدل ببيانات المراسلة في الترويسة والمتن والتذييل.",
+    "approved": "معتمد للاستخدام",
+    "save": "حفظ القالب",
+    "saveFailed": "تعذّر حفظ القالب. يرجى المحاولة مرة أخرى.",
+    "delete": "حذف",
+    "deleteFailed": "تعذّر حذف القالب. يرجى المحاولة مرة أخرى.",
+    "confirmDelete": "حذف القالب \"{{name}}\"؟ لن يُتاح للمراسلات المُحرَّرة بعد ذلك.",
+    "status": "الحالة",
+    "actions": "إجراءات",
+    "statusApprovedLabel": "معتمد",
+    "statusDraftLabel": "مسودة",
+    "emptyTitle": "لا توجد قوالب بعد",
+    "emptyDescription": "أضف قالب مراسلة ليحرّر المنشئون وفقه."
+  },
+  "signing": {
+    "title": "لوحة التوقيع",
+    "intro": "تتبّع وأدر كل طلبات التوقيع الرقمي. ابحث حسب الموقّع أو الرقم المرجعي أو الحالة أو التاريخ، وأعد الإرسال أو ألغِ أو راجع سجل التوقيع دون فتح كل عنصر.",
+    "searchPlaceholder": "ابحث حسب الموقّع أو الرقم المرجعي أو الموضوع…",
+    "filter": {
+      "allStatuses": "كل الحالات",
+      "from": "من",
+      "to": "إلى",
+      "clear": "مسح"
+    },
+    "status": {
+      "Sent": "مُرسَل",
+      "Viewed": "تمت المعاينة",
+      "Signed": "موقّع",
+      "Declined": "مرفوض",
+      "Cancelled": "ملغى",
+      "Expired": "منتهي"
+    },
+    "col": {
+      "reference": "الرقم المرجعي",
+      "subject": "الموضوع",
+      "signer": "الموقّع",
+      "status": "الحالة",
+      "created": "أُنشئ",
+      "updated": "آخر تحديث",
+      "actions": "إجراءات"
+    },
+    "action": {
+      "resend": "إعادة إرسال",
+      "cancel": "إلغاء",
+      "history": "السجل"
+    },
+    "confirmCancel": "إلغاء طلب التوقيع للمرجع {{ref}}؟ لن يتمكن الموقّع من التوقيع بعد ذلك.",
+    "empty": {
+      "title": "لا توجد طلبات توقيع",
+      "filtered": "لا توجد طلبات توقيع مطابقة لبحثك.",
+      "none": "لم تُنشأ أي طلبات توقيع بعد. تظهر الطلبات هنا بعد إرسال مسودة معتمدة للتوقيع."
+    },
+    "history": {
+      "title": "سجل التوقيع"
+    },
+    "event": {
+      "Created": "أُنشئ الطلب",
+      "Sent": "أُرسل للتوقيع",
+      "Viewed": "عاينه الموقّع",
+      "Signed": "تم التوقيع",
+      "Declined": "مرفوض",
+      "Resent": "أُعيد الإرسال",
+      "Cancelled": "أُلغي",
+      "Reminded": "أُرسل تذكير",
+      "Expired": "منتهي"
+    }
+  },
+  "workQueue": {
+    "title": "قائمة مهامي ({{count}})",
+    "empty": "لا يوجد ما ينتظر إجراءك حالياً.",
+    "unreadCount": "{{count}} جديد",
+    "new": "جديد"
+  },
+  "existingDocument": {
+    "title": "إرفاق مستند موجود",
+    "sites": "المواقع",
+    "empty": {
+      "sites": "لا توجد مواقع متاحة من سجل المواقع للاستعراض.",
+      "libraries": "لا توجد مكتبات مستندات في هذا الموقع.",
+      "documents": "لا توجد مستندات في هذه المكتبة."
+    },
+    "error": {
+      "sites": "تعذّر تحميل قائمة المواقع.",
+      "libraries": "تعذّر تحميل مكتبات المستندات لهذا الموقع.",
+      "documents": "تعذّر تحميل المستندات في هذه المكتبة.",
+      "file": "تعذّر فتح المستند المحدد."
+    }
+  },
+  "actionComment": {
+    "label": "التعليق",
+    "placeholder": "أدخل تعليقاً يوضح هذا التغيير…"
+  }
+}

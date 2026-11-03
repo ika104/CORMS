@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "corms-client-side-solution",
+    "id": "5727053f-c7ac-4d9a-b08a-0328637862be",
+    "version": "1.0.0.15",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.23.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "CORMS - Correspondence & Records Management System"
+      },
+      "longDescription": {
+        "default": "CORMS - Correspondence & Records Management System, an extension of the RecordsHub platform on OQ8's M365 tenant."
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "corms Feature",
+        "description": "The feature that activates elements of the corms solution.",
+        "id": "eec7c86e-d5c1-4b79-ada8-e821a311704b",
+        "version": "1.0.0.15"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/corms.sppkg"
+  }
+}

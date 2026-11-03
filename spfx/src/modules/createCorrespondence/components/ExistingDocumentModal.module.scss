@@ -1,0 +1,123 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.crumb {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--corms-accent, #2563eb);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+
+  &:disabled {
+    color: var(--corms-text-secondary);
+    cursor: default;
+  }
+
+  &:not(:disabled):hover {
+    background: var(--corms-neutral-hover, #f3f2f1);
+  }
+}
+
+.crumbSep {
+  color: var(--corms-text-secondary);
+}
+
+.crumbCurrent {
+  color: var(--corms-text-primary);
+  font-weight: 600;
+  padding: 2px 4px;
+}
+
+.panel {
+  min-height: 240px;
+  max-height: 420px;
+  overflow-y: auto;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: start;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  padding: 11px 14px;
+  cursor: pointer;
+  color: var(--corms-text-primary);
+  font-size: 13px;
+
+  &:hover:not(:disabled) {
+    background: var(--corms-neutral-hover, #f3f2f1);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
+.rowIcon {
+  color: var(--corms-accent, #2563eb);
+  flex-shrink: 0;
+}
+
+.rowLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowChevron {
+  color: var(--corms-text-secondary);
+  flex-shrink: 0;
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 240px;
+  color: var(--corms-text-secondary);
+  font-size: 13px;
+}
+
+.stateError {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  padding: 0 24px;
+  color: var(--corms-danger, #c50f1f);
+  font-size: 13px;
+  text-align: center;
+}
+
+.spinner {
+  animation: existingDocSpin 0.9s linear infinite;
+}
+
+@keyframes existingDocSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

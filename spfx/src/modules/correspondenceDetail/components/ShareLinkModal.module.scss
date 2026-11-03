@@ -1,0 +1,50 @@
+.blocked {
+  font-size: 12px;
+  color: #c50f1f;
+  padding: 8px 0;
+}
+
+.intro {
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+  margin: 0 0 12px;
+}
+
+.linkRow {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.linkInput {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: monospace;
+  background: var(--corms-neutral-panel);
+  color: var(--corms-text-primary);
+}
+
+.copyBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--corms-text-primary);
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.note {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+  margin-bottom: 14px;
+}

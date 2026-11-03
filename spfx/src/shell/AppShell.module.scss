@@ -1,0 +1,40 @@
+.appShell {
+  display: flex;
+  flex-direction: column;
+  // Fill at least the viewport so the NavRail (which is 100vh) reads full-height on short pages,
+  // but do NOT hard-cap to 100vh: the app is embedded in a SharePoint page that owns the scroll, so
+  // capping the app pushed its bottom past the viewport and made that page scroll (carrying the nav
+  // with it). Letting the app grow with content + pinning the nav with position:sticky is what keeps
+  // the nav visible while the host page scrolls.
+  min-height: 100vh;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--corms-neutral-page);
+  color: var(--corms-text-primary);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  // No overflow:hidden here — an overflow-clipping ancestor between the sticky NavRail and the
+  // scrolling host container would break the pin. Horizontal overflow is contained by contentRegion.
+  align-items: flex-start;
+}
+
+.contentRegion {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  // min-width:0 lets this shrink within the flex row (so wide children don't force the row wider);
+  // overflow stays visible in BOTH axes — setting only overflow-x would make the browser compute
+  // overflow-y to auto and create a nested scrollport that defeats the sticky NavRail. Wide grids/
+  // tables manage their own horizontal scroll.
+  min-width: 0;
+}
+
+.routeOutlet {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}

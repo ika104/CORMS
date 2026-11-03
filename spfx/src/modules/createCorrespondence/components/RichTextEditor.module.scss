@@ -1,0 +1,79 @@
+.wrap {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  background: var(--corms-neutral-panel);
+  border-bottom: 1px solid var(--corms-neutral-border);
+  flex-wrap: wrap;
+}
+
+.toolButton {
+  border: 1px solid transparent;
+  background: none;
+  border-radius: 4px;
+  padding: 4px 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  color: var(--corms-text-primary);
+}
+
+.toolButton:hover {
+  background: var(--corms-neutral-page);
+  border-color: var(--corms-neutral-border);
+}
+
+.toolButtonActive {
+  background: var(--corms-rail-background-active);
+  border-color: var(--corms-brand-navy);
+}
+
+.separator {
+  width: 1px;
+  align-self: stretch;
+  background: var(--corms-neutral-border);
+  margin: 0 4px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+  margin-inline-end: 8px;
+}
+
+.editable {
+  min-height: 220px;
+  padding: 12px;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page);
+  outline: none;
+}
+
+.editable:empty::before {
+  content: attr(data-placeholder);
+  color: var(--corms-text-secondary);
+}
+
+.htmlSource {
+  width: 100%;
+  min-height: 220px;
+  border: none;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 12px;
+  outline: none;
+  resize: vertical;
+}

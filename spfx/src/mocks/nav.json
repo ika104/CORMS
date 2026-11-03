@@ -1,0 +1,196 @@
+{
+  "groups": [
+    {
+      "id": "main",
+      "collapsible": false,
+      "items": [
+        {
+          "id": "myCorrespondence",
+          "labelKey": "nav.myCorrespondence",
+          "icon": "inbox",
+          "path": "/my-correspondence"
+        },
+        {
+          "id": "myTasks",
+          "labelKey": "nav.myTasks",
+          "icon": "listChecks",
+          "children": [
+            {
+              "id": "myTasks.tasks",
+              "labelKey": "nav.tasks",
+              "icon": "listChecks",
+              "path": "/my-tasks"
+            },
+            {
+              "id": "myTasks.approvalTasks",
+              "labelKey": "nav.approvalTasks",
+              "icon": "pen",
+              "path": "/approval-tasks"
+            }
+          ]
+        },
+        {
+          "id": "inboxSent",
+          "labelKey": "nav.inboxSent",
+          "icon": "mail",
+          "children": [
+            {
+              "id": "inbox",
+              "labelKey": "nav.inbox",
+              "icon": "mailOpen",
+              "path": "/inbox-sent/inbox",
+              "badge": {
+                "count": 2,
+                "tone": "danger"
+              }
+            },
+            {
+              "id": "sent",
+              "labelKey": "nav.sent",
+              "icon": "send",
+              "path": "/inbox-sent/sent"
+            },
+            {
+              "id": "drafts",
+              "labelKey": "nav.drafts",
+              "icon": "fileEdit",
+              "path": "/inbox-sent/drafts"
+            }
+          ]
+        },
+        {
+          "id": "triageRouting",
+          "labelKey": "nav.triageRouting",
+          "icon": "route",
+          "path": "/triage-routing",
+          "badge": {
+            "count": 4,
+            "tone": "default"
+          }
+        },
+        {
+          "id": "docControl",
+          "labelKey": "nav.docControl",
+          "icon": "fileCheck",
+          "path": "/doc-control"
+        },
+        {
+          "id": "delegation",
+          "labelKey": "nav.delegation",
+          "icon": "userCog",
+          "children": [
+            {
+              "id": "delegationManagement",
+              "labelKey": "nav.delegationManagement",
+              "icon": "userCog",
+              "path": "/delegation"
+            },
+            {
+              "id": "teamInbox",
+              "labelKey": "nav.teamInbox",
+              "icon": "users",
+              "path": "/team-inbox",
+              "roles": ["Supervisor", "Manager", "Administrator"]
+            }
+          ]
+        },
+        {
+          "id": "search",
+          "labelKey": "nav.search",
+          "icon": "search",
+          "path": "/search"
+        },
+        {
+          "id": "statistics",
+          "labelKey": "nav.statistics",
+          "icon": "barChart",
+          "path": "/statistics"
+        },
+        {
+          "id": "signingDashboard",
+          "labelKey": "nav.signingDashboard",
+          "icon": "pen",
+          "path": "/signing"
+        },
+        {
+          "id": "administration",
+          "labelKey": "nav.administration",
+          "icon": "settings",
+          "roles": ["Administrator"],
+          "children": [
+            {
+              "id": "workflowMatrix",
+              "labelKey": "nav.workflowMatrix",
+              "icon": "workflow",
+              "path": "/administration/workflow-matrix",
+              "roles": ["Administrator"]
+            },
+            {
+              "id": "approvalWorkflows",
+              "labelKey": "nav.approvalWorkflows",
+              "icon": "workflow",
+              "path": "/administration/approval-workflows",
+              "roles": ["Administrator"]
+            },
+            {
+              "id": "adminConfig",
+              "labelKey": "nav.adminConfig",
+              "icon": "sliders",
+              "path": "/administration/admin-config",
+              "roles": ["Administrator"]
+            },
+            {
+              "id": "translations",
+              "labelKey": "nav.translations",
+              "icon": "languages",
+              "path": "/administration/translations",
+              "roles": ["Administrator"]
+            },
+            {
+              "id": "navigationMenu",
+              "labelKey": "nav.navigationMenu",
+              "icon": "list",
+              "path": "/administration/navigation-menu",
+              "roles": ["Administrator"]
+            },
+            {
+              "id": "dataSources",
+              "labelKey": "nav.dataSources",
+              "icon": "database",
+              "path": "/administration/data-sources",
+              "roles": ["Administrator"]
+            },
+            {
+              "id": "provisionLists",
+              "labelKey": "nav.provisionLists",
+              "icon": "listChecks",
+              "path": "/administration/provision-lists",
+              "roles": ["Administrator"]
+            },
+            {
+              "id": "templates",
+              "labelKey": "nav.templates",
+              "icon": "fileText",
+              "path": "/administration/templates",
+              "roles": ["Administrator"]
+            },
+            {
+              "id": "userPermissions",
+              "labelKey": "nav.userPermissions",
+              "icon": "userCog",
+              "path": "/administration/user-permissions",
+              "roles": ["Administrator"]
+            }
+          ]
+        },
+        {
+          "id": "auditTrail",
+          "labelKey": "nav.auditTrail",
+          "icon": "history",
+          "path": "/audit-trail",
+          "roles": ["Administrator", "Auditor"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+.card {
+  flex: 1;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.titleWrap {
+  flex: 1;
+  min-width: 0;
+}
+
+// Selection checkbox + actions menu, grouped at the top-right of the card so the checkbox sits
+// beside the 3-dots rather than in its own row.
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.subject {
+  font-weight: 600;
+  font-size: 14px;
+  // The theme token tracks "Change the look", keeping every card view visually unified.
+  color: var(--corms-toolbar-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.refNo {
+  font-family: monospace;
+  color: var(--corms-toolbar-primary);
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.headerBadges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.fieldLabel {
+  font-size: 10px;
+  color: var(--corms-text-secondary);
+  margin-bottom: 2px;
+}
+
+.fieldValue {
+  font-size: 12px;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--corms-neutral-border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

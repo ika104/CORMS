@@ -1,0 +1,397 @@
+.presetRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.presetCard {
+  border: 1px solid var(--corms-neutral-border);
+  background: var(--corms-neutral-page);
+  border-radius: 4px;
+  padding: 12px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.presetCard:hover {
+  border-color: var(--corms-brand-navy);
+}
+
+.presetTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.presetSteps {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 24px;
+  border: 1px dashed var(--corms-neutral-border);
+  border-radius: 4px;
+  color: var(--corms-text-secondary);
+  font-size: 12px;
+}
+
+.stepList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stepCard {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.stepRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.reorderCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.reorderButton {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--corms-text-secondary);
+  line-height: 1;
+  padding: 0;
+}
+
+/* Figma: a plain execution-order number beside the reorder arrows. */
+.stepNumber {
+  min-width: 14px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--corms-toolbar-primary);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.iconTile {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconTileDepartment {
+  background: var(--corms-rail-background-active);
+  color: var(--corms-toolbar-primary);
+}
+
+.iconTileGroup {
+  background: #e8f5ee;
+  color: #107c10;
+}
+
+.stepInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.stepName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.stepMeta {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.stepKicker {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.stepTitleRow {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stepMetaInline {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.memberChips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.memberChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: var(--corms-rail-background-active);
+  font-size: 12px;
+  color: var(--corms-text-primary);
+}
+
+.memberChipRemove {
+  display: inline-flex;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--corms-brand-red);
+}
+
+.addMemberChip {
+  padding: 3px 10px;
+  border: 1px dashed var(--corms-neutral-border);
+  border-radius: 12px;
+  background: none;
+  font-size: 12px;
+  color: var(--corms-text-primary);
+  cursor: pointer;
+}
+
+.memberHint {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--corms-brand-red);
+}
+
+.signatureLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.positionLink {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 12px;
+  color: var(--corms-toolbar-primary);
+  text-decoration: underline;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.positionLinkError {
+  color: var(--corms-brand-red);
+  font-weight: 600;
+}
+
+.removeButton {
+  border: none;
+  background: none;
+  color: var(--corms-brand-red);
+  cursor: pointer;
+}
+
+.modeControl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.modeControlLabel {
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+.modeSegmented {
+  display: inline-flex;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--corms-neutral-border);
+}
+
+.modeSegmentButton {
+  border: none;
+  background: var(--corms-neutral-page);
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--corms-text-primary);
+}
+
+.modeSegmentButtonActive {
+  background: var(--corms-rail-background-active);
+  color: var(--corms-brand-navy);
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--corms-brand-navy);
+}
+
+.signaturePanel {
+  margin-top: 10px;
+  padding: 12px;
+  background: var(--corms-neutral-panel);
+  border-radius: 4px;
+}
+
+.builderRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.builderButton {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.builderButtonReviewer {
+  background: var(--corms-card-surface);
+  border: 1px dashed var(--corms-text-secondary);
+  color: var(--corms-text-primary);
+}
+
+.builderButtonDepartment {
+  background: var(--corms-toolbar-primary);
+}
+
+.builderButtonGroup {
+  background: #107c10;
+}
+
+.searchPopover {
+  width: 360px;
+  max-width: 90vw;
+}
+
+.pickerInput {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.pickerList {
+  margin-top: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+}
+
+.pickerList:empty {
+  display: none;
+}
+
+.pickerOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  text-align: start;
+  padding: 8px 10px;
+  border: none;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  background: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.pickerOption:last-child {
+  border-bottom: none;
+}
+
+.pickerOption:hover {
+  background: var(--corms-neutral-panel);
+}
+
+.pickerOptionSelected {
+  background: var(--corms-rail-background-active);
+}
+
+.selectedMark {
+  color: var(--corms-toolbar-primary);
+  flex-shrink: 0;
+}
+
+/* CMS-006 AC5 — a candidate below the required clearance is shown but not selectable. */
+.pickerOptionDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.pickerOptionDisabled:hover {
+  background: none;
+}
+
+.addNewGroupButton {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  background: var(--corms-card-surface);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+  color: var(--corms-text-primary);
+}
+
+.addNewGroupButton:hover {
+  background: var(--corms-neutral-panel);
+}
+
+.clearanceFlag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--corms-brand-red);
+  white-space: nowrap;
+}
+
+.clearanceNote {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+  padding: 6px 2px 0;
+}

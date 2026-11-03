@@ -1,0 +1,81 @@
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  background: #fff;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  flex-shrink: 0;
+}
+
+.titleGroup {
+  min-width: 0;
+  flex: 1;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-toolbar-primary);
+  text-decoration: none;
+  margin-bottom: 6px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--corms-text-primary);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.refNo {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+  flex-shrink: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+// CMS-040 AC8 — the single grouped actions menu trigger, pinned to the header's trailing edge.
+.actionsGroup {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.signedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #107c10;
+  background: #dff6dd;
+  border: 1px solid #107c1022;
+}

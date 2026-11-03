@@ -1,0 +1,49 @@
+.field {
+  margin-bottom: 12px;
+}
+
+.label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+  margin-bottom: 4px;
+}
+
+.select,
+.textarea {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.noteDirect,
+.noteApproval {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 2px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.noteDirect {
+  color: #107c10;
+  background: #dff6dd;
+  border: 1px solid #107c1022;
+}
+
+.noteApproval {
+  color: #835b00;
+  background: #fff4ce;
+  border: 1px solid #835b0022;
+}

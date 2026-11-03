@@ -1,0 +1,75 @@
+.scannerOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.scannerOverlayActive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scannerContainer {
+  width: min(90vw, 900px);
+  height: min(80vh, 700px);
+  background: var(--corms-surface, #fff);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  inset-inline-end: 24px;
+  z-index: 1100;
+  background: #107c10;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+// Same placement/shape as .toast, red — shown when the scan itself succeeded but persisting it
+// (draft-folder upload / CORMS_Attachments row) failed, so the user never sees a false success.
+.errorToast {
+  position: fixed;
+  bottom: 24px;
+  inset-inline-end: 24px;
+  z-index: 1100;
+  background: #a4262c;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 72px;
+  padding: 8px 10px;
+  border: 1px solid var(--corms-border, #d1d1d1);
+  border-radius: 4px;
+  font: inherit;
+}
+
+.gateSummary {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--corms-text-secondary, #605e5c);
+}

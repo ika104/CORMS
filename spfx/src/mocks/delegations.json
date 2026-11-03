@@ -1,0 +1,46 @@
+[
+  {
+    "id": "del-1",
+    "fromUserId": "u-ali",
+    "fromUserName": "Ali Al-Rashid",
+    "toUserId": "u-yahya",
+    "toUserName": "Yahya Mohamed",
+    "reason": "CEO annual leave — full approval authority",
+    "startDate": "2024-05-01",
+    "endDate": "2024-05-31",
+    "status": "Active"
+  },
+  {
+    "id": "del-2",
+    "fromUserId": "u-sara",
+    "fromUserName": "Sara Al-Mansour",
+    "toUserId": "u-layla",
+    "toUserName": "Layla Hassan",
+    "reason": "Supervisor at HSE training — routing",
+    "startDate": "2024-03-10",
+    "endDate": "2024-03-17",
+    "status": "Pending"
+  },
+  {
+    "id": "del-3",
+    "fromUserId": "u-sara",
+    "fromUserName": "Sara Al-Mansour",
+    "toUserId": "u-ahmed",
+    "toUserName": "Ahmed Nasser",
+    "reason": "Medical leave — routing delegated",
+    "startDate": "2025-01-05",
+    "endDate": "2025-01-19",
+    "status": "Rejected"
+  },
+  {
+    "id": "del-4",
+    "fromUserId": "u-ali",
+    "fromUserName": "Ali Al-Rashid",
+    "toUserId": "u-layla",
+    "toUserName": "Layla Hassan",
+    "reason": "Procurement delegation up to 250,000",
+    "startDate": "2024-05-20",
+    "endDate": "2024-06-10",
+    "status": "Active"
+  }
+]

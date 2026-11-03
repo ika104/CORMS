@@ -1,0 +1,8 @@
+[
+  { "id": "u-ali", "displayName": "Ali Al-Rashid", "team": "CEO Office", "clearanceTier": 5 },
+  { "id": "u-yahya", "displayName": "Yahya Mohamed", "team": "CEO Office", "clearanceTier": 4 },
+  { "id": "u-sara", "displayName": "Sara Al-Mansour", "team": "Finance", "clearanceTier": 4, "isSupervisor": true },
+  { "id": "u-layla", "displayName": "Layla Hassan", "team": "Operations", "clearanceTier": 3 },
+  { "id": "u-ahmed", "displayName": "Ahmed Nasser", "team": "Legal", "clearanceTier": 2 },
+  { "id": "u-nour", "displayName": "Nour Ibrahim", "team": "Internal Audit", "clearanceTier": 4 }
+]

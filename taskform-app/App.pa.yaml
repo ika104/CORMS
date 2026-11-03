@@ -1,0 +1,88 @@
+App:
+  Properties:
+    Formulas: |-
+      =MyTheme = {
+          Primary: ColorValue("#000000"),
+          Gray: ColorValue("#8F8F8F"),
+          LightGray: ColorValue("#F7F7F7"),
+          LightGreen: ColorValue("#84E4CB"),
+          LightPurple: ColorValue("#CBBBFD"),
+          LightBlue: ColorValue("#D0E4FB"),
+          LightOrange: ColorValue("#FFBD9B"),
+          NavHover: ColorValue("#016d79"),
+          NavTitle: ColorValue("#F8F8F8"),
+          PrimaryTxT: "#2a6db5",
+          GrayTxT: "#8F8F8F",
+          LightGrayTxT: "#F7F7F7",
+          LightGreenTxT: "#84E4CB",
+          LightPurpleTxT: "#CBBBFD",
+          LightBlueTxT: "#D0E4FB",
+          LightOrangeTxT: "#FFBD9B",
+          NavHoverTxT: "#0f6cbd",
+          NavTitleTxT: "#F8F8F8"
+      };
+      // Admin = user with the SystemAdministrator role in CORMS_UserRoles
+      fxIsAdmin = !IsBlank(
+          LookUp(
+              CORMS_UserRoles,
+              User.Email = User().Email && Role.Value = "SystemAdministrator"
+          )
+      );
+      // Current user as a SharePoint person value, for Actor / AssignedToUser columns
+      // Page the embedded app navigates to when it is finished; the SPFx host watches for it
+      // Any lightweight same-origin URL works; the host only reads the #corms= marker after it
+      // The site address is configuration, so the solution can be imported into another
+      // tenant. The literal is only a fallback until the admin row exists.
+      fxSiteUrl = Coalesce(
+          LookUp(CORMS_AdminConfig, Title = "site.baseUrl").Value,
+          "https://ssloman.sharepoint.com/sites/CORMS"
+      );
+      fxCloseUrl = fxSiteUrl & "/_api/web/title";
+      fxMe = {
+          '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+          Claims: "i:0#.f|membership|" & Lower(User().Email),
+          Department: "",
+          DisplayName: User().FullName,
+          Email: User().Email,
+          JobTitle: "",
+          Picture: ""
+      };
+    OnStart: |-
+      =Set(
+          varIsLoading,
+          false
+      );
+      Set(
+          varStatusText,
+          ""
+      );
+      Set(
+          varCurrentUser,
+          User()
+      );
+      Set(
+          varMode,
+          If(
+              IsBlank(Param("taskId")),
+              "create",
+              "detail"
+          )
+      )
+    StartScreen: |-
+      =// The host page picks the screen with &screen=create, detail or approval.
+      // Without it the old rules still apply: no taskId = create, taskId = details.
+      Switch(
+          Lower(Param("screen")),
+          "create", TaskCreateScreen,
+          "detail", TaskDetailScreen,
+          "details", TaskDetailScreen,
+          "approval", ApprovalScreen,
+          If(
+              Param("subject") = "NeedApproval",
+              ApprovalScreen,
+              IsBlank(Param("taskId")),
+              TaskCreateScreen,
+              TaskDetailScreen
+          )
+      )
+    Theme: =PowerAppsTheme

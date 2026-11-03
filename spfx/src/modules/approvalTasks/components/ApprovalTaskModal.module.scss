@@ -1,0 +1,141 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px 16px;
+  margin: 0;
+
+  dt {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--corms-text-secondary);
+  }
+
+  dd {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: var(--corms-text-primary);
+  }
+}
+
+.overdue {
+  color: var(--corms-brand-red);
+  font-weight: 600;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--corms-text-primary);
+}
+
+.taskRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+}
+
+.taskName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.taskMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+.signature {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--corms-toolbar-primary);
+  font-weight: 600;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+}
+
+.stepCurrent {
+  border-color: var(--corms-toolbar-primary);
+  box-shadow: 0 0 0 1px var(--corms-toolbar-primary);
+}
+
+.stepOrder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--corms-toolbar-primary);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stepName {
+  flex: 1;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+}
+
+.error {
+  margin: 0;
+  font-size: 12px;
+  color: #c50f1f;
+}
+
+.openLink {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-toolbar-primary);
+  cursor: pointer;
+}

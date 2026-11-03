@@ -1,0 +1,105 @@
+.panel {
+  background: linear-gradient(135deg, var(--corms-card-surface) 0%, var(--corms-neutral-panel) 100%);
+  border: 1px solid var(--corms-card-border);
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  box-shadow: 0 10px 28px rgba(24, 57, 93, 0.08);
+}
+
+.headerRow, .sectionHeaderRow, .routeFooter, .headerRight, .securityRow, .labelRow, .matrixHint {
+  display: flex;
+  align-items: center;
+}
+
+.headerRow, .sectionHeaderRow, .routeFooter { justify-content: space-between; gap: 16px; }
+.headerRow, .sectionHeaderRow { align-items: flex-start; }
+.headerRight, .securityRow, .labelRow, .matrixHint { gap: 8px; flex-wrap: wrap; }
+
+.subject, .sectionTitle { margin: 0; color: var(--corms-text-primary); }
+.subject { font-size: 17px; font-weight: 750; }
+.sectionTitle { font-size: 14px; font-weight: 700; }
+.metaLine, .sectionDescription, .helper { color: var(--corms-text-secondary); }
+.metaLine { margin-top: 4px; font-size: 12px; }
+.sectionDescription { margin: 4px 0 0; font-size: 12px; }
+.helper { font-size: 11px; }
+
+.urgencyNote, .lockedNote { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
+.urgencyNote { margin-top: 6px; color: var(--corms-brand-red); }
+.lockedNote { padding: 10px 12px; border-radius: 8px; background: var(--corms-neutral-page); color: var(--corms-text-secondary); }
+
+.grid, .routeGrid { display: grid; gap: 16px; }
+.grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.routeGrid { grid-template-columns: 1.15fr 1.15fr 0.7fr; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--corms-text-secondary);
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.badge, .matrixBadge {
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 2px 7px;
+  background: var(--corms-rail-background-active);
+  color: var(--corms-toolbar-primary);
+}
+
+.select {
+  width: 100%;
+  min-height: 36px;
+  // Keep the padding+border inside the 100% width so the native date input (Handling Deadline)
+  // doesn't overflow its column.
+  box-sizing: border-box;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page);
+}
+
+.changeLink, .amendBtn, .matrixBtn {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+  background: var(--corms-neutral-page);
+  color: var(--corms-toolbar-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.changeLink { padding: 5px 8px; }
+.amendBtn, .matrixBtn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; }
+.changeLink:hover, .amendBtn:hover, .matrixBtn:hover { border-color: var(--corms-toolbar-primary); background: var(--corms-rail-background-active); }
+
+.routingSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid var(--corms-neutral-border);
+}
+
+.matrixHint { padding: 9px 11px; border-radius: 7px; background: var(--corms-rail-background-active); color: var(--corms-text-primary); font-size: 12px; }
+.routeFooter { padding-top: 2px; }
+
+@media (max-width: 980px) {
+  .grid, .routeGrid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+  .panel { padding: 16px; }
+  .headerRow, .sectionHeaderRow, .routeFooter { align-items: stretch; flex-direction: column; }
+  .grid, .routeGrid { grid-template-columns: 1fr; }
+  .routeFooter :global(button) { width: 100%; justify-content: center; }
+}

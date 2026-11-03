@@ -1,0 +1,9 @@
+// Root element of the SPA inside the web part's DOM element. Owns the direction
+// attribute (§7.3/§7.4) so switching to Arabic mirrors the app without hijacking the
+// direction of the hosting SharePoint page.
+.appRoot {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+}

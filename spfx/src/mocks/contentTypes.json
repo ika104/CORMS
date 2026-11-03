@@ -1,0 +1,10 @@
+[
+  { "id": "ct-1", "name": "Letter" },
+  { "id": "ct-2", "name": "Memo" },
+  { "id": "ct-3", "name": "Report" },
+  { "id": "ct-4", "name": "Circular" },
+  { "id": "ct-5", "name": "Minutes" },
+  { "id": "ct-6", "name": "Resolution" },
+  { "id": "ct-7", "name": "Notice" },
+  { "id": "ct-8", "name": "Contract" }
+]

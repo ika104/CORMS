@@ -1,0 +1,170 @@
+.item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  // Without border-box, width:100% is the CONTENT width — the row's 12px side padding and the 3px
+  // active border then push the border box ~27px past the 216px rail, so the row overflows the
+  // overflow-x:hidden groups container and the trailing badge is clipped. border-box keeps the
+  // whole row (padding + border included) within 216px, letting the label ellipsize and the badge sit inside.
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
+  text-decoration: none;
+  color: var(--corms-sidebar-text, #374151);
+  padding: 8px 12px;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+  position: relative;
+  border-inline-start: 3px solid transparent;
+  font-family: inherit;
+
+  &:hover {
+    background: var(--corms-sidebar-active, #eff6ff);
+  }
+
+  &.active {
+    background: var(--corms-sidebar-active, #eff6ff);
+    color: var(--corms-sidebar-active-text, #2563eb);
+    font-weight: 600;
+    border-inline-start-color: var(--corms-sidebar-active-text, #2563eb);
+  }
+
+  &.nested {
+    padding-inline-start: 36px;
+  }
+
+  .icon {
+    display: flex;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .label {
+    flex: 1;
+    // Without min-width:0 a flex item won't shrink below its text's intrinsic width, so a slightly
+    // wider label (browser zoom, a longer translated/Arabic label) pushes the flex-shrink:0 badge
+    // past the row's right edge, where .groups(overflow-x:hidden) clips it. This also makes the
+    // ellipsis above actually engage.
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: start;
+  }
+
+  .badge {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 10px;
+    background: var(--corms-toolbar-primary, #0070d0);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &.warning {
+      background: var(--corms-state-warning);
+    }
+
+    &.danger {
+      background: var(--corms-brand-red);
+    }
+  }
+
+  .chevron {
+    display: flex;
+    flex-shrink: 0;
+    color: var(--corms-text-secondary);
+    font-size: 10px;
+    padding: 2px 4px;
+    border-radius: 2px;
+    align-items: center;
+    transition: transform 0.15s ease;
+
+    :global([dir='rtl']) & {
+      transform: rotate(180deg);
+    }
+
+    &.open {
+      transform: rotate(90deg);
+
+      :global([dir='rtl']) & {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  .badgeDot {
+    position: absolute;
+    top: 6px;
+    inset-inline-start: 28px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--corms-text-secondary);
+
+    &.warning {
+      background: var(--corms-state-warning);
+    }
+
+    &.danger {
+      background: var(--corms-brand-red);
+    }
+  }
+}
+
+// Used when an item is both a navigable link and an expandable group (e.g. Inbox once a
+// custom folder is pinned under it) — the outer .item div supplies the row's padding/hover/
+// active band as usual, but the link and the toggle become two independent click targets
+// inside it instead of the row being a single control.
+.itemLink {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.chevronBtn {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--corms-text-secondary);
+  font-size: 10px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  :global([dir='rtl']) & {
+    transform: rotate(180deg);
+  }
+
+  &.open {
+    transform: rotate(90deg);
+
+    :global([dir='rtl']) & {
+      transform: rotate(90deg);
+    }
+  }
+}

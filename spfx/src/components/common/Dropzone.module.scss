@@ -1,0 +1,32 @@
+.dropzone {
+  border: 2px dashed var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--corms-text-secondary);
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    border-color: var(--corms-brand-navy);
+  }
+}
+
+.dropzoneActive {
+  border-color: var(--corms-brand-navy);
+  background: var(--corms-neutral-panel);
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.helper {
+  font-size: 11px;
+}

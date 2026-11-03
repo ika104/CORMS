@@ -1,0 +1,58 @@
+.subject {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--corms-text-primary);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.expediteBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  background: var(--corms-danger-bg, #fde7e9);
+  color: var(--corms-brand-red);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.fields {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 4px;
+  border-top: 1px solid var(--corms-neutral-border);
+  font-size: 13px;
+}
+
+.fieldRow:first-of-type {
+  border-top: none;
+}
+
+.fieldLabel {
+  color: var(--corms-text-secondary);
+  font-size: 12px;
+}
+
+.fieldValue {
+  margin: 0;
+  color: var(--corms-text-primary);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}

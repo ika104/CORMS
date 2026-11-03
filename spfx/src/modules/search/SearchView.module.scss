@@ -1,0 +1,239 @@
+.page {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+  padding: 20px;
+}
+
+// ── Saved Search Tabs rail ───────────────────────────────────────────────────
+.rail {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.railTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--corms-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.newSearchBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  background: var(--corms-brand-navy);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.tabItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 8px 10px;
+  cursor: pointer;
+  background: var(--corms-neutral-panel);
+}
+
+.tabItemActive {
+  border-color: var(--corms-brand-navy);
+  background: var(--corms-neutral-page);
+}
+
+.tabIcon {
+  color: var(--corms-text-secondary);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.tabTextWrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.tabItemTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tabItemSubtitle {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.tabDeleteBtn {
+  border: none;
+  background: transparent;
+  color: var(--corms-text-secondary);
+  cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+// ── Main panel ───────────────────────────────────────────────────────────────
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.mainTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--corms-text-primary);
+}
+
+.mainSubtitle {
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+}
+
+.filterCard {
+  background: var(--corms-card-surface);
+  border: 1px solid var(--corms-card-border);
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.typeToggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.typeToggleLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.segmentButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--corms-neutral-border);
+  background: var(--corms-neutral-page);
+  border-radius: 4px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--corms-text-primary);
+}
+
+.segmentButtonActive {
+  background: var(--corms-brand-navy);
+  border-color: var(--corms-brand-navy);
+  color: #ffffff;
+}
+
+.filterRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.filterField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filterLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.filterInput {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 7px 9px;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page);
+}
+
+.searchRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.searchRow > :first-child {
+  flex: 1;
+}
+
+.resultsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resultsHeader {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.subjectSnippet mark,
+.resultSnippet mark {
+  background: #fff4ce;
+  color: inherit;
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+.subjectCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* CMS-026 AC3 — the matched-content excerpt shown beneath the subject in a search result row. */
+.resultSnippet {
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

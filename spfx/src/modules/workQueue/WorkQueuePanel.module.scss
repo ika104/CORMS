@@ -1,0 +1,142 @@
+.panel {
+  background: var(--corms-surface, #fff);
+  border: 1px solid var(--corms-border, #e1dfdd);
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--corms-text-primary, #201f1e);
+}
+
+.unreadPill {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0070d0;
+  background: #e8f0fb;
+  border-radius: 10px;
+  padding: 1px 8px;
+}
+
+.empty {
+  font-size: 13px;
+  color: var(--corms-text-secondary, #605e5c);
+  padding: 8px 0;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+.row:hover {
+  background: var(--corms-hover, #f3f2f1);
+}
+
+/* AC8 — unread items visually distinguished. */
+.rowUnread {
+  background: #f3f9ff;
+  border-color: #cfe4fb;
+}
+
+.unreadDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+  flex: 0 0 auto;
+}
+
+.rowUnread .unreadDot {
+  background: #0070d0;
+}
+
+/* AC8 — explicit per-item "New" badge, so an unopened item is clearly marked and not only
+   distinguished by the subtle row tint. */
+.newBadge {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: #0070d0;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.refNo {
+  font-family: var(--corms-mono, ui-monospace, monospace);
+  font-size: 12px;
+  color: var(--corms-text-secondary, #605e5c);
+  flex: 0 0 auto;
+  min-width: 120px;
+}
+
+.subject {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--corms-text-primary, #201f1e);
+}
+
+.received {
+  font-size: 12px;
+  color: var(--corms-text-secondary, #605e5c);
+  flex: 0 0 auto;
+  min-width: 92px;
+  text-align: right;
+}
+
+.expedite {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #c50f1f;
+  flex: 0 0 auto;
+}
+
+.expeditePlaceholder {
+  flex: 0 0 auto;
+  width: 0;
+}
+
+.nextStep {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0070d0;
+  flex: 0 0 auto;
+  min-width: 96px;
+}

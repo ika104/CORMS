@@ -1,0 +1,5 @@
+EditorState:
+  ScreensOrder:
+    - TaskCreateScreen
+    - TaskDetailScreen
+    - ApprovalScreen

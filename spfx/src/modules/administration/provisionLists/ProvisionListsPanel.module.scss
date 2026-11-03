@@ -1,0 +1,86 @@
+.panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--corms-content-bg);
+}
+
+.description {
+  margin: 0;
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+}
+
+.actionsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.listName {
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.logPanel {
+  background: var(--corms-card-surface);
+  border: 1px solid var(--corms-card-border);
+  border-radius: 4px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.logTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+}
+
+.logBody {
+  max-height: 260px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logEmpty {
+  color: var(--corms-text-secondary);
+}
+
+.logLine {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.logLine_created {
+  color: #107c10;
+}
+
+.logLine_exists {
+  color: var(--corms-text-secondary);
+}
+
+.logLine_removed {
+  color: #8a6100;
+}
+
+.logLine_error {
+  color: #c50f1f;
+}
+
+.tallyBanner {
+  font-size: 13px;
+  font-weight: 600;
+  padding-top: 8px;
+  border-top: 1px solid var(--corms-card-border);
+}

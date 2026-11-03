@@ -1,0 +1,74 @@
+.appBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 20px;
+  background: var(--corms-header-bg, #0078d4);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.leading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+}
+
+.breadcrumb {
+  font-size: 11px;
+  opacity: 0.6;
+  border-inline-start: 1px solid rgba(255, 255, 255, 0.3);
+  padding-inline-start: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.envLabel {
+  font-size: 9px;
+  opacity: 0.45;
+  margin-inline-start: 8px;
+  white-space: nowrap;
+}
+
+.trailing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.userArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.userName {
+  font-size: 12px;
+  opacity: 0.85;
+  white-space: nowrap;
+}

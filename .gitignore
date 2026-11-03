@@ -1,0 +1,33 @@
+# dependencies and build output
+node_modules/
+out/
+obj/
+bin/
+lib/
+temp/
+release/
+*.tsbuildinfo
+
+# Power Platform artefacts - generated, never edited by hand
+*.msapp
+*.zip
+*.sppkg
+sharepoint/solution/
+dist/pcf-source/
+
+# local working copies and snapshots, superseded by git history
+approvals-app-backup/
+canvas-app/
+canvas-app-backup/
+canvas-app-snapshots/
+
+# local tooling
+.vs/
+.vscode/
+*.log
+
+# business documents, and anything carrying real configuration values.
+# Credentials for this system live in the CORMS_AdminConfig SharePoint list,
+# never in source. Keep it that way.
+*.xlsx
+*.csv

@@ -1,0 +1,9 @@
+[
+  { "id": "rc-1", "recordNumber": "500012", "name": "Minutes of Meeting", "active": true, "clearanceTier": 1 },
+  { "id": "rc-2", "recordNumber": "500034", "name": "Vendor Contracts", "active": true, "clearanceTier": 2 },
+  { "id": "rc-3", "recordNumber": "500056", "name": "Board Resolutions", "active": true, "clearanceTier": 3 },
+  { "id": "rc-4", "recordNumber": "500078", "name": "HSE Incident Reports", "active": true },
+  { "id": "rc-5", "recordNumber": "500091", "name": "Legacy Correspondence (Pre-2018)", "active": false },
+  { "id": "rc-6", "recordNumber": "500102", "name": "Audit Findings", "active": true, "clearanceTier": 3 },
+  { "id": "rc-7", "recordNumber": "500120", "name": "National Security Directives", "active": true, "clearanceTier": 5 }
+]

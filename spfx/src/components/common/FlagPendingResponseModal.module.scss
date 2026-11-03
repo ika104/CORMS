@@ -1,0 +1,51 @@
+// TODO(confirm): no Figma frame yet — modeled on shared components + story ACs (CMS-014);
+// confirm against design when available.
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.segmentButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--corms-neutral-border);
+  background: var(--corms-neutral-page);
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--corms-text-primary);
+}
+
+// Shared with ExpediteReasonModal, which reuses this stylesheet's .field/.label.
+.textarea {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.segmentButtonActive {
+  background: var(--corms-brand-navy);
+  border-color: var(--corms-brand-navy);
+  color: #ffffff;
+}

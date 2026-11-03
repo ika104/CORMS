@@ -1,0 +1,84 @@
+.signatureStep {
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 8px;
+  background: var(--corms-neutral-page);
+}
+
+.signatureHeading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--corms-text-primary);
+}
+
+.help {
+  margin: 7px 0 12px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--corms-text-secondary);
+}
+
+.signatureActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.checking {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+.success {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #107c10;
+}
+
+.error {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #c50f1f;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.required {
+  color: #c50f1f;
+}
+
+.textarea {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.textarea:focus {
+  outline: 2px solid var(--corms-toolbar-primary);
+  outline-offset: 1px;
+}

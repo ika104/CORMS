@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="CORMS" constructor="ApprovalPanel" version="0.0.20"
+           display-name-key="CORMS Approval Panel"
+           description-key="Approval task in context - header, chain progress, decision buttons and the in-app signing session"
+           control-type="standard">
+    <!--
+      The signing step loads the providers page in a frame, so this component reaches an external
+      service from the browser and is therefore premium. Add every host the signing link may use.
+    -->
+    <external-service-usage enabled="true">
+      <domain>signnow.com</domain>
+      <domain>app.signnow.com</domain>
+      <domain>eu.signnow.com</domain>
+    </external-service-usage>
+
+    <!-- How the component reports what the user chose. Canvas only surfaces a component's
+         writes through a bound property, so this carries action, comment, result and timestamp. -->
+    <property name="ActionJson" display-name-key="Action JSON"
+              description-key="The action the user chose, as JSON"
+              of-type="Multiple" usage="bound" required="false" />
+
+    <!-- The task, its correspondence and the whole chain, as JSON built in Power Fx. -->
+    <property name="DataJson" display-name-key="Data JSON"
+              description-key="Approval task, correspondence and chain steps as JSON"
+              of-type="Multiple" usage="bound" required="true" />
+
+    <!-- Decision buttons appear only when it is this users turn. -->
+    <property name="CanAct" display-name-key="Can act"
+              description-key="Show Return, Reject and Approve"
+              of-type="TwoOptions" usage="input" required="false" />
+
+    <property name="SigningUrl" display-name-key="Signing URL"
+              description-key="Signing session URL; set after the app requests a signature"
+              of-type="SingleLine.Text" usage="input" required="false" />
+
+    <!-- When set, Open correspondence is a real link, so the browser does not block the new tab. -->
+    <property name="CorrespondenceUrl" display-name-key="Correspondence URL"
+              description-key="Address the Open correspondence link points at"
+              of-type="SingleLine.Text" usage="input" required="false" />
+
+    <property name="ReturnUrl" display-name-key="Return URL"
+              description-key="Same-origin page the signing session returns to"
+              of-type="SingleLine.Text" usage="input" required="false" />
+
+    <property name="Busy" display-name-key="Busy"
+              description-key="Disables the buttons while the app is saving or fetching a signing link"
+              of-type="TwoOptions" usage="input" required="false" />
+
+    <property name="ErrorMessage" display-name-key="Error message"
+              description-key="Message shown in the dialog, for example when a signing link could not be created"
+              of-type="SingleLine.Text" usage="input" required="false" />
+
+    <!-- What the user chose: Approve, Reject, Return, RequestSignature, OpenCorrespondence, Close -->
+    <property name="Action" display-name-key="Action"
+              description-key="The action the user chose"
+              of-type="SingleLine.Text" usage="output" required="false" />
+
+    <property name="Comment" display-name-key="Comment"
+              description-key="The comment typed with the decision"
+              of-type="SingleLine.Text" usage="output" required="false" />
+
+    <property name="SigningResult" display-name-key="Signing result"
+              description-key="completed, declined or closed once the signing session ends"
+              of-type="SingleLine.Text" usage="output" required="false" />
+
+    <property name="ActionAt" display-name-key="Action timestamp"
+              description-key="ISO timestamp of the reported action, so repeated actions still raise OnChange"
+              of-type="SingleLine.Text" usage="output" required="false" />
+
+    <resources>
+      <code path="index.ts" order="1"/>
+      <css path="css/ApprovalPanel.css" order="1" />
+    </resources>
+  </control>
+</manifest>

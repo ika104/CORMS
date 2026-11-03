@@ -1,0 +1,7 @@
+lib
+lib-commonjs
+dist
+temp
+release
+node_modules
+*.min.js

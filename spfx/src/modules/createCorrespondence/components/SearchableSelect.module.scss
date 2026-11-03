@@ -1,0 +1,107 @@
+.wrap {
+  position: relative;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-height: 36px;
+  padding: 4px 8px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  background: var(--corms-neutral-page);
+}
+
+.inputRowDisabled {
+  background: var(--corms-neutral-panel);
+  color: var(--corms-text-secondary);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--corms-rail-background-active);
+  color: var(--corms-brand-navy);
+  border-radius: 12px;
+  padding: 2px 6px 2px 10px;
+  font-size: 12px;
+}
+
+.chipRemove {
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: inline-flex;
+  color: inherit;
+}
+
+.input {
+  flex: 1;
+  min-width: 80px;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  background: transparent;
+  color: var(--corms-text-primary);
+}
+
+.dropdown {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--corms-neutral-page);
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.option {
+  display: block;
+  width: 100%;
+  text-align: start;
+  padding: 8px 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+}
+
+.option:hover {
+  background: var(--corms-neutral-panel);
+}
+
+.optionSelected {
+  background: var(--corms-rail-background-active);
+}
+
+.optionSublabel {
+  display: block;
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.empty {
+  padding: 10px;
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+.helper {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+  margin-top: 4px;
+}
+
+.error {
+  font-size: 11px;
+  color: var(--corms-status-danger, #a4262c);
+  margin-top: 4px;
+}

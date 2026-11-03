@@ -1,0 +1,96 @@
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.actionBar {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #fff;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+  cursor: pointer;
+  font-family: inherit;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.actionBtnOn {
+  color: #107c10;
+  border-color: #107c10;
+}
+
+.notConfiguredNotice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #fff4ce;
+  color: #835b00;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.previewLoading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+}
+
+// Server-rendered (GroupDocs) preview — one PNG per page, stacked and scrollable.
+.previewPages {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background: var(--corms-neutral-page, #f3f2f1);
+}
+
+.previewPage {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  background: #fff;
+}
+
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: rgba(197, 15, 31, 0.14);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: 2;
+}

@@ -1,0 +1,49 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+}
+
+.input,
+.select {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 7px 9px;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page);
+}
+
+.helper {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.matchModeRow {
+  display: flex;
+  gap: 16px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+}

@@ -1,0 +1,33 @@
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  border: 1px solid var(--corms-neutral-border);
+  background: var(--corms-neutral-page);
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--corms-text-primary);
+}
+
+.pillActive {
+  background: var(--corms-brand-navy);
+  border-color: var(--corms-brand-navy);
+  color: #ffffff;
+}
+
+.pillDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.helper {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+  margin-top: 6px;
+}

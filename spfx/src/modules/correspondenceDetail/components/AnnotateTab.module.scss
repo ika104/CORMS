@@ -1,0 +1,379 @@
+.loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 60px 24px;
+}
+
+.loadingTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+  margin-top: 6px;
+}
+
+.loadingSubtitle {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #fff;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  flex-shrink: 0;
+}
+
+.headerTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--corms-text-primary);
+}
+
+.count {
+  color: var(--corms-text-secondary);
+  font-weight: 600;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clearBtn {
+  border: 1px solid var(--corms-neutral-border);
+  background: #fff;
+  color: var(--corms-brand-red);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toolbarError {
+  font-size: 11px;
+  color: var(--corms-brand-red);
+  align-self: center;
+}
+
+.toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 8px 14px;
+  background: var(--corms-neutral-panel);
+  border-bottom: 1px solid var(--corms-neutral-border);
+  flex-shrink: 0;
+}
+
+.toolBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: #fff;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 2px;
+  cursor: pointer;
+  color: var(--corms-text-primary);
+}
+
+.toolBtnActive {
+  border-color: var(--corms-toolbar-primary);
+  color: var(--corms-toolbar-primary);
+  background: #e8f0fb;
+}
+
+.canvas {
+  flex: 1;
+  background: #6b6b6b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+// Document preview pages rendered inside the annotation surface (via the shared preview API until
+// the dedicated annotation API exists). Scrollable, stacked, and centred like the Preview tab.
+.pages {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+.pageWrap {
+  position: relative;
+  width: 820px;
+  max-width: 100%;
+}
+
+.page {
+  display: block;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  background: #fff;
+}
+
+.pagePlacing {
+  cursor: crosshair;
+}
+
+// Overlaid annotations (positioned as % of the page so they track the responsive image).
+.noteBox,
+.areaBox {
+  position: absolute;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.noteBox {
+  border: 1px solid #e0b400;
+  border-radius: 3px;
+  padding: 3px 5px;
+  // Keep the selected note's delete and resize controls outside its boundary. The prior hidden
+  // overflow clipped the red delete button for text and sticky notes only.
+  overflow: visible;
+  display: flex;
+  align-items: flex-start;
+}
+
+.areaBox {
+  border: 2px solid #e0a000;
+  border-radius: 2px;
+}
+
+// CMS-024 — highlight (translucent fill), ellipse (rounded), arrow + freehand pen (SVG overlays).
+.highlightBox {
+  position: absolute;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: none;
+  mix-blend-mode: multiply;
+}
+
+.ellipseBox {
+  position: absolute;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: 2px solid #e0a000;
+  border-radius: 50%;
+  background: transparent !important;
+}
+
+.shapeBox {
+  position: absolute;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+// Selection ring shown on the annotation the style bar is currently editing.
+.annSelected {
+  outline: 2px solid var(--corms-brand-navy, #2563eb);
+  outline-offset: 2px;
+  z-index: 6;
+}
+
+// The pen stroke is a full-page SVG; an outline would frame the whole page, so mark selection with
+// a glow filter on the stroke instead.
+.penSvg.annSelected {
+  outline: none;
+  filter: drop-shadow(0 0 2px var(--corms-brand-navy, #2563eb));
+}
+
+.arrowSvg {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.penSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; // let clicks fall through to the page to place new annotations…
+
+  polyline {
+    pointer-events: stroke; // …except on the drawn stroke itself, so the eraser can hit it
+    cursor: pointer;
+  }
+}
+
+.noteText {
+  font-size: 11px;
+  color: #5c4600;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.noteContent {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.noteInput {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  color: #5c4600;
+  outline: none;
+}
+
+.annRemove {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: var(--corms-brand-red);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+// Bottom-right drag affordance for selected box annotations. It deliberately sits inside the box
+// so it cannot be clipped by the document canvas at page edges.
+.resizeHandle {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  background: var(--corms-brand-navy, #2563eb);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.32);
+  cursor: nwse-resize;
+  touch-action: none;
+  z-index: 2;
+}
+
+.resizeHandleActive {
+  cursor: nwse-resize;
+}
+
+.canvasHint {
+  background: #fff;
+  border-radius: 4px;
+  padding: 40px 60px;
+  color: var(--corms-text-secondary);
+  font-size: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+// CMS-024 — the "Save annotations" comment prompt. Themed to match the site (CORMS tokens) rather
+// than the browser-default textarea it used to render.
+.commentField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.commentLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.commentRequired {
+  color: var(--corms-brand-red, #d13438);
+  margin-inline-start: 2px;
+}
+
+.commentHint {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+}
+
+.commentTextarea {
+  width: 100%;
+  min-height: 96px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: inherit;
+  line-height: 1.5;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page, #ffffff);
+  resize: vertical;
+
+  &::placeholder {
+    color: var(--corms-text-secondary);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--corms-brand-navy, #2563eb);
+    box-shadow: 0 0 0 1px var(--corms-brand-navy, #2563eb);
+  }
+
+  &:disabled {
+    background: var(--corms-neutral-panel);
+    color: var(--corms-text-secondary);
+  }
+}
+
+// Prominent saving-in-progress state shown in the comment modal while the annotation set is
+// persisted — replaces the form body so it's unmistakable, not a small inline row.
+.savingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 132px;
+  padding: 16px;
+  text-align: center;
+}
+
+.savingLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--corms-brand-navy, #2563eb);
+}
+
+.savingSpinner {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border: 3px solid var(--corms-neutral-border, #d0d0d0);
+  border-top-color: var(--corms-brand-navy, #2563eb);
+  border-radius: 50%;
+  animation: annotateCommentSpin 0.6s linear infinite;
+}
+
+@keyframes annotateCommentSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

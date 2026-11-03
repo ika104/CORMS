@@ -1,0 +1,1044 @@
+Screens:
+  TaskCreateScreen:
+    Properties:
+      Fill: =RGBA(0, 0, 0, 0)
+      LoadingSpinnerColor: =RGBA(0, 120, 212, 1)
+      OnVisible: |-
+        =Set(varRelatedCorrespondenceId, Coalesce(Param("relatedCorrespondenceId"), ""));
+        // Correspondence passed in by the host page (ID or reference number), preselected in the dropdown
+        Set(
+            varPreCorrespondence,
+            If(
+                IsBlank(varRelatedCorrespondenceId),
+                Blank(),
+                IsNumeric(varRelatedCorrespondenceId),
+                LookUp(CORMS_Correspondence, ID = Value(varRelatedCorrespondenceId)),
+                LookUp(CORMS_Correspondence, ReferenceNo = varRelatedCorrespondenceId)
+            )
+        );
+        Set(varTriedSubmit, false);
+        Set(varCloseReason, "cancel");
+        // Follow-up Tasks go to someone else; To Do and Reminder default to the creator (CMS-050.5)
+        Set(varAssignSelf, false);
+        Reset(Checkbox1);
+        Concurrent(
+        Set(VarShowForm,true),
+        Set(VarShowRev,false),
+        Set(VarShowFilles,false)
+        );
+        Concurrent(
+        Set(VarShowForm1,true),
+        Set(VarShowRev1,false),
+        Set(VarShowFilles1,false)
+        );
+    Children:
+      - ScreenContainer1_1:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            Fill: =RGBA(245, 245, 245, 1)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Width: =Parent.Width
+          Children:
+            - HeaderContainer1_1:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =RGBA(0, 108, 191, 1)
+                  FillPortions: =0
+                  Height: =75
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  PaddingBottom: =8
+                  PaddingLeft: =12
+                  PaddingRight: =12
+                  PaddingTop: =8
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                Children:
+                  - Text1:
+                      Control: ModernText
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Color: =RGBA(255, 255, 255, 1)
+                        FillPortions: =1
+                        FontWeight: =FontWeight.Bold
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        Size: =18
+                        Text: ="Create Action Item"
+                  - Button1:
+                      Control: ModernButton
+                      Properties:
+                        Appearance: =ButtonAppearance.Transparent
+                        Color: =RGBA(255, 255, 255, 1)
+                        FontWeight: =FontWeight.Bold
+                        Icon: ="Dismiss"
+                        IconStyle: =IconStyle.Filled
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        OnSelect: =Select(Button2)
+                        Text: =
+                        Visible: =false
+                        Width: =32
+            - MainContainer1_1:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =RGBA(255, 255, 255, 1)
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =8
+                  PaddingTop: =8
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                Children:
+                  - TypeCon:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =100
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =8
+                        PaddingLeft: =8
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                      Children:
+                        - Text2:
+                            Control: ModernText
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              FontWeight: =FontWeight.Bold
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              PaddingLeft: =13
+                              Text: ="Type"
+                        - Container2:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =10
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              PaddingBottom: =8
+                              PaddingLeft: =8
+                              PaddingRight: =8
+                              PaddingTop: =8
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                            Children:
+                              - Button4:
+                                  Control: ModernButton
+                                  Properties:
+                                    Align: =Align.Center
+                                    Appearance: =If(VarShowForm,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    BasePaletteColor: =RGBA(5, 102, 178, 1)
+                                    FillPortions: =1
+                                    Font: =Font.'Lato Black'
+                                    FontWeight: =FontWeight.Normal
+                                    Height: =34
+                                    IconStyle: =IconStyle.Filled
+                                    LayoutMinHeight: =16
+                                    LayoutMinWidth: =16
+                                    OnSelect: |-
+                                      =Concurrent(
+                                      Set(VarShowForm,true),
+                                      Set(VarShowRev,false),
+                                      Set(VarShowFilles,false)
+                                      );
+                                      Set(varAssignSelf, false);
+                                      Reset(Checkbox1);
+                                    Size: =11
+                                    Text: ="Follow-up Task"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Width: =120
+                              - Button4_1:
+                                  Control: ModernButton
+                                  Properties:
+                                    Align: =Align.Center
+                                    Appearance: =If(VarShowRev,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    BasePaletteColor: =RGBA(5, 102, 178, 1)
+                                    FillPortions: =1
+                                    Font: =Font.'Lato Black'
+                                    FontWeight: =FontWeight.Normal
+                                    Height: =34
+                                    IconStyle: =IconStyle.Filled
+                                    LayoutMinHeight: =16
+                                    LayoutMinWidth: =16
+                                    OnSelect: |-
+                                      =Concurrent(
+                                      Set(VarShowForm,false),
+                                      Set(VarShowRev,true),
+                                      Set(VarShowFilles,false)
+                                      );
+                                      Set(varAssignSelf, true);
+                                      Reset(Checkbox1);
+                                    Size: =11
+                                    Text: ="To Do"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Width: =120
+                              - Button4_3:
+                                  Control: ModernButton
+                                  Properties:
+                                    Align: =Align.Center
+                                    Appearance: =If(VarShowFilles,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    BasePaletteColor: =RGBA(5, 102, 178, 1)
+                                    FillPortions: =1
+                                    Font: =Font.'Lato Black'
+                                    FontWeight: =FontWeight.Normal
+                                    Height: =34
+                                    IconStyle: =IconStyle.Filled
+                                    LayoutMinHeight: =16
+                                    LayoutMinWidth: =16
+                                    OnSelect: |-
+                                      =Concurrent(
+                                      Set(VarShowForm,false),
+                                      Set(VarShowRev,false),
+                                      Set(VarShowFilles,true)
+                                      );
+                                      Set(varAssignSelf, true);
+                                      Reset(Checkbox1);
+                                    Size: =11
+                                    Text: ="Reminder"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Width: =120
+                  - SubjectCon:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =100
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =8
+                        PaddingLeft: =13
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                      Children:
+                        - Text2_1:
+                            Control: HtmlViewer
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Height: =28
+                              HtmlText: ="<span style=""font-family:'Segoe UI';font-size:15px;font-weight:600;color:#242424"">Subject <span style=""color:#c4302b"">*</span></span>"
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =2
+                              PaddingTop: =4
+                        - SubjectInput:
+                            Control: ModernTextInput
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              BorderColor: =RGBA(122, 138, 143, 1)
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =1
+                              Fill: =RGBA(255, 255, 255, 1)
+                              Height: =40
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              Placeholder: ="Task Subject"
+                              Required: =true
+                              ValidationState: =If(varTriedSubmit && IsBlank(Trim(Self.Text)), ValidationState.Error, ValidationState.None)
+                  - DescriptionCon:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =150
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =8
+                        PaddingLeft: =13
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                      Children:
+                        - Text2_2:
+                            Control: ModernText
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              FontWeight: =FontWeight.Bold
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              Text: ="Description"
+                        - TextInput1_1:
+                            Control: ModernTextInput
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              BorderColor: =RGBA(122, 138, 143, 1)
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =1
+                              Fill: =RGBA(255, 255, 255, 1)
+                              Height: =90
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              Placeholder: ="Add Details...."
+                              Type: =TextInputType.Multiline
+                  - AssigneeTeamCon:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =100
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =8
+                        PaddingLeft: =13
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                      Children:
+                        - Text2_3:
+                            Control: HtmlViewer
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Height: =28
+                              HtmlText: ="<span style=""font-family:'Segoe UI';font-size:15px;font-weight:600;color:#242424"">Assignee Team Member <span style=""color:#c4302b"">*</span></span>"
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =2
+                              PaddingTop: =4
+                        - Container3:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =50
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                            Children:
+                              - Combobox1_1:
+                                  Control: ModernCombobox
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    BorderColor: =If(varTriedSubmit && !Checkbox1.Checked && IsEmpty(Self.SelectedItems), RGBA(196, 49, 75, 1), RGBA(122, 138, 143, 1))
+                                    BorderStyle: =BorderStyle.Solid
+                                    BorderThickness: =If(varTriedSubmit && !Checkbox1.Checked && IsEmpty(Self.SelectedItems), 2, 1)
+                                    Fill: =RGBA(255, 255, 255, 1)
+                                    FillPortions: =1
+                                    Height: =40
+                                    InputTextPlaceholder: ="-- Search Team Member --"
+                                    ItemDisplayText: =ThisItem.DisplayName
+                                    Items: |-
+                                      =Filter(
+                                          Office365Users.SearchUserV2(
+                                              {
+                                                  searchTerm: Trim(Combobox1_1.SearchText),
+                                                  top: 999,
+                                                  isSearchTermRequired: false
+                                              }
+                                          ).value,
+                                          AccountEnabled && !IsBlank(Mail) && !("#EXT#" in Upper(UserPrincipalName))
+                                      )
+                                    LayoutMinHeight: =16
+                                    LayoutMinWidth: =16
+                                    Required: =true
+                                    ValidationState: =If(varTriedSubmit && !Checkbox1.Checked && IsEmpty(Self.SelectedItems), ValidationState.Error, ValidationState.None)
+                                    Visible: =!(Checkbox1.Checked)
+                                    X: =40
+                                    Y: =40
+                              - Checkbox1:
+                                  Control: ModernCheckbox
+                                  Properties:
+                                    Color: =RGBA(0, 0, 0, 1)
+                                    Default: =varAssignSelf
+                                    Height: =40
+                                    Label: ="Assign to Myself"
+                                    LayoutMinHeight: =16
+                                    LayoutMinWidth: =16
+                        - Combobox1:
+                            Control: ModernCombobox
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              BorderColor: =If(varTriedSubmit && !Checkbox1.Checked && IsBlank(Self.Selected), RGBA(196, 49, 75, 1), RGBA(122, 138, 143, 1))
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =If(varTriedSubmit && !Checkbox1.Checked && IsBlank(Self.Selected), 2, 1)
+                              DisplayMode: =If(Checkbox1.Checked, DisplayMode.Disabled, DisplayMode.Edit)
+                              Fill: =RGBA(255, 255, 255, 1)
+                              FillPortions: =1
+                              Height: =40
+                              InputTextPlaceholder: ="-- Select Org Units"
+                              IsSearchable: =false
+                              ItemDisplayText: =ThisItem.Value
+                              Items: =Sort(Filter(Distinct(CORMS_Tasks, AssignedToTeam), !IsBlank(Trim(Value))), Value)
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              Required: =true
+                              SelectMultiple: =false
+                              ValidationState: =If(varTriedSubmit && !Checkbox1.Checked && IsBlank(Self.Selected), ValidationState.Error, ValidationState.None)
+                              Visible: =false
+                  - AttachCon:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =180
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMaxHeight: =
+                        LayoutMaxWidth: =
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =10
+                        PaddingLeft: =13
+                        PaddingRight: =13
+                        PaddingTop: =10
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                      Children:
+                        - TextCanvas1_49:
+                            Control: ModernText
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                              Size: =16
+                              Text: ="Attach Document"
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: =96
+                        - frmTaskAttach:
+                            Control: Form
+                            Variant: Classic
+                            Layout: Vertical
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              BorderThickness: =1
+                              DataSource: =CORMS_Tasks
+                              DefaultMode: =FormMode.New
+                              LayoutMinHeight: =100
+                              LayoutMinWidth: =0
+                              NumberOfColumns: =1
+                            Children:
+                              - crdTaskAttachments:
+                                  Control: TypedDataCard
+                                  Variant: ClassicAttachmentsEdit
+                                  Properties:
+                                    DataField: ="Attachments"
+                                    Default: =ThisItem.Attachments
+                                    DisplayName: ="Attachments"
+                                    Height: =Parent.Height
+                                    Required: =false
+                                    Update: =AttachControl_4.Attachments
+                                    Width: =Parent.Width
+                                    X: =0
+                                    Y: =0
+                                  Children:
+                                    - Container1:
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
+                                        Properties:
+                                          BorderColor: =RGBA(122, 138, 143, 1)
+                                          BorderStyle: =BorderStyle.Dashed
+                                          BorderThickness: =2
+                                          DropShadow: =DropShadow.None
+                                          Height: =Parent.Height
+                                          RadiusBottomLeft: =10
+                                          RadiusBottomRight: =10
+                                          RadiusTopLeft: =10
+                                          RadiusTopRight: =10
+                                          Width: =Parent.Width - Self.X*2
+                                          X: =3
+                                        Children:
+                                          - AttachControl_4:
+                                              Control: Attachments
+                                              Properties:
+                                                AddAttachmentText: |-
+                                                  ="Supported formats: PDF, DOCX, XLSX, PNG (Max 10MB)"
+                                                BorderColor: =RGBA(122, 138, 143, 1)
+                                                BorderStyle: =BorderStyle.None
+                                                BorderThickness: =3
+                                                DisplayMode: =Parent.DisplayMode
+                                                DropTargetBorderColor: =RGBA(0, 0, 0, 0)
+                                                DropTargetBorderStyle: =BorderStyle.None
+                                                DropTargetBorderThickness: =0
+                                                DropTargetTextColor: =RGBA(0, 0, 0, 0)
+                                                Font: =Font.'Segoe UI'
+                                                FontWeight: =FontWeight.Semibold
+                                                Height: =Parent.Height
+                                                HoverFill: =RGBA(186, 202, 226, 1)
+                                                ItemColor: =RGBA(255, 255, 255, 1)
+                                                ItemFill: =RGBA(56, 96, 178, 1)
+                                                ItemHoverFill: =RGBA(186, 202, 226, 1)
+                                                MaxAttachments: =20
+                                                MaxAttachmentsText: =""
+                                                NoAttachmentsText: ="Choose File or Drag & Drop"
+                                                PaddingBottom: =5
+                                                PaddingLeft: =If(Self.DisplayMode = DisplayMode.Edit, 5, 0)
+                                                PaddingRight: =5
+                                                PaddingTop: =5
+                                                PressedColor: =RGBA(255, 255, 255, 1)
+                                                PressedFill: =RGBA(15, 108, 189, 1)
+                                                Size: =12
+                                                Tooltip: ="Click To Uplaod Attachment"
+                                                Width: =Parent.Width
+                  - AssigneeTeamCon_1:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =100
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =8
+                        PaddingLeft: =13
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                      Children:
+                        - Text2_4:
+                            Control: ModernText
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              FontWeight: =FontWeight.Bold
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              Text: ="Related Correspondence"
+                        - Combobox1_3:
+                            Control: ModernCombobox
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              BorderColor: =RGBA(122, 138, 143, 1)
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =1
+                              DefaultSelectedItems: =If(!IsBlank(varPreCorrespondence), Table(varPreCorrespondence))
+                              Fill: =RGBA(255, 255, 255, 1)
+                              Height: =40
+                              InputTextPlaceholder: ="Search Correspondences..."
+                              ItemDisplayText: =Trim(ThisItem.ReferenceNo & "  " & ThisItem.Title)
+                              Items: =Sort(CORMS_Correspondence, ID, SortOrder.Descending)
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              SelectMultiple: =false
+                  - PriorityCon:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =100
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =8
+                        PaddingLeft: =8
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                      Children:
+                        - Text2_5:
+                            Control: ModernText
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              FontWeight: =FontWeight.Bold
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              PaddingLeft: =13
+                              Text: ="Priority"
+                        - Container2_1:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =10
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              PaddingBottom: =8
+                              PaddingLeft: =8
+                              PaddingRight: =8
+                              PaddingTop: =8
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                            Children:
+                              - Button4_2:
+                                  Control: ModernButton
+                                  Properties:
+                                    Align: =Align.Center
+                                    Appearance: =If(VarShowForm1,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    BasePaletteColor: =RGBA(5, 102, 178, 1)
+                                    FillPortions: =1
+                                    Font: =Font.'Lato Black'
+                                    FontWeight: =FontWeight.Normal
+                                    Height: =34
+                                    IconStyle: =IconStyle.Filled
+                                    LayoutMinHeight: =16
+                                    LayoutMinWidth: =16
+                                    OnSelect: |-
+                                      =Concurrent(
+                                      Set(VarShowForm1,true),
+                                      Set(VarShowRev1,false),
+                                      Set(VarShowFilles1,false)
+                                      );
+                                    Size: =11
+                                    Text: ="Low"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Width: =120
+                              - Button4_4:
+                                  Control: ModernButton
+                                  Properties:
+                                    Align: =Align.Center
+                                    Appearance: =If(VarShowRev1,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    BasePaletteColor: =RGBA(5, 102, 178, 1)
+                                    FillPortions: =1
+                                    Font: =Font.'Lato Black'
+                                    FontWeight: =FontWeight.Normal
+                                    Height: =34
+                                    IconStyle: =IconStyle.Filled
+                                    LayoutMinHeight: =16
+                                    LayoutMinWidth: =16
+                                    OnSelect: |-
+                                      =Concurrent(
+                                      Set(VarShowForm1,false),
+                                      Set(VarShowRev1,true),
+                                      Set(VarShowFilles1,false)
+                                      );
+                                    Size: =11
+                                    Text: =" Normal"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Width: =120
+                              - Button4_5:
+                                  Control: ModernButton
+                                  Properties:
+                                    Align: =Align.Center
+                                    Appearance: =If(VarShowFilles1,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    BasePaletteColor: =RGBA(5, 102, 178, 1)
+                                    FillPortions: =1
+                                    Font: =Font.'Lato Black'
+                                    FontWeight: =FontWeight.Normal
+                                    Height: =34
+                                    IconStyle: =IconStyle.Filled
+                                    LayoutMinHeight: =16
+                                    LayoutMinWidth: =16
+                                    OnSelect: |-
+                                      =Concurrent(
+                                      Set(VarShowForm1,false),
+                                      Set(VarShowRev1,false),
+                                      Set(VarShowFilles1,true)
+                                      );
+                                    Size: =11
+                                    Text: ="High"
+                                    VerticalAlign: =VerticalAlign.Middle
+                                    Width: =120
+                  - SubjectCon_1:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =100
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =8
+                        PaddingLeft: =13
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                      Children:
+                        - Text2_6:
+                            Control: HtmlViewer
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Height: =28
+                              HtmlText: ="<span style=""font-family:'Segoe UI';font-size:15px;font-weight:600;color:#242424"">Due Date <span style=""color:#c4302b"">*</span></span>"
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =0
+                              PaddingLeft: =2
+                              PaddingTop: =4
+                        - DatePicker1:
+                            Control: ModernDatePicker
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              BorderColor: =RGBA(122, 138, 143, 1)
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =1
+                              Fill: =RGBA(255, 255, 255, 1)
+                              Format: =DatePickerFormat.Short
+                              Height: =40
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              Placeholder: ="mm/dd/yyyy"
+                              StartDate: =Today()
+                              ValidationState: =If(varTriedSubmit && IsBlank(Self.SelectedDate), ValidationState.Error, ValidationState.None)
+                  - CommentCon:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: =130
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =16
+                        LayoutMinWidth: =16
+                        PaddingBottom: =8
+                        PaddingLeft: =13
+                        PaddingRight: =8
+                        PaddingTop: =8
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                      Children:
+                        - txtCreateCommentLabel:
+                            Control: ModernText
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Stretch
+                              FontWeight: =FontWeight.Bold
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              Text: ="Comment"
+                        - inpCreateComment:
+                            Control: ModernTextInput
+                            Properties:
+                              AccessibleLabel: ="Comment"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              BorderColor: =RGBA(122, 138, 143, 1)
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =1
+                              Fill: =RGBA(255, 255, 255, 1)
+                              Height: =70
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              Placeholder: ="Optional comment, saved to the audit trail"
+                              Type: =TextInputType.Multiline
+            - FooterContainer1_1:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =RGBA(255, 255, 255, 1)
+                  FillPortions: =0
+                  Height: =75
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =20
+                  LayoutJustifyContent: =LayoutJustifyContent.End
+                  LayoutMinHeight: =16
+                  LayoutMinWidth: =16
+                  PaddingBottom: =8
+                  PaddingLeft: =12
+                  PaddingRight: =12
+                  PaddingTop: =8
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                Children:
+                  - Button2:
+                      Control: ModernButton
+                      Properties:
+                        Appearance: =ButtonAppearance.Outline
+                        Height: =40
+                        OnSelect: |-
+                          =Reset(SubjectInput);
+                          Reset(TextInput1_1);
+                          Reset(DatePicker1);
+                          Reset(Combobox1);
+                          Reset(Combobox1_1);
+                          Reset(Combobox1_3);
+                          Reset(Checkbox1);
+                          Reset(inpCreateComment);
+                          ResetForm(frmTaskAttach);
+                          Set(varTriedSubmit, false);
+                          Set(varAssignSelf, false);
+                          Reset(Checkbox1);
+                          Concurrent(
+                              Set(VarShowForm, true),
+                              Set(VarShowRev, false),
+                              Set(VarShowFilles, false),
+                              Set(VarShowForm1, true),
+                              Set(VarShowRev1, false),
+                              Set(VarShowFilles1, false)
+                          );
+
+                          // Signal the SPFx host: it watches the iframe URL hash (#corms=...) and closes the panel
+                          Launch(
+                              fxCloseUrl & "#corms=" & Coalesce(varCloseReason, "cancel"),
+                              {},
+                              LaunchTarget.Replace
+                          );
+                        Text: ="Cancel"
+                        X: =8
+                        Y: =22
+                  - Button2_1:
+                      Control: ModernButton
+                      Properties:
+                        DisplayMode: =If(varIsLoading, DisplayMode.Disabled, DisplayMode.Edit)
+                        FontWeight: =FontWeight.Normal
+                        Height: =40
+                        IconStyle: =IconStyle.Filled
+                        OnSelect: |-
+                          =With(
+                              {
+                                locMissing: Filter(
+                                  Table(
+                                    { Field: "Subject", IsMissing: IsBlank(Trim(SubjectInput.Text)) },
+                                    //{ Field: "Assignee Team", IsMissing: !Checkbox1.Checked && IsBlank(Combobox1.Selected) },
+                                    { Field: "Team Member", IsMissing: !Checkbox1.Checked && IsEmpty(Combobox1_1.SelectedItems) },
+                                    { Field: "Due Date", IsMissing: IsBlank(DatePicker1.SelectedDate) }
+                                  ),
+                                  IsMissing
+                                )
+                              },
+                              If(
+                                !IsEmpty(locMissing),
+                                Set(varTriedSubmit, true);
+                                Notify("Please fill in " & Concat(locMissing, Field, ", "), NotificationType.Error),
+
+                                Set(varIsLoading, true);
+                                IfError(
+                                  // 1. Create the task
+                                  Set(
+                                    varNewTask,
+                                    Patch(
+                                      CORMS_Tasks,
+                                      Defaults(CORMS_Tasks),
+                                      {
+                                        Title: Trim(SubjectInput.Text),
+                                        TaskType: { Value: If(VarShowForm, Button4.Text, If(VarShowRev, Button4_1.Text, Button4_3.Text)) },
+                                        Priority: { Value: Trim(If(VarShowForm1, Button4_2.Text, If(VarShowRev1, Button4_4.Text, Button4_5.Text))) },
+                                        Status: { Value: "Pending" },
+                                        DueDate: DatePicker1.SelectedDate,
+                                        Description: TextInput1_1.Text,
+                                        AssignedToTeam: If(
+                                          Checkbox1.Checked,
+                                          Coalesce(LookUp(CORMS_UserRoles, User.Email = User().Email).Department, ""),
+                                          Combobox1.Selected.Value
+                                        ),
+                                        AssignedToUser: If(
+                                          Checkbox1.Checked,
+                                          Table(fxMe),
+                                          ForAll(
+                                            Combobox1_1.SelectedItems,
+                                            {
+                                              '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+                                              Claims: "i:0#.f|membership|" & Lower(ThisRecord.UserPrincipalName),
+                                              Department: Coalesce(ThisRecord.Department, ""),
+                                              DisplayName: ThisRecord.DisplayName,
+                                              Email: ThisRecord.Mail,
+                                              JobTitle: Coalesce(ThisRecord.JobTitle, ""),
+                                              Picture: ""
+                                            }
+                                          )
+                                        ),
+                                        RelatedCorrespondenceId: If(IsBlank(Combobox1_3.Selected), "", Text(Combobox1_3.Selected.ID))
+                                      }
+                                    )
+                                  );
+                                  // 2. Reference number from the SharePoint ID, so it can never repeat
+                                  Set(varNewRefNo, "TSK-" & Text(Year(Today())) & "-" & Text(varNewTask.ID, "0000"));
+                                  Patch(CORMS_Tasks, varNewTask, { ReferenceNo: varNewRefNo });
+                                  // 3. Upload each file to the CORMS_Attachments library, linked by TaskReferenceNo
+                                  //    (the flow rejects a blank CorrespondenceId, so it is only sent when there is one)
+                                  IfError(
+                                    ForAll(
+                                      AttachControl_4.Attachments,
+                                      If(
+                                        IsBlank(varNewTask.RelatedCorrespondenceId),
+                                        'CORMS-UploadTaskAttachment'.Run(
+                                          { contentBytes: ThisRecord.Value, name: ThisRecord.Name },
+                                          varNewRefNo
+                                        ),
+                                        'CORMS-UploadTaskAttachment'.Run(
+                                          { contentBytes: ThisRecord.Value, name: ThisRecord.Name },
+                                          varNewRefNo,
+                                          { text_1: varNewTask.RelatedCorrespondenceId }
+                                        )
+                                      )
+                                    ),
+                                    Notify("Task " & varNewRefNo & " was created, but a file could not be uploaded. " & FirstError.Message, NotificationType.Warning)
+                                  );
+                                  // 4. Audit + timeline entries
+                                  Patch(
+                                    CORMS_AuditLog,
+                                    Defaults(CORMS_AuditLog),
+                                    {
+                                      Title: varNewRefNo,
+                                      ObjectId: varNewRefNo,
+                                      Action: "Task Created",
+                                      Actor: fxMe,
+                                      Details: "Created " & varNewTask.TaskType.Value & " """ & varNewTask.Title & """ assigned to " & Concat(varNewTask.AssignedToUser, DisplayName, ", ") &
+                                        If(IsEmpty(AttachControl_4.Attachments), "", " with " & CountRows(AttachControl_4.Attachments) & " file(s)")
+                                    }
+                                  );
+                                  // CMS-050.10: the comment is mirrored to the audit trail
+                                  If(
+                                    !IsBlank(Trim(inpCreateComment.Text)),
+                                    Patch(
+                                      CORMS_AuditLog,
+                                      Defaults(CORMS_AuditLog),
+                                      {
+                                        Title: varNewRefNo,
+                                        ObjectId: varNewRefNo,
+                                        Action: "Comment Added",
+                                        Actor: fxMe,
+                                        Details: Trim(inpCreateComment.Text)
+                                      }
+                                    )
+                                  );
+                                  Patch(
+                                    CORMS_Timeline,
+                                    Defaults(CORMS_Timeline),
+                                    {
+                                      Title: "Task created",
+                                      CorrespondenceId: varNewRefNo,
+                                      Actor: fxMe,
+                                      EventTimestamp: Today(),
+                                      Description: "Created as " & varNewTask.TaskType.Value & " - " & varNewTask.Title
+                                    }
+                                  );
+                                  Patch(
+                                    CORMS_Timeline,
+                                    Defaults(CORMS_Timeline),
+                                    {
+                                      Title: "Assigned",
+                                      CorrespondenceId: varNewRefNo,
+                                      Actor: fxMe,
+                                      EventTimestamp: Today(),
+                                      Description: "Assigned to " & Concat(varNewTask.AssignedToUser, DisplayName, ", ") &
+                                        If(IsBlank(varNewTask.AssignedToTeam), "", " (" & varNewTask.AssignedToTeam & ")")
+                                    }
+                                  );
+                                  If(
+                                    !IsBlank(Combobox1_3.Selected),
+                                    Patch(
+                                      CORMS_Timeline,
+                                      Defaults(CORMS_Timeline),
+                                      {
+                                        Title: "Linked",
+                                        CorrespondenceId: varNewRefNo,
+                                        Actor: fxMe,
+                                        EventTimestamp: Today(),
+                                        Description: "Linked to correspondence " & Combobox1_3.Selected.ReferenceNo
+                                      }
+                                    )
+                                  );
+                                  Set(varStatusText, "Task " & varNewRefNo & " created.");
+                                  If(
+                                    !IsEmpty(AttachControl_4.Attachments),
+                                    Patch(
+                                      CORMS_AuditLog,
+                                      Defaults(CORMS_AuditLog),
+                                      {
+                                        Title: varNewRefNo,
+                                        ObjectId: varNewRefNo,
+                                        Action: "Files Attached",
+                                        Actor: fxMe,
+                                        Details: CountRows(AttachControl_4.Attachments) & " file(s) uploaded: " & Concat(AttachControl_4.Attachments, Name, ", ")
+                                      }
+                                    );
+                                    Patch(
+                                      CORMS_Timeline,
+                                      Defaults(CORMS_Timeline),
+                                      {
+                                        Title: "Files attached",
+                                        CorrespondenceId: varNewRefNo,
+                                        Actor: fxMe,
+                                        EventTimestamp: Today(),
+                                        Description: Concat(AttachControl_4.Attachments, Name, ", ")
+                                      }
+                                    )
+                                  );
+                                  Notify("Task " & varNewRefNo & " created successfully.", NotificationType.Success);
+                                  Set(varCloseReason, "created;ref=" & varNewRefNo);
+                                  Select(Button2),
+
+                                  Notify("Could not create the task. " & FirstError.Message, NotificationType.Error)
+                                );
+                                Set(varIsLoading, false)
+                              )
+                          )
+                        Size: =14
+                        Text: ="Create Task"
+                        Width: =100
+                        X: =8
+                        Y: =22

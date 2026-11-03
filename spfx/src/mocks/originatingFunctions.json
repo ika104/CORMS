@@ -1,0 +1,13 @@
+[
+  { "id": "fn-1", "name": "Executive Affairs" },
+  { "id": "fn-2", "name": "Operations Management" },
+  { "id": "fn-3", "name": "Financial Control" },
+  { "id": "fn-4", "name": "Legal Affairs" },
+  { "id": "fn-5", "name": "Human Resources" },
+  { "id": "fn-6", "name": "Information Technology" },
+  { "id": "fn-7", "name": "Sustainability" },
+  { "id": "fn-8", "name": "Procurement" },
+  { "id": "fn-9", "name": "Internal Audit" },
+  { "id": "fn-10", "name": "Corporate Communications" },
+  { "id": "fn-11", "name": "Health, Safety & Environment" }
+]

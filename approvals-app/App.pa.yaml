@@ -1,0 +1,25 @@
+App:
+  Properties:
+    Formulas: |-
+      =// Current user as a SharePoint person value, for Actor columns
+      fxMe = {
+          '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
+          Claims: "i:0#.f|membership|" & Lower(User().Email),
+          Department: "",
+          DisplayName: User().FullName,
+          Email: User().Email,
+          JobTitle: "",
+          Picture: ""
+      };
+      // Page the embedded app navigates to when it is finished; the SPFx host watches for the
+      // #corms= marker on it. Any lightweight same-origin URL works.
+      fxCloseUrl = Coalesce(
+          LookUp(CORMS_AdminConfig, Title = "site.baseUrl").Value,
+          "https://ssloman.sharepoint.com/sites/CORMS"
+      ) & "/_api/web/title";
+    OnStart: |-
+      =Set(
+          varActorName,
+          User().FullName
+      )
+    Theme: =PowerAppsTheme

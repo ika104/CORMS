@@ -1,0 +1,180 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_office365": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "corms_sharedoffice365_appr"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "OriginatorEmail",
+                  "description": "Who to notify - the correspondence originator",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "title": "ReferenceNo",
+                  "description": "Correspondence reference number",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "title": "Subject",
+                  "description": "Correspondence subject",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "title": "Outcome",
+                  "description": "Approved, Rejected or Returned",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_4": {
+                  "title": "StepLabel",
+                  "description": "Step order and name, e.g. Step 2 (Zeyad Elmaghraby)",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_5": {
+                  "title": "ActorName",
+                  "description": "Who took the decision",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_6": {
+                  "title": "Comment",
+                  "description": "Decision comment",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_7": {
+                  "title": "StepStatus",
+                  "description": "Resulting status of the step",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_8": {
+                  "title": "CorrespondenceUrl",
+                  "description": "Link back to the correspondence",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_3"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Skip_when_no_recipient": {
+          "type": "If",
+          "runAfter": {},
+          "expression": {
+            "and": [
+              {
+                "not": {
+                  "equals": [
+                    "@coalesce(triggerBody()?['text'], '')",
+                    ""
+                  ]
+                }
+              }
+            ]
+          },
+          "actions": {
+            "Send_outcome_email": {
+              "type": "OpenApiConnection",
+              "runAfter": {},
+              "inputs": {
+                "parameters": {
+                  "emailMessage/To": "@triggerBody()?['text']",
+                  "emailMessage/Subject": "@{concat(triggerBody()?['text_3'], ' - ', coalesce(triggerBody()?['text_1'], ''), ' ', coalesce(triggerBody()?['text_2'], ''))}",
+                  "emailMessage/Body": "<p>Your correspondence <b>@{coalesce(triggerBody()?['text_1'], '')}</b> - @{coalesce(triggerBody()?['text_2'], '')} was <b>@{triggerBody()?['text_3']}</b>.</p><p>@{coalesce(triggerBody()?['text_4'], '')} by @{coalesce(triggerBody()?['text_5'], '')}.<br/>Step status: @{coalesce(triggerBody()?['text_7'], '')}</p><p>Comment: @{coalesce(triggerBody()?['text_6'], '-')}</p><p><a href=\"@{coalesce(triggerBody()?['text_8'], '')}\">Open the correspondence</a></p>",
+                  "emailMessage/Importance": "Normal"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailV2"
+                },
+                "authentication": {
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+                  "type": "Raw"
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          }
+        },
+        "Respond_to_Power_Apps": {
+          "type": "Response",
+          "kind": "PowerApp",
+          "runAfter": {
+            "Skip_when_no_recipient": [
+              "Succeeded",
+              "Failed",
+              "Skipped"
+            ]
+          },
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "sent": "@{if(equals(coalesce(triggerBody()?['text'], ''), ''), 'false', 'true')}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sent": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {}
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}

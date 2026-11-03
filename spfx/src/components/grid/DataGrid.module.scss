@@ -1,0 +1,334 @@
+.dataGrid {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--corms-neutral-page);
+}
+
+// ─── Toolbar ──────────────────────────────────────────────────────────────────
+
+.gridToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--corms-neutral-panel);
+  border-bottom: 1px solid var(--corms-neutral-border);
+  min-height: 40px;
+}
+
+.gridToolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gridToolbarTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+  white-space: nowrap;
+}
+
+.gridToolbarActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+
+.gridToolbarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+  background: transparent;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--corms-neutral-page);
+    color: var(--corms-text-primary);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.gridToolbarBtnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--corms-brand-navy);
+  border: 1px solid var(--corms-brand-navy);
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--corms-brand-navy-hover);
+  }
+}
+
+// ─── View Toggle ──────────────────────────────────────────────────────────────
+
+.viewToggle {
+  display: inline-flex;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.viewToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--corms-text-secondary);
+
+  &:not(:last-child) {
+    border-inline-end: 1px solid var(--corms-neutral-border);
+  }
+
+  &:hover {
+    background: var(--corms-neutral-page);
+  }
+}
+
+.viewToggleBtnActive {
+  background: var(--corms-brand-navy);
+  color: #fff;
+
+  &:hover {
+    background: var(--corms-brand-navy-hover);
+  }
+}
+
+// ─── Grid Content ─────────────────────────────────────────────────────────────
+
+.gridContent {
+  flex: 1;
+  min-height: 200px;
+}
+
+// ─── Table ────────────────────────────────────────────────────────────────────
+
+// The grid uses domLayout="autoHeight", so the wrapper only needs a floor to keep the
+// loading/empty overlays from collapsing before rows arrive.
+.tableWrap {
+  width: 100%;
+  min-height: 300px;
+}
+
+// ─── Cards ────────────────────────────────────────────────────────────────────
+
+.cardsGrid {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  // The area around the cards takes the themed screen background (a light wash of the site theme)
+  // so the white cards stand out against it, matching the RecordsHub screens. Cards themselves stay
+  // --corms-card-surface (white); the toolbar above keeps the neutral panel colour.
+  background: var(--corms-content-bg);
+}
+
+// Nav rail open (pinned or hover-expanded) leaves less width for content — 3 per row.
+.cardsGridNarrow {
+  grid-template-columns: repeat(3, 1fr);
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Nav rail collapsed to icons-only — the extra width fits a 4th column.
+.cardsGridWide {
+  grid-template-columns: repeat(4, 1fr);
+
+  @media (max-width: 1300px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cardItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--corms-card-surface);
+  border: 1px solid var(--corms-card-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--corms-state-focus);
+    outline-offset: -2px;
+  }
+}
+
+// ─── Selection ────────────────────────────────────────────────────────────────
+
+.selectionCheckbox {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--corms-brand-navy);
+  cursor: pointer;
+}
+
+.selectAllRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 12px 4px 2px;
+  margin: 0 16px 12px;
+  cursor: pointer;
+}
+
+.selectAllLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+// The card's selection checkbox, rendered inside the card header beside the actions menu.
+.cardCheckbox {
+  display: inline-flex;
+  align-items: center;
+}
+
+// Only applied when the caller wires onRowClick — otherwise the card isn't interactive
+// and shouldn't look it.
+.cardItemClickable {
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.cardsLoadingWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+// ─── Pagination ───────────────────────────────────────────────────────────────
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--corms-neutral-panel);
+  border-top: 1px solid var(--corms-neutral-border);
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+  flex-wrap: wrap;
+}
+
+.paginationLeft {
+  display: flex;
+  align-items: center;
+}
+
+.pageSizeLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+  white-space: nowrap;
+}
+
+.pageSizeSelect {
+  padding: 2px 4px;
+  font-size: 13px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  background: var(--corms-neutral-page);
+  color: var(--corms-text-primary);
+}
+
+.paginationCenter {
+  display: flex;
+  align-items: center;
+}
+
+.paginationRange {
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+  white-space: nowrap;
+}
+
+.paginationRight {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pageBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  background: var(--corms-neutral-page);
+  color: var(--corms-text-secondary);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--corms-neutral-panel);
+    color: var(--corms-text-primary);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.pageInfo {
+  padding: 0 8px;
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+  white-space: nowrap;
+}

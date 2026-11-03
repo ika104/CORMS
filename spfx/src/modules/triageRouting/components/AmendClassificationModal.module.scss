@@ -1,0 +1,159 @@
+.introNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-bottom: 14px;
+  border-radius: 6px;
+  background: var(--corms-neutral-panel);
+  color: var(--corms-text-secondary);
+  font-size: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+}
+
+.required {
+  color: var(--corms-brand-red);
+}
+
+.select {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page);
+  width: 100%;
+  // Without this the padding+border are added on top of the 100% width, so the field (notably the
+  // native date input for Handling Deadline) overflows its grid column and misaligns.
+  box-sizing: border-box;
+  height: 36px;
+}
+
+.changePreview {
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+  background: var(--corms-neutral-panel);
+}
+
+.previewTitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--corms-text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.noChanges {
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+.changeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 3px 0;
+}
+
+.changeField {
+  min-width: 130px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.changeFrom {
+  color: var(--corms-text-secondary);
+  text-decoration: line-through;
+}
+
+.changeTo {
+  color: var(--corms-brand-navy);
+  font-weight: 600;
+}
+
+.reason {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page);
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.reasonHint {
+  font-size: 11px;
+  color: var(--corms-brand-red);
+}
+
+.saveState,
+.successState,
+.errorState {
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.saveState {
+  display: flex;
+  justify-content: center;
+  background: var(--corms-neutral-panel);
+}
+
+.successState {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #dff6dd;
+  color: #0b5a0b;
+
+  strong,
+  span {
+    display: block;
+  }
+
+  span {
+    margin-top: 3px;
+    font-size: 12px;
+  }
+}
+
+.errorState {
+  border: 1px solid #c50f1f;
+  background: #fde7e9;
+  color: #a4262c;
+  font-size: 12px;
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

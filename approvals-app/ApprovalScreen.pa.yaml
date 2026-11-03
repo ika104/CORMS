@@ -1,0 +1,1236 @@
+Screens:
+  ApprovalScreen:
+    Properties:
+      Fill: =RGBA(243, 244, 246, 1)
+      LoadingSpinnerColor: =RGBA(0, 120, 212, 1)
+      OnVisible: =Select(btnLoad)
+    Children:
+      - btnLoad:
+          Control: ModernButton
+          Properties:
+            Height: =1
+            OnSelect: |-
+              =Set(varBusy, true);
+              Set(varPanelError, "");
+              Set(varSigningUrl, "");
+              // Initial value for the panel's bound action channel; the component writes into it.
+              Set(varPanelActionIn, "");
+              Set(varActorName, User().FullName);
+              Set(varLastActionAt, "");
+              // &approvalTaskId= is the task to open; &correspondenceId= opens this user's own
+              // pending task on that correspondence instead.
+              Set(varTaskId, Value(Coalesce(Param("approvalTaskId"), Param("taskId"), "0")));
+              Set(
+                  varCorrId,
+                  If(
+                      varTaskId > 0,
+                      Text(LookUp(CORMS_ApprovalTasks, ID = varTaskId).CorrespondenceId),
+                      Coalesce(Param("correspondenceId"), "")
+                  )
+              );
+              // No parameter at all (Studio preview, or the app opened directly): fall back to this
+              // user's own oldest pending approval task.
+              If(
+                  varTaskId = 0 && IsBlank(varCorrId),
+                  Set(
+                      varCorrId,
+                      Text(
+                          First(
+                              Sort(
+                                  Filter(
+                                      CORMS_ApprovalTasks,
+                                      Status.Value = "Pending" && (
+                                          Lower(User().Email) in Lower(AssignedToId) ||
+                                          Lower(AssignedToName) = Lower(User().FullName)
+                                      )
+                                  ),
+                                  StepOrder,
+                                  SortOrder.Ascending
+                              )
+                          ).CorrespondenceId
+                      )
+                  )
+              );
+              // Nothing matched by name or claims - fall back to any pending task, so preview and
+              // a bare app link still show something to work with.
+              If(
+                  IsBlank(varCorrId),
+                  Set(
+                      varCorrId,
+                      Text(
+                          First(
+                              Sort(Filter(CORMS_ApprovalTasks, Status.Value = "Pending"), ID)
+                          ).CorrespondenceId
+                      )
+                  )
+              );
+              // Rule 1 - a Return or Reject starts a new round; only the latest one counts.
+              ClearCollect(
+                  colAllSteps,
+                  Filter(CORMS_ApprovalTasks, CorrespondenceId = varCorrId)
+              );
+              Set(varLatestRound, Coalesce(Max(colAllSteps, Coalesce(Round, 1)), 1));
+              ClearCollect(
+                  colSteps,
+                  Filter(colAllSteps, Coalesce(Round, 1) = varLatestRound)
+              );
+              If(
+                  varTaskId = 0,
+                  Set(
+                      varTaskId,
+                      Coalesce(
+                          First(
+                              Sort(
+                                  Filter(
+                                      colSteps,
+                                      Status.Value = "Pending" && (
+                                          IsBlank(AssignedToId) ||
+                                          Lower(User().Email) in Lower(AssignedToId) ||
+                                          Lower(AssignedToName) = Lower(User().FullName)
+                                      )
+                                  ),
+                                  StepOrder
+                              )
+                          ).ID,
+                          0
+                      )
+                  )
+              );
+              Set(varTask, LookUp(colAllSteps, ID = varTaskId));
+              Set(varCorr, LookUp(CORMS_Correspondence, ID = Value(varCorrId)));
+              // Signing needs the flow address (same row SPFx reads) and the main document.
+              Set(varFlowUrl, LookUp(CORMS_AdminConfig, Title = "signature.flowUrl").Value);
+              Set(varNotifyUrl, LookUp(CORMS_AdminConfig, Title = "notification.flowUrl").Value);
+              Set(varTeamsId, Coalesce(LookUp(CORMS_AdminConfig, Title = "notification.teamsTeamId").Value, ""));
+              Set(
+                  varSiteUrl,
+                  Coalesce(
+                      LookUp(CORMS_AdminConfig, Title = "site.baseUrl").Value,
+                      "https://ssloman.sharepoint.com/sites/CORMS"
+                  )
+              );
+              Set(
+                  varTenantUrl,
+                  If(
+                      Find("/sites/", varSiteUrl) > 0,
+                      Left(varSiteUrl, Find("/sites/", varSiteUrl) - 1),
+                      varSiteUrl
+                  )
+              );
+              Set(varReturnUrl, varTenantUrl & "/_layouts/15/images/blank.gif?cormsSigning=1");
+              Set(
+                  varMainDoc,
+                  LookUp(CORMS_Attachments, CorrespondenceId = varCorrId && IsMainLetter = true)
+              );
+              If(
+                  IsBlank(varMainDoc.ID),
+                  Set(
+                      varMainDoc,
+                      First(Sort(Filter(CORMS_Attachments, CorrespondenceId = varCorrId), ID))
+                  )
+              );
+              Set(
+                  varStepRaw,
+                  ForAll(
+                      Sort(Distinct(colSteps, StepOrder), Value) As so,
+                      With(
+                          {st: Filter(colSteps, StepOrder = so.Value)},
+                          {
+                              stepOrder: so.Value,
+                              stepName: First(st).StepName,
+                              actionComments: First(st).ActionComments,
+                              status: If(
+                                  CountRows(Filter(st, Status.Value = "Rejected")) > 0, "Rejected",
+                                  CountRows(Filter(st, Status.Value = "Returned")) > 0, "Returned",
+                                  CountRows(Filter(st, Status.Value = "Cancelled")) = CountRows(st) && CountRows(st) > 0, "Cancelled",
+                                  Lower(Text(First(st).ApprovalMode.Value)) = "any",
+                                      If(CountRows(Filter(st, Status.Value = "Approved")) >= 1, "Approved", "Pending"),
+                                  CountRows(Filter(st, Status.Value = "Approved")) = CountRows(st) && CountRows(st) > 0, "Approved",
+                                  "Pending"
+                              )
+                          }
+                      )
+                  )
+              );
+              Set(varRejOrder, Min(Filter(varStepRaw, status = "Rejected"), stepOrder));
+              Set(
+                  varChain,
+                  ForAll(
+                      varStepRaw As s,
+                      {
+                          stepOrder: s.stepOrder,
+                          stepName: s.stepName,
+                          actionComments: s.actionComments,
+                          status: If(
+                              !IsBlank(varRejOrder) && s.stepOrder > varRejOrder,
+                              "Cancelled",
+                              s.status
+                          )
+                      }
+                  )
+              );
+              // The active step is the earliest that isn't approved; the chain's outcome is that
+              // step's status, and the correspondence takes the matching list choice.
+              Set(varFirstOpen, First(Sort(Filter(varChain, status <> "Approved"), stepOrder)));
+              Set(varActiveStep, varFirstOpen.stepOrder);
+              // Rule 3 - a round is a review round when every task is Phase Review, a signing
+              // round when every task is Phase Signing; anything else is an older chain.
+              Set(
+                  varPhase,
+                  If(
+                      CountRows(colSteps) = 0, "Legacy",
+                      CountRows(Filter(colSteps, Text(Phase.Value) = "Review")) = CountRows(colSteps), "Review",
+                      CountRows(Filter(colSteps, Text(Phase.Value) = "Signing")) = CountRows(colSteps), "Signing",
+                      "Legacy"
+                  )
+              );
+              Set(
+                  varOutcomeNow,
+                  If(IsBlank(varFirstOpen.stepOrder), "Approved", varFirstOpen.status)
+              );
+              Set(
+                  varCorrStatus,
+                  Switch(
+                      varPhase,
+                      "Review",
+                          Switch(
+                              varOutcomeNow,
+                              "Approved", "Awaiting Final Confirmation",
+                              "Rejected", "Returned to Author",
+                              "Returned", "Returned to Author",
+                              "In Review"
+                          ),
+                      "Signing",
+                          Switch(
+                              varOutcomeNow,
+                              "Approved", "Signed",
+                              "Rejected", "Rejected",
+                              "Returned", "Change Requested",
+                              "Awaiting Signature"
+                          ),
+                      Switch(
+                          varOutcomeNow,
+                          "Approved", "Approved",
+                          "Rejected", "Rejected",
+                          "Returned", "Draft",
+                          "In Review"
+                      )
+                  )
+              );
+              // CMS-048 - who holds the item right now within the active step. A Department step
+              // in "All" mode is sequential: only the most junior unsigned member may act, and the
+              // item climbs the seniority ladder as each one signs. Every other shape (Reviewer,
+              // Group, Department "Any") dispatches in parallel, so any pending member may act.
+              Set(varMyStepTasks, Filter(colSteps, StepOrder = varTask.StepOrder));
+              Set(
+                  varActiveTaskId,
+                  If(
+                      Text(First(varMyStepTasks).StepType.Value) = "Department" &&
+                      Lower(Text(First(varMyStepTasks).ApprovalMode.Value)) <> "any",
+                          First(
+                              Sort(
+                                  Filter(varMyStepTasks, Status.Value = "Pending"),
+                                  Coalesce(Seniority, 999999)
+                              )
+                          ).ID,
+                          varTask.ID
+                  )
+              );
+              // Only the assignee of the pending task in the active step gets the decision buttons,
+              // and only while it is their turn in the ladder.
+              // CMS-017 - a delegate acts for the assignee while the delegation is live.
+              Set(
+                  varDelegations,
+                  Filter(
+                      CORMS_Delegations,
+                      StartDate <= Today() && EndDate >= Today()
+                  )
+              );
+              Set(
+                  varIsDelegate,
+                  CountRows(
+                      Filter(
+                          varDelegations,
+                          Lower(Delegate.Email) = Lower(User().Email) && (
+                              Lower(Delegator.Email) in Lower(varTask.AssignedToId) ||
+                              Lower(Delegator.DisplayName) = Lower(varTask.AssignedToName)
+                          )
+                      )
+                  ) > 0
+              );
+              // "Zeyad Elmaghraby on behalf of Abdullah Reda" when someone stands in.
+              Set(
+                  varActorLabel,
+                  varActorName &
+                  If(
+                      varIsDelegate && !IsBlank(varTask.AssignedToName),
+                      " on behalf of " & varTask.AssignedToName,
+                      ""
+                  )
+              );
+              Set(
+                  varCanAct,
+                  !IsBlank(varTask.ID) && Text(varTask.Status.Value) = "Pending" &&
+                  varTask.StepOrder = varActiveStep && varTask.ID = varActiveTaskId && (
+                      IsBlank(varTask.AssignedToId) ||
+                      Lower(User().Email) in Lower(varTask.AssignedToId) ||
+                      Lower(varTask.AssignedToName) = Lower(User().FullName) ||
+                      varIsDelegate
+                  )
+              );
+              Set(
+                  varPanelData,
+                  If(
+                      IsBlank(varTask.ID),
+                      "",
+                      JSON(
+                          {
+                              subject: Coalesce(varCorr.Title, varTask.Title),
+                              referenceNo: Coalesce(varCorr.ReferenceNo, varTask.ReferenceNo),
+                              sender: varCorr.Sender.DisplayName,
+                              dueDate: If(IsBlank(varCorr.DueDate), "", Text(varCorr.DueDate, "dd/mm/yyyy")),
+                              isOverdue: !IsBlank(varCorr.DueDate) && varCorr.DueDate < Today() && varCorrStatus <> "Approved",
+                              securityLevel: Text(varCorr.SecurityLevel.Value),
+                              correspondenceStatus: Text(varCorr.Status.Value),
+                              phase: varPhase,
+                              round: varLatestRound,
+                              task: {
+                                  stepOrder: varTask.StepOrder,
+                                  stepName: varTask.StepName,
+                                  stepType: Text(varTask.StepType.Value),
+                                  assignedToName: varTask.AssignedToName,
+                                  requireSignature: varTask.RequireSignature,
+                                  signatureCompleted: !IsBlank(varTask.SignatureCompletedAt),
+                                  status: Text(varTask.Status.Value),
+                                  stateLabel: If(Text(varTask.Status.Value) = "Pending", "To do", Text(varTask.Status.Value)),
+                                  decidedBy: varTask.DecidedBy,
+                                  decisionComment: varTask.DecisionComment
+                              },
+                              steps: varChain
+                          },
+                          JSONFormat.IgnoreUnsupportedTypes
+                      )
+                  )
+              );
+              Set(varBusy, false)
+            Visible: =false
+            Width: =1
+            X: =-200
+            Y: =-200
+      - tmrPanel:
+          Control: Timer
+          Properties:
+            AutoStart: =true
+            Duration: =300
+            Height: =1
+            OnTimerEnd: |-
+              =// ActionAt changes on every report, so one action is handled once.
+              // Canvas surfaces a component's writes through its bound property, so the action
+              // arrives inside Action, which is the only output canvas surfaces. Blank until the
+              // component writes, and ParseJSON rejects an empty string.
+              Set(varAct, If(IsBlank(ApprovalPanel7.Action), Blank(), ParseJSON(ApprovalPanel7.Action)));
+              Set(varActAt, Text(varAct.at));
+              If(
+              !IsBlank(varActAt) && varActAt <> varLastActionAt,
+              Set(varLastActionAt, varActAt);
+              Set(varComment, Text(varAct.comment));
+              Switch(
+              Text(varAct.action),
+              "Approve",
+              Set(varOutcome, "Approved");
+              Set(varDecideNow, true),
+              "Reject",
+              Set(varOutcome, "Rejected");
+              Set(varDecideNow, true),
+              "Return",
+              Set(varOutcome, "Returned");
+              Set(varDecideNow, true),
+              "RequestSignature",
+              Set(varBusy, true);
+              Set(varPanelError, "");
+              If(
+              IsBlank(varFlowUrl),
+              Set(varPanelError, "signature.flowUrl is not set in Admin Configuration."),
+              IsBlank(varMainDoc.ID),
+              Set(varPanelError, "This correspondence has no document to sign."),
+              Set(
+              varSignRes,
+              IfError(
+              'CORMS-SigningBridge'.Run(
+              varFlowUrl,
+              "CreateSigningRequest",
+              {
+              text_3: varCorrId,
+              text_4: Coalesce(varCorr.ReferenceNo, ""),
+              text_5: Coalesce(varCorr.Title, ""),
+              text_6: varMainDoc.'File name with extension',
+              text_7: varMainDoc.'Full Path',
+              text_8: varActorName,
+              text_9: Lower(User().Email),
+              text_10: varReturnUrl,
+              text_11: Coalesce(varTask.SignaturePlacement, "")
+              }
+              ),
+              {
+              contentbase64: "",
+              error: "The signing flow could not be called - " & FirstError.Message,
+              externaldocumentid: "",
+              iscompleted: "false",
+              signingurl: "",
+              status: ""
+              }
+              )
+              );
+              If(
+              !IsBlank(varSignRes.error),
+              Set(varPanelError, varSignRes.error),
+              IsBlank(varSignRes.signingurl),
+              Set(varPanelError, "The signing provider did not return a signing link."),
+              Patch(
+              CORMS_ApprovalTasks,
+              LookUp(CORMS_ApprovalTasks, ID = varTaskId),
+              {
+              SignatureExternalDocumentId: varSignRes.externaldocumentid,
+              SignatureRequestedAt: Now(),
+              SignatureRequestedBy: varActorName
+              }
+              );
+              Patch(
+              CORMS_AuditLog,
+              Defaults(CORMS_AuditLog),
+              {
+              Title: Coalesce(varCorr.ReferenceNo, varCorrId),
+              ObjectId: varCorrId,
+              Action: "Approval signature requested",
+              Actor: fxMe,
+              Details: "Step " & varTask.StepOrder & " (" & varTask.StepName &
+              ") signing request created by " & varActorName &
+              " - external document " & varSignRes.externaldocumentid
+              }
+              );
+              Patch(
+              CORMS_Timeline,
+              Defaults(CORMS_Timeline),
+              {
+              Title: "Signature requested",
+              CorrespondenceId: varCorrId,
+              Actor: fxMe,
+              EventTimestamp: Now(),
+              EventType: {Value: "SignatureRequested"},
+              Description: "Step " & varTask.StepOrder & " (" & varTask.StepName &
+              ") sent for signature as " & varMainDoc.'File name with extension'
+              }
+              );
+              // CMS-007 - one row per signing request, for the signing dashboard.
+              Patch(
+              CORMS_SigningSessions,
+              Defaults(CORMS_SigningSessions),
+              {
+              Title: Coalesce(varCorr.ReferenceNo, varCorrId),
+              CorrespondenceId: varCorrId,
+              ReferenceNo: Coalesce(varCorr.ReferenceNo, ""),
+              Subject: Coalesce(varCorr.Title, ""),
+              SignerName: varActorName,
+              SignerEmail: Lower(User().Email),
+              ExternalDocumentId: varSignRes.externaldocumentid,
+              Status: {Value: "Sent"},
+              SentAt: Now()
+              }
+              );
+              // Rule 1 - a Return or Reject starts a new round; only the latest one counts.
+              ClearCollect(colAllSteps, Filter(CORMS_ApprovalTasks, CorrespondenceId = varCorrId));
+              Set(varLatestRound, Coalesce(Max(colAllSteps, Coalesce(Round, 1)), 1));
+              ClearCollect(colSteps, Filter(colAllSteps, Coalesce(Round, 1) = varLatestRound));
+              Set(varTask, LookUp(colAllSteps, ID = varTaskId));
+              Set(varPollCount, 0);
+                      Set(varSigningUrl, varSignRes.signingurl)
+              )
+              );
+              Set(varBusy, false),
+              "SigningEnded",
+              // The frame return cannot be read across origins, so the provider is
+              // asked instead - this just requests a check.
+              Set(varPollNow, true),
+              "OpenCorrespondence",
+              // A new tab, not the frame: replacing the frame would load the whole
+              // CORMS site inside this panel.
+              Launch(
+                varSiteUrl & "#/correspondence/" & varCorrId,
+                {},
+                LaunchTarget.New
+              ),
+              "Close",
+              Launch(fxCloseUrl & "#corms=close", {}, LaunchTarget.Replace)
+              )
+              );
+              // While a signing session is open, ask the provider every few seconds whether it is
+              // done - roughly every 4s at a 300ms tick.
+              Set(varTick, Mod(Coalesce(varTick, 0) + 1, 1000));
+              If(
+              (
+              varPollNow ||
+              (
+              !IsBlank(varSigningUrl) &&
+              IsBlank(varTask.SignatureCompletedAt) &&
+              Coalesce(varPollCount, 0) < 40 &&
+              Mod(varTick, 50) = 0
+              )
+              ) && !IsBlank(varTask.SignatureExternalDocumentId),
+              Set(varPollManual, varPollNow);
+              Set(varPollNow, false);
+              Set(varPollCount, If(varPollManual, 0, Coalesce(varPollCount, 0) + 1));
+              If(varPollManual, Set(varBusy, true); Set(varPanelError, ""));
+              Set(
+              varStatusRes,
+              IfError(
+              'CORMS-SigningBridge'.Run(
+              varFlowUrl,
+              "GetSigningStatus",
+              {text_2: varTask.SignatureExternalDocumentId}
+              ),
+              {
+              contentbase64: "",
+              error: "The signing flow could not be called - " & FirstError.Message,
+              externaldocumentid: "",
+              iscompleted: "false",
+              signingurl: "",
+              status: ""
+              }
+              )
+              );
+              If(
+              !IsBlank(varStatusRes.error),
+              Set(varPanelError, varStatusRes.error)
+              );
+              If(
+              varStatusRes.iscompleted <> "true",
+              If(varPollManual, Set(varPanelError, "The signing provider has not reported this document as signed yet.")),
+              Set(
+              varSignedRes,
+              IfError(
+              'CORMS-SigningBridge'.Run(
+              varFlowUrl,
+              "GetSignedDocument",
+              {
+              text_2: varTask.SignatureExternalDocumentId,
+              text_6: varMainDoc.'File name with extension',
+              text_7: varMainDoc.'Full Path'
+              }
+              ),
+              {
+              contentbase64: "",
+              error: "The signing flow could not be called - " & FirstError.Message,
+              externaldocumentid: "",
+              iscompleted: "false",
+              signingurl: "",
+              status: ""
+              }
+              )
+              );
+              If(
+              !IsBlank(varSignedRes.error),
+              Set(varPanelError, varSignedRes.error)
+              );
+              Patch(
+              CORMS_ApprovalTasks,
+              LookUp(CORMS_ApprovalTasks, ID = varTaskId),
+              {
+              SignatureCompletedBy: varActorName,
+              SignatureCompletedAt: Now()
+              }
+              );
+              Set(
+              varSession,
+              LookUp(
+              CORMS_SigningSessions,
+              ExternalDocumentId = varTask.SignatureExternalDocumentId
+              )
+              );
+              If(
+              !IsBlank(varSession.ID),
+              Patch(
+              CORMS_SigningSessions,
+              varSession,
+              {Status: {Value: "Signed"}, SignedAt: Now()}
+              )
+              );
+              Patch(
+              CORMS_AuditLog,
+              Defaults(CORMS_AuditLog),
+              {
+              Title: Coalesce(varCorr.ReferenceNo, varCorrId),
+              ObjectId: varCorrId,
+              Action: "Approval signature completed",
+              Actor: fxMe,
+              Details: "Step " & varTask.StepOrder & " (" & varTask.StepName &
+              ") signature verified for external document " & varTask.SignatureExternalDocumentId
+              }
+              );
+              Patch(
+              CORMS_Timeline,
+              Defaults(CORMS_Timeline),
+              {
+              Title: "Signed",
+              CorrespondenceId: varCorrId,
+              Actor: fxMe,
+              EventTimestamp: Now(),
+              EventType: {Value: "Signed"},
+              Description: "Step " & varTask.StepOrder & " (" & varTask.StepName & ") signature verified"
+              }
+              );
+              // Rule 1 - a Return or Reject starts a new round; only the latest one counts.
+              ClearCollect(colAllSteps, Filter(CORMS_ApprovalTasks, CorrespondenceId = varCorrId));
+              Set(varLatestRound, Coalesce(Max(colAllSteps, Coalesce(Round, 1)), 1));
+              ClearCollect(colSteps, Filter(colAllSteps, Coalesce(Round, 1) = varLatestRound));
+              Set(varTask, LookUp(colAllSteps, ID = varTaskId));
+              Set(varSigningUrl, "");
+              // One click: the approver already chose Approve before signing.
+              Set(varOutcome, "Approved");
+              Set(varDecideNow, true);
+              Set(
+              varStepRaw,
+              ForAll(
+              Sort(Distinct(colSteps, StepOrder), Value) As so,
+              With(
+              {st: Filter(colSteps, StepOrder = so.Value)},
+              {
+              stepOrder: so.Value,
+              stepName: First(st).StepName,
+                              actionComments: First(st).ActionComments,
+              status: If(
+              CountRows(Filter(st, Status.Value = "Rejected")) > 0, "Rejected",
+              CountRows(Filter(st, Status.Value = "Returned")) > 0, "Returned",
+              CountRows(Filter(st, Status.Value = "Cancelled")) = CountRows(st) && CountRows(st) > 0, "Cancelled",
+              Lower(Text(First(st).ApprovalMode.Value)) = "any",
+              If(CountRows(Filter(st, Status.Value = "Approved")) >= 1, "Approved", "Pending"),
+              CountRows(Filter(st, Status.Value = "Approved")) = CountRows(st) && CountRows(st) > 0, "Approved",
+              "Pending"
+              )
+              }
+              )
+              )
+              );
+              Set(varRejOrder, Min(Filter(varStepRaw, status = "Rejected"), stepOrder));
+              Set(
+              varChain,
+              ForAll(
+              varStepRaw As s,
+              {
+              stepOrder: s.stepOrder,
+              stepName: s.stepName,
+                          actionComments: s.actionComments,
+              status: If(
+              !IsBlank(varRejOrder) && s.stepOrder > varRejOrder,
+              "Cancelled",
+              s.status
+              )
+              }
+              )
+              );
+              // The active step is the earliest that isn't approved; the chain's outcome is that
+              // step's status, and the correspondence takes the matching list choice.
+              Set(varFirstOpen, First(Sort(Filter(varChain, status <> "Approved"), stepOrder)));
+              Set(varActiveStep, varFirstOpen.stepOrder);
+              Set(
+              varPhase,
+              If(
+              CountRows(colSteps) = 0, "Legacy",
+              CountRows(Filter(colSteps, Text(Phase.Value) = "Review")) = CountRows(colSteps), "Review",
+              CountRows(Filter(colSteps, Text(Phase.Value) = "Signing")) = CountRows(colSteps), "Signing",
+              "Legacy"
+              )
+              );
+              Set(varOutcomeNow, If(IsBlank(varFirstOpen.stepOrder), "Approved", varFirstOpen.status));
+              Set(
+              varCorrStatus,
+              Switch(
+              varPhase,
+              "Review",
+              Switch(
+              varOutcomeNow,
+              "Approved", "Awaiting Final Confirmation",
+              "Rejected", "Returned to Author",
+              "Returned", "Returned to Author",
+              "In Review"
+              ),
+              "Signing",
+              Switch(
+              varOutcomeNow,
+              "Approved", "Signed",
+              "Rejected", "Rejected",
+              "Returned", "Change Requested",
+              "Awaiting Signature"
+              ),
+              Switch(
+              varOutcomeNow,
+              "Approved", "Approved",
+              "Rejected", "Rejected",
+              "Returned", "Draft",
+              "In Review"
+              )
+              )
+              );
+              // CMS-048 - who holds the item right now within the active step. A Department step
+              // in "All" mode is sequential: only the most junior unsigned member may act, and the
+              // item climbs the seniority ladder as each one signs. Every other shape (Reviewer,
+              // Group, Department "Any") dispatches in parallel, so any pending member may act.
+              Set(varMyStepTasks, Filter(colSteps, StepOrder = varTask.StepOrder));
+              Set(
+              varActiveTaskId,
+              If(
+              Text(First(varMyStepTasks).StepType.Value) = "Department" &&
+              Lower(Text(First(varMyStepTasks).ApprovalMode.Value)) <> "any",
+              First(
+              Sort(
+              Filter(varMyStepTasks, Status.Value = "Pending"),
+              Coalesce(Seniority, 999999)
+              )
+              ).ID,
+              varTask.ID
+              )
+              );
+              // Only the assignee of the pending task in the active step gets the decision buttons,
+              // and only while it is their turn in the ladder.
+              // CMS-017 - a delegate acts for the assignee while the delegation is live.
+              Set(
+              varDelegations,
+              Filter(
+              CORMS_Delegations,
+              StartDate <= Today() && EndDate >= Today()
+              )
+              );
+              Set(
+              varIsDelegate,
+              CountRows(
+              Filter(
+              varDelegations,
+              Lower(Delegate.Email) = Lower(User().Email) && (
+              Lower(Delegator.Email) in Lower(varTask.AssignedToId) ||
+              Lower(Delegator.DisplayName) = Lower(varTask.AssignedToName)
+              )
+              )
+              ) > 0
+              );
+              // "Zeyad Elmaghraby on behalf of Abdullah Reda" when someone stands in.
+              Set(
+              varActorLabel,
+              varActorName &
+              If(
+              varIsDelegate && !IsBlank(varTask.AssignedToName),
+              " on behalf of " & varTask.AssignedToName,
+              ""
+              )
+              );
+              Set(
+              varCanAct,
+              !IsBlank(varTask.ID) && Text(varTask.Status.Value) = "Pending" &&
+              varTask.StepOrder = varActiveStep && varTask.ID = varActiveTaskId && (
+              IsBlank(varTask.AssignedToId) ||
+              Lower(User().Email) in Lower(varTask.AssignedToId) ||
+              Lower(varTask.AssignedToName) = Lower(User().FullName) ||
+              varIsDelegate
+              )
+              );
+              Set(
+              varPanelData,
+              If(
+              IsBlank(varTask.ID),
+              "",
+              JSON(
+              {
+              subject: Coalesce(varCorr.Title, varTask.Title),
+              referenceNo: Coalesce(varCorr.ReferenceNo, varTask.ReferenceNo),
+              sender: varCorr.Sender.DisplayName,
+              dueDate: If(IsBlank(varCorr.DueDate), "", Text(varCorr.DueDate, "dd/mm/yyyy")),
+              isOverdue: !IsBlank(varCorr.DueDate) && varCorr.DueDate < Today() && varCorrStatus <> "Approved",
+              securityLevel: Text(varCorr.SecurityLevel.Value),
+              correspondenceStatus: Text(varCorr.Status.Value),
+              phase: varPhase,
+              round: varLatestRound,
+              task: {
+              stepOrder: varTask.StepOrder,
+              stepName: varTask.StepName,
+              stepType: Text(varTask.StepType.Value),
+              assignedToName: varTask.AssignedToName,
+              requireSignature: varTask.RequireSignature,
+              signatureCompleted: !IsBlank(varTask.SignatureCompletedAt),
+              status: Text(varTask.Status.Value),
+              stateLabel: If(Text(varTask.Status.Value) = "Pending", "To do", Text(varTask.Status.Value)),
+              decidedBy: varTask.DecidedBy,
+              decisionComment: varTask.DecisionComment
+              },
+              steps: varChain
+              },
+              JSONFormat.IgnoreUnsupportedTypes
+              )
+              )
+              )
+              );
+              If(varPollManual, Set(varBusy, false));
+              );
+              // The decision itself - from a button, or straight after signing.
+              If(
+              varDecideNow,
+              Set(varDecideNow, false);
+              Set(varBusy, true);
+              Set(varPanelError, "");
+              If(
+              // A task that has already been decided is never re-decided (CMS-048 AC6).
+              Text(varTask.Status.Value) <> "Pending",
+              Set(varPanelError, "This task has already been decided."),
+              // An approval that needs a signature waits for the completed signature.
+              varOutcome = "Approved" && varTask.RequireSignature && IsBlank(varTask.SignatureCompletedAt),
+              Set(varPanelError, "A completed signature is required before this task can be approved."),
+              IsBlank(Trim(varComment)),
+              Set(varPanelError, "A comment is required for every decision."),
+              Patch(
+              CORMS_ApprovalTasks,
+              LookUp(CORMS_ApprovalTasks, ID = varTaskId),
+              {
+              Status: {Value: varOutcome},
+              DecisionComment: varComment,
+              DecidedBy: varActorName,
+              DecidedAt: Now()
+              }
+              );
+              // Rule 4.3 - a Reject or a Return ends the round: nobody acts on what is left,
+              // including tasks an earlier round left Pending.
+              If(
+              varOutcome = "Rejected" || varOutcome = "Returned",
+              // One batched Patch, not a Patch per row inside ForAll.
+              Patch(
+              CORMS_ApprovalTasks,
+              ForAll(
+              Filter(colAllSteps, Status.Value = "Pending" && ID <> varTaskId) As t,
+              {
+              ID: t.ID,
+              Status: {Value: "Cancelled"},
+              DecidedAt: Now()
+              }
+              )
+              )
+              );
+              // Rule 1 - a Return or Reject starts a new round; only the latest one counts.
+              ClearCollect(colAllSteps, Filter(CORMS_ApprovalTasks, CorrespondenceId = varCorrId));
+              Set(varLatestRound, Coalesce(Max(colAllSteps, Coalesce(Round, 1)), 1));
+              ClearCollect(colSteps, Filter(colAllSteps, Coalesce(Round, 1) = varLatestRound));
+              Set(varTask, LookUp(colAllSteps, ID = varTaskId));
+              Set(
+              varStepRaw,
+              ForAll(
+              Sort(Distinct(colSteps, StepOrder), Value) As so,
+              With(
+              {st: Filter(colSteps, StepOrder = so.Value)},
+              {
+              stepOrder: so.Value,
+              stepName: First(st).StepName,
+                              actionComments: First(st).ActionComments,
+              status: If(
+              CountRows(Filter(st, Status.Value = "Rejected")) > 0, "Rejected",
+              CountRows(Filter(st, Status.Value = "Returned")) > 0, "Returned",
+              CountRows(Filter(st, Status.Value = "Cancelled")) = CountRows(st) && CountRows(st) > 0, "Cancelled",
+              Lower(Text(First(st).ApprovalMode.Value)) = "any",
+              If(CountRows(Filter(st, Status.Value = "Approved")) >= 1, "Approved", "Pending"),
+              CountRows(Filter(st, Status.Value = "Approved")) = CountRows(st) && CountRows(st) > 0, "Approved",
+              "Pending"
+              )
+              }
+              )
+              )
+              );
+              Set(varRejOrder, Min(Filter(varStepRaw, status = "Rejected"), stepOrder));
+              Set(
+              varChain,
+              ForAll(
+              varStepRaw As s,
+              {
+              stepOrder: s.stepOrder,
+              stepName: s.stepName,
+                          actionComments: s.actionComments,
+              status: If(
+              !IsBlank(varRejOrder) && s.stepOrder > varRejOrder,
+              "Cancelled",
+              s.status
+              )
+              }
+              )
+              );
+              // The active step is the earliest that isn't approved; the chain's outcome is that
+              // step's status, and the correspondence takes the matching list choice.
+              Set(varFirstOpen, First(Sort(Filter(varChain, status <> "Approved"), stepOrder)));
+              Set(varActiveStep, varFirstOpen.stepOrder);
+              Set(
+              varPhase,
+              If(
+              CountRows(colSteps) = 0, "Legacy",
+              CountRows(Filter(colSteps, Text(Phase.Value) = "Review")) = CountRows(colSteps), "Review",
+              CountRows(Filter(colSteps, Text(Phase.Value) = "Signing")) = CountRows(colSteps), "Signing",
+              "Legacy"
+              )
+              );
+              Set(varOutcomeNow, If(IsBlank(varFirstOpen.stepOrder), "Approved", varFirstOpen.status));
+              Set(
+              varCorrStatus,
+              Switch(
+              varPhase,
+              "Review",
+              Switch(
+              varOutcomeNow,
+              "Approved", "Awaiting Final Confirmation",
+              "Rejected", "Returned to Author",
+              "Returned", "Returned to Author",
+              "In Review"
+              ),
+              "Signing",
+              Switch(
+              varOutcomeNow,
+              "Approved", "Signed",
+              "Rejected", "Rejected",
+              "Returned", "Change Requested",
+              "Awaiting Signature"
+              ),
+              Switch(
+              varOutcomeNow,
+              "Approved", "Approved",
+              "Rejected", "Rejected",
+              "Returned", "Draft",
+              "In Review"
+              )
+              )
+              );
+              // CMS-048 - who holds the item right now within the active step. A Department step
+              // in "All" mode is sequential: only the most junior unsigned member may act, and the
+              // item climbs the seniority ladder as each one signs. Every other shape (Reviewer,
+              // Group, Department "Any") dispatches in parallel, so any pending member may act.
+              Set(varMyStepTasks, Filter(colSteps, StepOrder = varTask.StepOrder));
+              Set(
+              varActiveTaskId,
+              If(
+              Text(First(varMyStepTasks).StepType.Value) = "Department" &&
+              Lower(Text(First(varMyStepTasks).ApprovalMode.Value)) <> "any",
+              First(
+              Sort(
+              Filter(varMyStepTasks, Status.Value = "Pending"),
+              Coalesce(Seniority, 999999)
+              )
+              ).ID,
+              varTask.ID
+              )
+              );
+              // Only the assignee of the pending task in the active step gets the decision buttons,
+              // and only while it is their turn in the ladder.
+              // CMS-017 - a delegate acts for the assignee while the delegation is live.
+              Set(
+              varDelegations,
+              Filter(
+              CORMS_Delegations,
+              StartDate <= Today() && EndDate >= Today()
+              )
+              );
+              Set(
+              varIsDelegate,
+              CountRows(
+              Filter(
+              varDelegations,
+              Lower(Delegate.Email) = Lower(User().Email) && (
+              Lower(Delegator.Email) in Lower(varTask.AssignedToId) ||
+              Lower(Delegator.DisplayName) = Lower(varTask.AssignedToName)
+              )
+              )
+              ) > 0
+              );
+              // "Zeyad Elmaghraby on behalf of Abdullah Reda" when someone stands in.
+              Set(
+              varActorLabel,
+              varActorName &
+              If(
+              varIsDelegate && !IsBlank(varTask.AssignedToName),
+              " on behalf of " & varTask.AssignedToName,
+              ""
+              )
+              );
+              Set(
+              varCanAct,
+              !IsBlank(varTask.ID) && Text(varTask.Status.Value) = "Pending" &&
+              varTask.StepOrder = varActiveStep && varTask.ID = varActiveTaskId && (
+              IsBlank(varTask.AssignedToId) ||
+              Lower(User().Email) in Lower(varTask.AssignedToId) ||
+              Lower(varTask.AssignedToName) = Lower(User().FullName) ||
+              varIsDelegate
+              )
+              );
+              Set(
+              varPanelData,
+              If(
+              IsBlank(varTask.ID),
+              "",
+              JSON(
+              {
+              subject: Coalesce(varCorr.Title, varTask.Title),
+              referenceNo: Coalesce(varCorr.ReferenceNo, varTask.ReferenceNo),
+              sender: varCorr.Sender.DisplayName,
+              dueDate: If(IsBlank(varCorr.DueDate), "", Text(varCorr.DueDate, "dd/mm/yyyy")),
+              isOverdue: !IsBlank(varCorr.DueDate) && varCorr.DueDate < Today() && varCorrStatus <> "Approved",
+              securityLevel: Text(varCorr.SecurityLevel.Value),
+              correspondenceStatus: Text(varCorr.Status.Value),
+              phase: varPhase,
+              round: varLatestRound,
+              task: {
+              stepOrder: varTask.StepOrder,
+              stepName: varTask.StepName,
+              stepType: Text(varTask.StepType.Value),
+              assignedToName: varTask.AssignedToName,
+              requireSignature: varTask.RequireSignature,
+              signatureCompleted: !IsBlank(varTask.SignatureCompletedAt),
+              status: Text(varTask.Status.Value),
+              stateLabel: If(Text(varTask.Status.Value) = "Pending", "To do", Text(varTask.Status.Value)),
+              decidedBy: varTask.DecidedBy,
+              decisionComment: varTask.DecisionComment
+              },
+              steps: varChain
+              },
+              JSONFormat.IgnoreUnsupportedTypes
+              )
+              )
+              );
+              Patch(
+              CORMS_Correspondence,
+              LookUp(CORMS_Correspondence, ID = Value(varCorrId)),
+              {Status: {Value: varCorrStatus}}
+              );
+              Set(varCorr, LookUp(CORMS_Correspondence, ID = Value(varCorrId)));
+              Set(varStepNow, LookUp(varChain, stepOrder = varTask.StepOrder).status);
+              Set(
+              varDecisionText,
+              "Step " & varTask.StepOrder & " (" & varTask.StepName & ") " &
+              Lower(varOutcome) & " by " & varActorLabel &
+              If(IsBlank(Trim(varComment)), "", " - " & Trim(varComment)) &
+              " · step now " & varStepNow
+              );
+              Patch(
+              CORMS_AuditLog,
+              Defaults(CORMS_AuditLog),
+              {
+              Title: Coalesce(varCorr.ReferenceNo, varCorrId),
+              ObjectId: varCorrId,
+              Action: "Approval " & varOutcome,
+              Actor: fxMe,
+              Details: varDecisionText
+              }
+              );
+              Patch(
+              CORMS_Timeline,
+              Defaults(CORMS_Timeline),
+              {
+              Title: "Approval " & varOutcome,
+              CorrespondenceId: varCorrId,
+              Actor: fxMe,
+              EventTimestamp: Now(),
+              EventType: {
+              Value: If(
+              varOutcome = "Approved", "Approved",
+              varOutcome = "Rejected", "Rejected",
+              "Edited"
+              )
+              },
+              Description: varDecisionText
+              }
+              );
+              // The last step's approval closes the chain - recorded after the step event so it
+              // sorts last on the Timeline.
+              If(
+              varCorrStatus = "Approved",
+              Patch(
+              CORMS_Timeline,
+              Defaults(CORMS_Timeline),
+              {
+              Title: "Approved",
+              CorrespondenceId: varCorrId,
+              Actor: fxMe,
+              EventTimestamp: Now(),
+              EventType: {Value: "Approved"},
+              Description: "Correspondence approved - all approval steps complete"
+              }
+              )
+              );
+              Set(
+              varPanelData,
+              If(
+              IsBlank(varTask.ID),
+              "",
+              JSON(
+              {
+              subject: Coalesce(varCorr.Title, varTask.Title),
+              referenceNo: Coalesce(varCorr.ReferenceNo, varTask.ReferenceNo),
+              sender: varCorr.Sender.DisplayName,
+              dueDate: If(IsBlank(varCorr.DueDate), "", Text(varCorr.DueDate, "dd/mm/yyyy")),
+              isOverdue: !IsBlank(varCorr.DueDate) && varCorr.DueDate < Today() && varCorrStatus <> "Approved",
+              securityLevel: Text(varCorr.SecurityLevel.Value),
+              correspondenceStatus: Text(varCorr.Status.Value),
+              phase: varPhase,
+              round: varLatestRound,
+              task: {
+              stepOrder: varTask.StepOrder,
+              stepName: varTask.StepName,
+              stepType: Text(varTask.StepType.Value),
+              assignedToName: varTask.AssignedToName,
+              requireSignature: varTask.RequireSignature,
+              signatureCompleted: !IsBlank(varTask.SignatureCompletedAt),
+              status: Text(varTask.Status.Value),
+              stateLabel: If(Text(varTask.Status.Value) = "Pending", "To do", Text(varTask.Status.Value)),
+              decidedBy: varTask.DecidedBy,
+              decisionComment: varTask.DecisionComment
+              },
+              steps: varChain
+              },
+              JSONFormat.IgnoreUnsupportedTypes
+              )
+              )
+              );
+              // Section 4 - notify through the CORMS notification flow. The flow requires
+              // "event" but never branches on it; the wording it sends is actionSummary.
+              Set(
+              varNotifyPeople,
+              Filter(
+              Table(
+              {
+              email: Lower(Coalesce(varCorr.Author.Email, "")),
+              name: Coalesce(varCorr.Author.DisplayName, ""),
+              role: "Recipient"
+              },
+              {
+              email: Lower(Coalesce(varCorr.AssignedTo.Email, "")),
+              name: Coalesce(varCorr.AssignedTo.DisplayName, ""),
+              role: "Recipient"
+              }
+              ),
+              !IsBlank(email)
+              )
+              );
+              // Created By and Assigned To are often the same person; notify them once.
+              Set(
+              varNotifyPeople,
+              If(
+              CountRows(varNotifyPeople) = 2 && First(varNotifyPeople).email = Last(varNotifyPeople).email,
+              Table(First(varNotifyPeople)),
+              varNotifyPeople
+              )
+              );
+              Set(
+              varNotifySummary,
+              Switch(
+              varCorrStatus,
+              "Returned to Author",
+              "Returned to you: " & varActorLabel & " sent it back: " & Trim(varComment) &
+              ". Edit it and send it for review or for signing.",
+              "Awaiting Final Confirmation",
+              "Final confirmation: All reviewers approved. Confirm it's final and send it to the signers.",
+              "Change Requested",
+              "Change requested: " & varActorLabel & " asked for a change: " & Trim(varComment) &
+              ". The signatures so far no longer stand. Edit it and send it for signing or for review.",
+              "Rejected",
+              "Rejected: " & varActorLabel & " rejected it: " & Trim(varComment) &
+              ". The signatures so far no longer stand. Edit it and send it for signing or for review.",
+              ""
+              )
+              );
+              // The author hears about an outcome that lands back with them.
+              If(
+              !IsBlank(varNotifySummary) && !IsBlank(varNotifyUrl) && CountRows(varNotifyPeople) > 0,
+              Set(
+              varNotifyRes,
+              IfError(
+              'CORMS-NotificationBridge'.Run(
+              varNotifyUrl,
+              JSON(
+              {
+              event: "ApprovalStepActive",
+              correspondenceId: varCorrId,
+              correspondenceNumber: Coalesce(varCorr.ReferenceNo, ""),
+              subject: Coalesce(varCorr.Title, ""),
+              url: varSiteUrl & "#/correspondence/" & varCorrId,
+              actionSummary: varNotifySummary,
+              teamsTeamId: varTeamsId,
+              recipients: varNotifyPeople
+              },
+              JSONFormat.IgnoreUnsupportedTypes
+              )
+              ),
+              {sent: "false", status: "0", error: "The notification flow could not be called - " & FirstError.Message}
+              )
+              );
+              If(
+              !IsBlank(varNotifyRes.error),
+              Notify(varNotifyRes.error, NotificationType.Warning)
+              )
+              );
+              // An approval that opens the next step tells that step's assignees it is their turn.
+              Set(
+              varNextPeople,
+              If(
+              varOutcome = "Approved" && !IsBlank(varActiveStep) &&
+              (varCorrStatus = "In Review" || varCorrStatus = "Awaiting Signature"),
+              ForAll(
+              Filter(colSteps, StepOrder = varActiveStep, Status.Value = "Pending") As t,
+              {
+              email: Lower(Last(Split(Coalesce(t.AssignedToId, ""), "|")).Value),
+              name: Coalesce(t.AssignedToName, ""),
+              role: "Approver"
+              }
+              ),
+              Blank()
+              )
+              );
+              If(
+              !IsBlank(varNotifyUrl) && CountRows(varNextPeople) > 0,
+              Set(
+              varNotifyRes,
+              IfError(
+              'CORMS-NotificationBridge'.Run(
+              varNotifyUrl,
+              JSON(
+              {
+              event: "ApprovalStepActive",
+              correspondenceId: varCorrId,
+              correspondenceNumber: Coalesce(varCorr.ReferenceNo, ""),
+              subject: Coalesce(varCorr.Title, ""),
+              url: varSiteUrl & "#/correspondence/" & varCorrId,
+              actionSummary: LookUp(varChain, stepOrder = varActiveStep).stepName & ": " &
+              Coalesce(
+              First(Filter(colSteps, StepOrder = varActiveStep)).ActionComments,
+              "Review and approve this correspondence."
+              ),
+              teamsTeamId: varTeamsId,
+              recipients: Filter(varNextPeople, !IsBlank(email))
+              },
+              JSONFormat.IgnoreUnsupportedTypes
+              )
+              ),
+              {sent: "false", status: "0", error: "The notification flow could not be called - " & FirstError.Message}
+              )
+              )
+              );
+              Notify(varDecisionText, NotificationType.Success)
+              );
+              Set(varBusy, false);
+              )
+            Repeat: =true
+            Width: =1
+            X: =-200
+            Y: =-200
+      - ApprovalPanel7:
+          Control: CodeComponent
+          ComponentName: corms_CORMS.ApprovalPanel
+          Properties:
+            ActionJson: =varPanelActionIn
+            Busy: =varBusy
+            CanAct: =varCanAct
+            CorrespondenceUrl: =varSiteUrl & "#/correspondence/" & varCorrId
+            DataJson: =varPanelData
+            ErrorMessage: =varPanelError
+            Height: =Parent.Height - 24
+            ReturnUrl: =varReturnUrl
+            SigningUrl: =varSigningUrl
+            Width: =Parent.Width - 24
+            X: =12
+            Y: =12

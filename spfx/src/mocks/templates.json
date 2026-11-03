@@ -1,0 +1,47 @@
+[
+  {
+    "id": "tpl-1",
+    "name": "Standard Letter",
+    "header": "<strong>OQ8</strong><br/>{{date}} · Ref: {{referenceNumber}}",
+    "footer": "OQ8 — Internal Use · {{subject}}",
+    "bodyHtml": "<p>Dear {{recipient}},</p><p>&nbsp;</p><p>&nbsp;</p>",
+    "approved": true,
+    "version": 1
+  },
+  {
+    "id": "tpl-2",
+    "name": "Internal Memo",
+    "header": "<strong>INTERNAL MEMO</strong>",
+    "footer": "OQ8 — Internal Use",
+    "bodyHtml": "<p><strong>To:</strong> {{recipient}}<br/><strong>From:</strong> {{sender}}<br/><strong>Date:</strong> {{date}}<br/><strong>Ref:</strong> {{referenceNumber}}</p><p>&nbsp;</p>",
+    "approved": true,
+    "version": 1
+  },
+  {
+    "id": "tpl-3",
+    "name": "Report Cover Page",
+    "header": "<strong>OQ8</strong>",
+    "footer": "Confidential — Board Use Only",
+    "bodyHtml": "<p style=\"text-align:center\"><strong>{{subject}}</strong></p><p style=\"text-align:center\">Prepared by {{sender}}</p>",
+    "approved": true,
+    "version": 1
+  },
+  {
+    "id": "tpl-4",
+    "name": "Circular",
+    "header": "<strong>CIRCULAR</strong><br/>Ref: {{referenceNumber}}",
+    "footer": "OQ8 — Internal Use",
+    "bodyHtml": "<p>To all concerned,</p><p>&nbsp;</p>",
+    "approved": true,
+    "version": 1
+  },
+  {
+    "id": "tpl-5",
+    "name": "Draft Layout (unapproved)",
+    "header": "<strong>DRAFT</strong>",
+    "footer": "Not for use",
+    "bodyHtml": "<p>Work-in-progress template.</p>",
+    "approved": false,
+    "version": 1
+  }
+]

@@ -1,0 +1,79 @@
+.section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--corms-neutral-border);
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--corms-text-primary);
+  margin-bottom: 12px;
+}
+
+.channels {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 16px;
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+  background: var(--corms-neutral-page);
+}
+
+.channelOn {
+  color: var(--corms-brand-navy);
+  border-color: var(--corms-brand-navy);
+  background: var(--corms-neutral-panel);
+  font-weight: 600;
+}
+
+.dispatch {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 6px;
+  background: var(--corms-card-surface);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.label {
+  color: var(--corms-text-secondary);
+  font-weight: 600;
+}
+
+.value {
+  color: var(--corms-text-primary);
+  word-break: break-word;
+}
+
+.pending {
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+  font-style: italic;
+}
+
+/* CMS-008 AC4 — external delivery blocked until the record is declared. */
+.blocked {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-brand-red);
+}

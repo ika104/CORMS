@@ -1,0 +1,1824 @@
+{
+  "app": {
+    "title": "CORMS"
+  },
+  "nav": {
+    "group": {
+      "workspace": "Workspace",
+      "system": "System"
+    },
+    "myCorrespondence": "My Correspondence",
+    "myTasks": "My Tasks",
+    "tasks": "Tasks",
+    "approvalTasks": "Approval Tasks",
+    "inboxSent": "Inbox / Sent",
+    "inbox": "Inbox",
+    "sent": "Sent",
+    "drafts": "Drafts",
+    "triageRouting": "Triage & Routing",
+    "docControl": "Document Control",
+    "delegation": "Delegation",
+    "delegationManagement": "Delegation Management",
+    "teamInbox": "Team Inbox",
+    "search": "Search",
+    "statistics": "Statistics (BI)",
+    "administration": "Administration",
+    "workflowMatrix": "Workflow Matrix",
+    "approvalWorkflows": "Approval Workflows",
+    "adminConfig": "Admin Config",
+    "translations": "Translations",
+    "dataSources": "Data Sources",
+    "provisionLists": "Provision Lists",
+    "navigationMenu": "Navigation Menu",
+    "userPermissions": "User Permissions",
+    "auditTrail": "Audit Trail",
+    "reclassifications": "Re-classifications",
+    "templates": "Correspondence Templates",
+    "signingDashboard": "Signing Dashboard"
+  },
+  "role": {
+    "administrator": "Administrator",
+    "auditor": "Auditor",
+    "originator": "Originator",
+    "reviewer": "Reviewer",
+    "recipient": "Recipient",
+    "documentControl": "Document Control",
+    "ceoTriageOfficer": "CEO Triage Officer",
+    "supervisorManager": "Supervisor / Manager",
+    "systemAdministrator": "System Administrator"
+  },
+  "theme": {
+    "light": "Light",
+    "brandDark": "Dark rail (brand)"
+  },
+  "language": {
+    "toggle": "Switch language",
+    "en": "English",
+    "ar": "Arabic"
+  },
+  "rail": {
+    "navigation": "Navigation",
+    "pin": "Pin navigation",
+    "unpin": "Unpin navigation",
+    "collapse": "Collapse navigation",
+    "expand": "Expand navigation",
+    "expandGroup": "Expand {{label}}",
+    "collapseGroup": "Collapse {{label}}"
+  },
+  "common": {
+    "comingSoon": "Coming soon",
+    "comingSoonDescription": "This module is under construction and will be available soon.",
+    "notFound": "Page not found",
+    "notFoundDescription": "The page you are looking for does not exist.",
+    "primaryAction": "New",
+    "search": "Search",
+    "loading": "Loading...",
+    "close": "Close",
+    "cancel": "Cancel",
+    "requiredField": "This field is required.",
+    "save": "Save",
+    "yes": "Yes",
+    "no": "No",
+    "edit": "Edit",
+    "show": "Show",
+    "hide": "Hide"
+  },
+  "grid": {
+    "column": {
+      "reference": "Reference",
+      "subject": "Subject",
+      "sender": "From",
+      "status": "Status"
+    },
+    "toolbar": {
+      "refresh": "Refresh",
+      "viewToggle": "View mode",
+      "cards": "Cards",
+      "table": "Table"
+    },
+    "pagination": {
+      "rowsPerPage": "Rows per page:",
+      "range": "{{start}}–{{end}} of {{total}}",
+      "pageOf": "{{current}} / {{total}}",
+      "first": "First page",
+      "previous": "Previous page",
+      "next": "Next page",
+      "last": "Last page"
+    },
+    "empty": {
+      "default": "No rows to display."
+    },
+    "selection": {
+      "selectAllOnPage": "Select all on this page",
+      "deselectAllOnPage": "Deselect all on this page",
+      "selectRow": "Select row"
+    },
+    "locale": {
+      "page": "Page",
+      "of": "of",
+      "to": "to",
+      "noRowsToShow": "No rows to display",
+      "loading": "Loading...",
+      "filterOoo": "Filter...",
+      "equals": "Equals",
+      "notEqual": "Not equal",
+      "contains": "Contains",
+      "notContains": "Not contains",
+      "startsWith": "Starts with",
+      "endsWith": "Ends with",
+      "blank": "Blank",
+      "notBlank": "Not blank",
+      "lessThan": "Less than",
+      "greaterThan": "Greater than",
+      "lessThanOrEqual": "Less than or equal",
+      "greaterThanOrEqual": "Greater than or equal",
+      "inRange": "In range",
+      "andCondition": "AND",
+      "orCondition": "OR",
+      "applyFilter": "Apply",
+      "resetFilter": "Reset",
+      "clearFilter": "Clear",
+      "sortAscending": "Sort ascending",
+      "sortDescending": "Sort descending",
+      "sortUnSort": "Clear sort"
+    },
+    "demo": {
+      "title": "Data Grid Demo",
+      "name": "Name",
+      "department": "Department",
+      "status": "Status",
+      "amount": "Amount",
+      "date": "Date"
+    }
+  },
+  "correspondenceActions": {
+    "openFullPreview": "Open Full Preview",
+    "editInWord": "Edit in Word Online",
+    "shareLink": "Share Link",
+    "annotate": "Annotate",
+    "viewAttachments": "View Attachments",
+    "viewTimeline": "View Timeline",
+    "approve": "Approve",
+    "reject": "Reject",
+    "reassignRoute": "Reassign / Route",
+    "setReminder": "Set Reminder",
+    "delegate": "Delegate"
+  },
+  "myCorrespondence": {
+    "actions": "Actions",
+    "viewDetails": "View Details",
+    "openPreview": "Open Preview",
+    "reply": "Reply",
+    "forward": "Forward",
+    "download": "Download",
+    "print": "Print",
+    "kpi": {
+      "all": "All Correspondences",
+      "pending": "Pending",
+      "overdue": "Overdue",
+      "mine": "My Correspondences",
+      "teamOverdue": "Team Overdue",
+      "teamSubmissions": "Team Submissions"
+    },
+    "masterLog": "MASTER CORRESPONDENCE LOG",
+    "newCorrespondence": "New Correspondence",
+    "exportCsv": "Export CSV",
+    "noItems": "No correspondence items found.",
+    "col": {
+      "refNo": "Ref No",
+      "subject": "Subject",
+      "fromTo": "From / To",
+      "security": "Security",
+      "status": "Status",
+      "date": "Date",
+      "actions": "Actions"
+    },
+    "draftNotRegistered": "Draft — Not yet registered",
+    "field": {
+      "type": "Type",
+      "status": "Status",
+      "security": "Security",
+      "date": "Date"
+    },
+    "signed": "Signed",
+    "signatureRequired": "Signature Required",
+    "searchPlaceholder": "Search subject or reference…",
+    "advancedSearch": "Advanced Search",
+    "groupsIndicator": "Groups: {{count}}",
+    "departmentFilter": "Filtered by: {{department}}",
+    "threadCount": "{{count}} in thread"
+  },
+  "inboxSent": {
+    "folder": {
+      "inbox": "Inbox (Incoming)",
+      "sent": "Sent (Outgoing)",
+      "drafts": "Drafts",
+      "createFolder": "Create Folder",
+      "deleteFolder": "Delete Folder",
+      "deleteFolderConfirmTitle": "Delete Folder",
+      "deleteFolderConfirmMessage": "Delete the folder \"{{name}}\"? This does not delete any correspondence — items stay in Inbox.",
+      "deleteFolderConfirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "quickFilter": {
+      "all": "All",
+      "unread": "Unread",
+      "highPriority": "High Priority"
+    },
+    "toolbar": {
+      "newCorrespondence": "New Correspondence",
+      "searchPlaceholder": "Search subject or reference no."
+    },
+    "col": {
+      "refNo": "Reference ID",
+      "subject": "Subject",
+      "fromTo": "From / To",
+      "security": "Security Level",
+      "status": "Status",
+      "date": "Date / Time",
+      "attachment": "Attachment",
+      "signature": "Signature",
+      "actions": "Actions"
+    },
+    "field": {
+      "fromTo": "From / To",
+      "date": "Date / Time",
+      "attachment": "Attachment"
+    },
+    "signature": {
+      "required": "Required",
+      "signed": "Signed"
+    },
+    "noItems": "No items match the current filters.",
+    "actions": "Item actions",
+    "action": {
+      "pinToFolder": "Pin to folder…",
+      "removeFromFolder": "Remove from this folder",
+      "editDraft": "Edit Draft"
+    },
+    "bulk": {
+      "selected": "{{count}} selected",
+      "clear": "Clear",
+      "markRead": "Mark Read",
+      "markUnread": "Mark Unread",
+      "expedite": "Expedite",
+      "export": "Export",
+      "delete": "Delete",
+      "addToFolder": "Add to folder",
+      "deleteConfirmTitle": "Delete Drafts",
+      "deleteConfirmMessage": "Delete {{count}} selected draft(s)? This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "createFolderModal": {
+      "title": "Create Custom Folder",
+      "folderName": "Folder Name",
+      "folderNamePlaceholder": "e.g. Urgent from Finance",
+      "helper": "Saved search criteria — an incoming item appears in this folder when it matches all set criteria. Leave a field blank to ignore it.",
+      "status": "Status",
+      "security": "Security Level",
+      "priority": "Priority",
+      "classification": "Record Classification",
+      "sender": "Sender",
+      "senderPlaceholder": "Name contains…",
+      "any": "Any",
+      "cancel": "Cancel",
+      "create": "Create Folder"
+    },
+    "pinModal": {
+      "title": "Pin to Folder",
+      "choose": "Choose a custom folder to pin this item into. It stays in Inbox too.",
+      "noFolders": "You haven't created any custom folders yet.",
+      "pinned": "Pinned",
+      "cancel": "Cancel"
+    },
+    "criteria": {
+      "allIncoming": "All incoming",
+      "priority": "{{priority}} priority",
+      "sender": "from \"{{sender}}\""
+    },
+    "filters": {
+      "dateFrom": "From",
+      "dateTo": "To",
+      "status": "Status",
+      "security": "Security Level",
+      "team": "Team",
+      "any": "Any",
+      "clear": "Clear Filters"
+    }
+  },
+  "module": {
+    "myCorrespondence": {
+      "title": "My Correspondence"
+    },
+    "myTasks": {
+      "title": "My Tasks"
+    },
+    "inboxSent": {
+      "title": "Inbox / Sent"
+    },
+    "triageRouting": {
+      "title": "Triage & Routing"
+    },
+    "delegation": {
+      "title": "Delegation"
+    },
+    "teamInbox": {
+      "title": "Team Inbox"
+    },
+    "search": {
+      "title": "Search"
+    },
+    "docControl": {
+      "title": "Document Control"
+    },
+    "statistics": {
+      "title": "Statistics (BI)"
+    },
+    "administration": {
+      "title": "Administration"
+    },
+    "auditTrail": {
+      "title": "Audit Trail"
+    }
+  },
+  "dataSource": {
+    "panelTitle": "Data Sources (DEV)",
+    "devModeBanner": "DEV MODE — one or more features are serving mock data.",
+    "accessDenied": "This panel is only available to System Administrators on the DEV environment.",
+    "master": {
+      "label": "Master mode",
+      "allMock": "All Mock",
+      "allLive": "All Live",
+      "perFeature": "Per-feature"
+    },
+    "connection": {
+      "label": "RecordsHub connection",
+      "test": "Test Connection",
+      "testing": "Testing…",
+      "success": "Connected",
+      "error": "Connection failed"
+    },
+    "column": {
+      "feature": "Feature",
+      "consumedBy": "Consumed by",
+      "dependency": "RecordsHub dependency",
+      "transport": "Transport",
+      "mode": "Mode",
+      "listName": "RecordsHub list name",
+      "test": "Test"
+    },
+    "transport": {
+      "spRest": "SP REST",
+      "elastic": "Elasticsearch"
+    },
+    "mode": {
+      "mock": "Mock",
+      "live": "Live"
+    },
+    "test": {
+      "notImplemented": "No live implementation yet",
+      "success": "OK — {{count}} item(s)",
+      "error": "Error"
+    },
+    "actions": {
+      "save": "Save",
+      "reset": "Reset"
+    },
+    "feature": {
+      "menu": "Menu / nav naming",
+      "metadata": "Type / direction / priority / security / departments",
+      "numbering": "Numbering list + mechanism",
+      "externalOrgs": "External organizations",
+      "securityTiers": "Security tiers + record classifications",
+      "config": "Configuration list",
+      "audit": "Audit-trail structure",
+      "search": "Elastic query-builder",
+      "templates": "Document templates",
+      "orgHierarchy": "Reporting line / subordinates"
+    },
+    "section": {
+      "recordsHub": "RecordsHub Reference Data",
+      "recordsHubHint": "RecordsHub-owned data CORMS consumes but never owns — each row below toggles independently under Per-feature mode.",
+      "app": "CORMS Application Data",
+      "appHint": "CORMS's own data. Unlike the RecordsHub rows above, this isn't a RecordsHub dependency — it controls whether My Correspondence and Inbox/Sent render the bundled demo dataset or real CORMS_Correspondence rows."
+    },
+    "appDataSource": {
+      "feature": "My Correspondence & Inbox/Sent listings",
+      "taskFeature": "Task Inbox (My Tasks) listing",
+      "delegationFeature": "Delegation Management & Team Inbox (incl. reassignment)",
+      "saving": "Saving…"
+    }
+  },
+  "createCorrespondence": {
+    "back": "Back",
+    "title": "New Correspondence",
+    "subtitle": "Complete all sections below. Reference number is assigned automatically upon submission.",
+    "replyBanner": "This is a reply — it will be linked to thread {{ref}} when sent.",
+    "saveDraft": "Save Draft",
+    "send": "Send",
+    "autosave": {
+      "saving": "Saving draft…",
+      "saved": "Draft saved",
+      "error": "Couldn't autosave — use Save Draft"
+    },
+    "overlay": {
+      "savingDraft": "Saving draft…",
+      "sending": "Sending…"
+    },
+    "badge": {
+      "required": "Required",
+      "recordHubApi": "RecordHub API",
+      "securityLevelsApi": "Security Levels API",
+      "orgUnitsApi": "RecordHub API (Org Units)",
+      "recordHubSearchApi": "RecordHub Search API"
+    },
+    "section": {
+      "coreMetadata": "Core Metadata",
+      "composeDocument": "Compose Document",
+      "supportingDocuments": "Supporting Documents",
+      "approvalWorkflow": "Approval Workflow"
+    },
+    "validation": {
+      "required": "This field is required.",
+      "destinationRequired": "Select at least one destination.",
+      "recordClassificationRequired": "Select a record classification before sending — it is required before a controlled number can be issued.",
+      "recordClassificationInactive": "The selected record classification is inactive or retired and can no longer be used. Please choose an active classification.",
+      "classifiedCaptureNotVetted": "Capturing correspondence at this security level is restricted to vetted users. Choose a lower level or ask a vetted user to capture it.",
+      "composeDocumentRequired": "Add the correspondence document — upload, scan, or a template with content — before sending.",
+      "groupMembersRequired": "Every approval group needs at least one member.",
+      "signaturesOverlap": "Two signatures are in the same place on the document. Move one so every signature has its own spot.",
+      "summary": "Please complete all required fields before sending.",
+      "saveDraftFailed": "Couldn't save the draft. Please try again.",
+      "sendFailed": "Couldn't send this correspondence. Please try again.",
+      "attachmentsFinalizeFailed": "Saved, but the attachments couldn't be filed against it. Please check the Files tab.",
+      "routingFailed": "Sent, but the approval tasks couldn't be created. Please check the Approvals tab."
+    },
+    "field": {
+      "correspondenceType": "Correspondence Type",
+      "outgoing": "Outgoing",
+      "incoming": "Incoming",
+      "priority": "Priority",
+      "normal": "Normal",
+      "high": "High",
+      "contentType": "Content Type",
+      "contentTypePlaceholder": "Search content type…",
+      "channel": "Channel",
+      "channelPlaceholder": "Select a channel…",
+      "subject": "Subject",
+      "subjectPlaceholder": "Enter a clear, descriptive subject…",
+      "originatingFunction": "Originating Function",
+      "selectFunctionPlaceholder": "-- Select function --",
+      "referenceNumber": "Reference Number",
+      "referenceNumberPlaceholder": "Auto-generated on submission",
+      "sender": "Sender",
+      "recipient": "Recipient",
+      "recipientPlaceholder": "Search recipient by name…",
+      "dateCreated": "Date Created",
+      "dueDate": "Due Date",
+      "securityLevel": "Security Level",
+      "securityLevelHelper": "Your max clearance: {{tier}}",
+      "classifiedCaptureRestricted": "Higher security levels are restricted to vetted users.",
+      "recordClassification": "Record Classification",
+      "recordClassificationPlaceholder": "Search by record number or name…",
+      "recordClassificationHelper": "Format: [SharePoint Id] - [Parent Classification]",
+      "recordClassificationLoadError": "Could not load classifications. Confirm the Records Hub connection and live metadata source.",
+      "destinationType": "Destination Type",
+      "internal": "Internal",
+      "external": "External",
+      "destinationDepartments": "Destination Departments",
+      "destinationDepartmentsPlaceholder": "Select one or more departments…",
+      "externalOrganizations": "External Organizations",
+      "externalOrganizationsPlaceholder": "Select one or more external organisations…",
+      "deliveryOptions": "Delivery Options",
+      "email": "Email",
+      "emailHelper": "— Sent automatically after approval",
+      "physicalMail": "Physical Mail",
+      "physicalMailHelper": "— Choose a dispatch method in the delivery wizard",
+      "comments": "Comments / Notes (optional)",
+      "commentsPlaceholder": "Add any internal notes or context for this correspondence…"
+    },
+    "attachmentClassification": {
+      "label": "Attachment classification",
+      "placeholder": "Inherit from correspondence",
+      "inherited": "Inherited"
+    },
+    "compose": {
+      "scanIncomingTitle": "Scan incoming hard copy",
+      "scanIncomingHelper": "Click to scan the received document",
+      "uploadDocument": "Upload Document",
+      "useTemplate": "Use Template",
+      "signed": "Signed",
+      "signedHelper": "The document already carries its signatures. It is sent as Signed and needs no approvers.",
+      "scanDocument": "Scan Document",
+      "dropzoneTitle": "Drag & drop or click to browse",
+      "dropzoneHelperCompose": "PDF, DOCX accepted · Stored in SharePoint document library",
+      "selectTemplate": "Select Template",
+      "header": "Header",
+      "headerPlaceholder": "e.g. CONFIDENTIAL",
+      "footer": "Footer",
+      "footerPlaceholder": "e.g. OQ8 — Internal Use",
+      "signOff": "Sign-off",
+      "selectTemplateFirst": "Select an approved template above to begin authoring. The letterhead is applied automatically and your body text is preserved when you switch templates.",
+      "bodyPlaceholder": "Select a template above or type here…",
+      "imageUrlPrompt": "Image URL",
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "richTextEditor": "Rich Text Editor",
+      "scannedDocument": "Scanned document",
+      "existingDocument": "Attach Existing Document",
+      "existingDropzoneTitle": "Browse and attach an existing document",
+      "existingDropzoneHelper": "Link a document from a SharePoint library as the main correspondence document",
+      "fromExistingDocument": "From existing document"
+    },
+    "supportingDocs": {
+      "description": "Upload local files or attach existing documents from RecordHub. Only references are stored — no duplicates.",
+      "uploadFromComputer": "Upload from Computer",
+      "attachFromRecordHub": "Attach from RecordHub",
+      "dropzoneTitle": "Drag & drop or click to browse files",
+      "dropzoneHelper": "PDF, DOCX, XLSX, PNG, JPG accepted",
+      "searchRecordHub": "Search by Record Number or File Name…",
+      "attachedDocuments": "Attached Documents ({{count}})",
+      "recordHubRef": "RecordHub #{{number}}",
+      "recordHubPill": "RecordHub",
+      "added": "Added",
+      "addPhysicalItem": "Record a physical (non-digitizable) item",
+      "physicalDescription": "Description",
+      "physicalStorageLocation": "Storage Location",
+      "physicalResourceId": "Resource ID",
+      "resourceIdPending": "assigned on save",
+      "add": "Add",
+      "persistFailed": "That change couldn't be saved. Please try again.",
+      "remove": "Remove"
+    },
+    "approval": {
+      "presetStandard": "Standard Approval",
+      "presetBoard": "Board-Level Approval",
+      "presetFastTrack": "Fast Track",
+      "stepsCount": "{{count}} steps",
+      "emptyState": "No routing steps added. Click + Add Reviewer, + Add Department, or + Add Group to build the approval chain.",
+      "requireSignature": "Require Digital Signature",
+      "approvalMode": "Approval mode:",
+      "singleAny": "Single / Any",
+      "all": "All",
+      "departmentAllDisclaimer": "sequential — every member approves",
+      "departmentAnyDisclaimer": "any 1 member approves",
+      "groupAllDisclaimer": "all {{count}} must approve",
+      "groupAnyDisclaimer": "any 1 of {{count}} approves",
+      "page": "Page",
+      "width": "Width",
+      "addReviewer": "Add Reviewer",
+      "addDepartment": "Add Department",
+      "addGroup": "Add Group",
+      "searchReviewer": "Search reviewer…",
+      "searchDepartment": "Search department…",
+      "addNewGroup": "Add New Group",
+      "closePicker": "Close Picker",
+      "groupReviewers": "Group Reviewers",
+      "groupTitle": "Group Reviewers ({{count}})",
+      "addMember": "Add",
+      "removeMember": "Remove {{name}}",
+      "groupMembersRequired": "Add at least one member to this group.",
+      "editSignaturePosition": "Edit position",
+      "signatureOverlap": "Overlaps another signature — move it",
+      "departmentRouting": "Department Routing",
+      "clearanceNote": "Only staff cleared to {{level}} or above can be added.",
+      "clearanceTooLow": "Clearance too low",
+      "signaturePlacementHint": "Drag and resize the box to place the signing stamp.",
+      "signatureHere": "Signature",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "pageN": "Page {{page}}",
+      "signatureBoxAria": "Signature placement box at {{x}}% left, {{y}}% top. Use arrow keys to move.",
+      "signatureReadout": "Page {{page}} · {{x}}%, {{y}}% · {{width}}×{{height}}%"
+    },
+    "confirmation": {
+      "title": "Correspondence submitted",
+      "description": "The reference number has been assigned and the approval workflow has started.",
+      "goToMyCorrespondence": "Go to My Correspondence"
+    },
+    "editTitle": "Edit Draft",
+    "editSubtitle": "Review the draft, then keep editing or submit it."
+  },
+  "delegation": {
+    "panelA": {
+      "title": "Delegation Management",
+      "createButton": "Create Delegation"
+    },
+    "panelB": {
+      "title": "Delegation Audit & History"
+    },
+    "col": {
+      "from": "From",
+      "delegateTo": "Delegate To",
+      "reason": "Reason",
+      "period": "Period",
+      "status": "Status",
+      "actions": "Actions",
+      "userName": "User Name",
+      "team": "Team",
+      "totalCreated": "Total Created",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    },
+    "action": {
+      "revoke": "Revoke"
+    },
+    "status": {
+      "active": "Active",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "revoked": "Revoked"
+    },
+    "noItems": "No delegations found.",
+    "noAuditItems": "No audit records found.",
+    "modal": {
+      "title": "Create Delegation",
+      "delegateFrom": "Delegate From",
+      "delegateTo": "Delegate To",
+      "reason": "Reason",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "endBeforeStart": "End date must be on or after the start date.",
+      "supportingDocuments": "Supporting Documents",
+      "attachDocument": "Attach Document",
+      "attachHelper": "PDF, DOCX, XLSX, PNG (Max 10MB)",
+      "infoNote": "Delegation grants full authority to the delegate for the specified period.",
+      "selectPlaceholder": "-- Select --",
+      "selectDelegatePlaceholder": "-- Select delegate --",
+      "cancel": "Cancel",
+      "save": "Save Delegation"
+    }
+  },
+  "teamInbox": {
+    "viewing": "Viewing:",
+    "allSubordinates": "All subordinates",
+    "col": {
+      "owner": "Assigned To",
+      "refNo": "Reference No.",
+      "subject": "Subject",
+      "type": "Type",
+      "priority": "Priority",
+      "security": "Security Level",
+      "status": "Status",
+      "date": "Date",
+      "actions": "Actions"
+    },
+    "status": {
+      "new": "New",
+      "inProgress": "In Progress",
+      "pendingResponse": "Pending Response"
+    },
+    "priority": {
+      "normal": "Normal",
+      "high": "High"
+    },
+    "action": {
+      "reassign": "Reassign"
+    },
+    "actions": "Item actions",
+    "noItems": "No items found.",
+    "reassignedIndicator": "Reassigned to {{name}}"
+  },
+  "reassign": {
+    "modal": {
+      "title": "Reassign Correspondence",
+      "currentlyAssigned": "Currently assigned to: {{name}}",
+      "reassignTo": "Reassign To",
+      "reason": "Reason",
+      "selectPlaceholder": "-- Select subordinate --",
+      "clearanceHint": "clearance below item level",
+      "noEligible": "No eligible subordinate has sufficient clearance for this item.",
+      "cancel": "Cancel",
+      "confirm": "Reassign"
+    },
+    "success": "Reassigned to {{name}}"
+  },
+  "approvalTasks": {
+    "tile": {
+      "all": "All Approvals",
+      "toDo": "To Do",
+      "waiting": "Waiting",
+      "overdue": "Overdue",
+      "completed": "Completed"
+    },
+    "state": {
+      "ToDo": "To do",
+      "Waiting": "Waiting"
+    },
+    "col": {
+      "subject": "Subject",
+      "reference": "Reference No.",
+      "step": "Step",
+      "assignee": "Assigned To",
+      "state": "Status",
+      "signature": "Signature",
+      "dueDate": "Due Date"
+    },
+    "field": {
+      "reference": "Reference No.",
+      "sender": "Sender",
+      "dueDate": "Due date",
+      "security": "Security level",
+      "correspondenceStatus": "Correspondence status"
+    },
+    "stepLabel": "Step {{order}} · {{name}}",
+    "myTasksTitle": "My Approval Tasks",
+    "allTasksTitle": "All Approval Tasks",
+    "searchPlaceholder": "Search subject, reference, step or approver…",
+    "exportCsv": "Export CSV",
+    "noItems": "No approval tasks.",
+    "queue": {
+      "title": "Waiting for your action ({{count}})",
+      "empty": "Nothing is waiting for your approval or signature."
+    },
+    "modal": {
+      "title": "Approval task",
+      "yourTask": "Task",
+      "progress": "Approval progress",
+      "openCorrespondence": "Open correspondence",
+      "decisionFailed": "Couldn't record the decision. Try again.",
+      "savingDecision": "Saving your decision..."
+    }
+  },
+  "myTasks": {
+    "tile": {
+      "all": "All Tasks",
+      "pending": "Pending Tasks",
+      "overdue": "Overdue Tasks",
+      "mine": "My Tasks",
+      "team": "Team Tasks"
+    },
+    "masterLog": "MASTER TASK LOG",
+    "newTask": "New Task",
+    "newTaskDisabled": "Create New Task is not configured yet — set powerAppsTaskFormUrl in Admin Config.",
+    "searchPlaceholder": "Search tasks…",
+    "exportCsv": "Export CSV",
+    "noItems": "No tasks found.",
+    "col": {
+      "subject": "Subject",
+      "type": "Type",
+      "priority": "Priority",
+      "status": "Status",
+      "dueDate": "Due Date",
+      "assignee": "Assignee",
+      "attachment": "Attachment",
+      "actions": "Actions"
+    },
+    "field": {
+      "type": "Type",
+      "priority": "Priority",
+      "status": "Status",
+      "dueDate": "Due Date",
+      "assignee": "Assignee",
+      "attachment": "Attachment"
+    },
+    "action": {
+      "viewDetails": "View Details",
+      "viewDetailsDisabled": "View Task Details is not configured yet — set powerAppsTaskDetailUrl in Admin Config.",
+      "delete": "Delete"
+    },
+    "actions": "Task actions",
+    "type": {
+      "toDo": "To Do",
+      "followUp": "Follow-up Task",
+      "reminder": "Reminder"
+    },
+    "priority": {
+      "low": "Low",
+      "normal": "Normal",
+      "high": "High"
+    },
+    "status": {
+      "pending": "Pending",
+      "inProgress": "In Progress",
+      "overdue": "Overdue",
+      "completed": "Completed"
+    },
+    "queue": {
+      "title": "My Task Queue ({{count}})",
+      "empty": "No items in your queue."
+    },
+    "deleteConfirm": {
+      "title": "Delete Task",
+      "message": "Are you sure you want to delete \"{{subject}}\"? This cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    }
+  },
+  "correspondenceDetail": {
+    "notFound": "Correspondence item not found.",
+    "actionsMenu": "Item actions",
+    "accessDenied": {
+      "title": "Access Denied",
+      "description": "Insufficient clearance — this document is classified {{level}}, which requires a higher security level.",
+      "descriptionGeneric": "Insufficient clearance to view this document."
+    },
+    "tab": {
+      "preview": "Preview",
+      "annotate": "Annotate",
+      "details": "Details",
+      "files": "Files",
+      "file": "File Plan",
+      "security": "Security",
+      "audit": "Audit",
+      "timeline": "Timeline",
+      "thread": "Thread",
+      "reminder": "Reminder",
+      "approvals": "Approvals"
+    },
+    "filePlan": {
+      "enclosingFile": "Enclosing business-activity file",
+      "fileName": "File",
+      "fileNumber": "File number",
+      "position": "File-plan position",
+      "classification": "Record classification",
+      "unfiled": "This correspondence is not yet filed under a record classification."
+    },
+    "approvals": {
+      "emptyTitle": "Not routed for approval",
+      "emptyDescription": "This correspondence has no approval chain. Approval tasks are created when an outgoing draft with reviewers is sent.",
+      "manage": {
+        "open": "Add approvers",
+        "title": "Add approvers",
+        "helper": "New steps run after the current approval chain. Only you, as the requestor, can add approvers.",
+        "save": "Add to approval chain",
+        "error": "Couldn't add the approvers. Try again.",
+        "moveUp": "Move step up",
+        "moveDown": "Move step down",
+        "reorderError": "Couldn't change the approval order. Refresh and try again.",
+        "emptyDescription": "No approvers yet. Add the people, departments or groups who must approve and sign this correspondence."
+      },
+      "loadErrorTitle": "Approval tasks could not be loaded",
+      "loadErrorDescription": "Check that the CORMS_ApprovalTasks list has been provisioned and that you have permission to read it.",
+      "overall": "Approval status",
+      "unassigned": "Unassigned",
+      "signatureRequired": "Signature required",
+      "commentPlaceholder": "Comment (required to return)",
+      "approve": "Approve",
+      "reject": "Reject",
+      "return": "Return",
+      "returnNeedsComment": "Add a comment to return to the originator.",
+      "decisionTitle": "{{action}} — comment required",
+      "signatureStepTitle": "Add your e-signature first",
+      "signatureStepHelp": "Your secure signing page opens here in CORMS. Complete the signature there; it is verified automatically before you can add a comment or approve.",
+      "signatureAction": "Add digital signature",
+      "signatureSending": "Opening signing page…",
+      "signatureCheckHelp": "Finish signing the document, then check for completion. Approval remains locked until Power Automate confirms the completed signature.",
+      "signatureReopen": "Open signing page",
+      "signatureDeclined": "You declined to sign, so this approval can't continue. Open the signing page again to sign.",
+      "signatureCheckAction": "Check signature completion",
+      "signatureChecking": "Checking signature status…",
+      "signaturePending": "The signing service has not confirmed that the document is signed yet. Finish the signature, then check again.",
+      "signatureSuccess": "Your completed signature was verified successfully. You can now add your comment and approve.",
+      "signatureIdentityMissing": "Your name and email are required to request your digital signature.",
+      "waiting": "Waiting — a more junior member must sign first",
+      "released": "Released — another member signed",
+      "outcome": {
+        "InProgress": "In review",
+        "Approved": "Approved",
+        "Rejected": "Rejected",
+        "Returned": "Returned to originator"
+      },
+      "status": {
+        "Pending": "Pending",
+        "Approved": "Approved",
+        "Rejected": "Rejected",
+        "Returned": "Returned",
+        "Cancelled": "Cancelled"
+      },
+      "onBehalfOf": "on behalf of {{name}}",
+      "decideInApprovalTasks": "Approvers sign and decide from",
+      "awaitingDecision": "Awaiting decision",
+      "stepType": {
+        "Reviewer": "Reviewer & Approver",
+        "Department": "Department",
+        "Group": "Group"
+      },
+      "mode": {
+        "Any": "Any one approves",
+        "All": "All must approve"
+      }
+    },
+    "action": {
+      "openDocument": "Open Document"
+    },
+    "signature": {
+      "sign": "Sign",
+      "signed": "Signed"
+    },
+    "eSignature": {
+      "action": "Send for e-Signature",
+      "title": "Send for e-Signature",
+      "help": "The document will be sent through the configured signing service. The signing page opens here in CORMS and the request appears on the Signing Dashboard.",
+      "signerName": "Signer name",
+      "signerNamePlaceholder": "Full name of the signer",
+      "signerEmail": "Signer email",
+      "signerEmailPlaceholder": "name@example.com",
+      "send": "Send for signature",
+      "sending": "Sending…",
+      "noDocument": "This correspondence has no main document to send for signature.",
+      "failed": "Could not send the document for signature.",
+      "frameTitle": "Sign document",
+      "frameLoading": "Loading the signing page…",
+      "openInNewTab": "Open in new tab",
+      "done": "Done",
+      "saveSignedFailed": "The signature is complete, but CORMS couldn't save the signed document as the main document. Check again to retry."
+    },
+    "preview": {
+      "pages": "Pages",
+      "pageShort": "Pg {{page}}",
+      "pageOf": "Page {{page}} of {{total}}",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "zoomReset": "Reset zoom",
+      "toggleWatermark": "Toggle Watermark",
+      "watermarkRequired": "Required by classification",
+      "watermarked": "Watermarked",
+      "notAvailable": "Preview not available",
+      "notAvailableDescription": "This attachment type can't be previewed in the browser. Open it instead.",
+      "openInWord": "Open for editing in Word",
+      "groupDocsNotConfigured": "GroupDocs Preview isn't configured yet — showing the basic preview instead.",
+      "loading": "Loading preview…",
+      "page": "Page"
+    },
+    "annotate": {
+      "initializing": "Initializing Annotation Engine…",
+      "establishingSession": "Establishing secure GroupDocs session…",
+      "title": "GroupDocs Annotation",
+      "saveAnnotations": "Save Annotations",
+      "saving": "Saving annotations…",
+      "saveCommentTitle": "Save annotations",
+      "saveCommentLabel": "Comment",
+      "saveCommentPlaceholder": "Describe these annotations (e.g. what you marked and why)…",
+      "saveCommentHint": "Recorded in the correspondence audit trail with your name and the time.",
+      "canvasHint": "Annotation canvas — GroupDocs Annotation SDK embed pending.",
+      "tool": {
+        "pen": "Pen",
+        "text": "Text",
+        "sticky": "Sticky Note",
+        "highlight": "Highlight",
+        "rect": "Rectangle",
+        "circle": "Ellipse",
+        "arrow": "Arrow",
+        "eraser": "Eraser"
+      },
+      "style": {
+        "group": "Annotation colours",
+        "stroke": "Stroke",
+        "fill": "Fill",
+        "text": "Text",
+        "width": "Width",
+        "widthValue": "{{width}} px",
+        "fontSize": "Font size",
+        "fontSizeValue": "{{size}} px",
+        "editingSelection": "Editing selected annotation"
+      },
+      "clearAll": "Clear all",
+      "remove": "Remove",
+      "resize": "Resize annotation",
+      "notePlaceholder": "Type a note…",
+      "emptyNote": "(empty note)",
+      "attribution": "{{author}} · {{date}}",
+      "saveFailed": "Could not save annotations."
+    },
+    "details": {
+      "expedite": "Expedite",
+      "share": "Share",
+      "declareRecord": "Declare as Record",
+      "annotateShortcut": "Annotate",
+      "save": "Save Changes",
+      "saveModalTitle": "Save changes to this correspondence",
+      "saveFailed": "Could not save the changes. Please try again."
+    },
+    "declare": {
+      "confirm": "Declare {{ref}} as a final record? This freezes the correspondence and all attachments as an immutable unit and stamps it with a record serial number. This cannot be undone.",
+      "failed": "Couldn't declare this record. Please try again.",
+      "templateRequired": "This outgoing correspondence was not authored from an approved template, so it cannot be declared as a record or delivered. Recreate it using an approved template.",
+      "bannerTitle": "Declared as a final record — frozen (immutable)",
+      "serial": "Record serial",
+      "by": "Declared by {{name}}"
+    },
+    "field": {
+      "subject": "Subject",
+      "type": "Type",
+      "direction": "Direction",
+      "contentType": "Content Type",
+      "channel": "Channel",
+      "departmentTo": "Department / To",
+      "priority": "Priority",
+      "status": "Status",
+      "securityLevel": "Security Level",
+      "recordClassification": "Record Classification",
+      "createdAt": "Created",
+      "dueDate": "Due Date",
+      "sender": "Sender",
+      "recipient": "Recipient",
+      "originatingFunction": "Originating Function",
+      "currentReviewer": "Current Reviewer",
+      "currentDepartment": "Current Department",
+      "assignedTo": "Assigned To",
+      "comment": "Comment / Notes",
+      "refNo": "Reference No",
+      "department": "Department"
+    },
+    "files": {
+      "visibleCount": "{{count}} attachment(s) visible at your clearance level.",
+      "none": "No attachments visible.",
+      "main": "Main",
+      "pages": "{{count}} pages",
+      "physicalHeader": "{{count}} physical item(s)",
+      "physicalBadge": "PHY"
+    },
+    "security": {
+      "col": {
+        "principal": "Principal",
+        "permissionLevel": "Permission Level",
+        "type": "Type"
+      },
+      "reclassify": "Re-classify Security Level",
+      "reclassifySubmit": "Submit",
+      "newLevel": "New Security Level",
+      "justification": "Justification / Reason",
+      "justificationPlaceholder": "Explain why this change is required.",
+      "goesDirectNote": "You are a Records Administrator — this change applies immediately.",
+      "goesApprovalNote": "This change will be submitted for maker-checker approval before it takes effect."
+    },
+    "audit": {
+      "loading": "Loading audit entries…",
+      "col": {
+        "seq": "#",
+        "action": "Action",
+        "actor": "Actor",
+        "details": "Details",
+        "timestamp": "Timestamp"
+      }
+    },
+    "timeline": {
+      "intro": "Chronological activity log for this correspondence.",
+      "kind": {
+        "created": "Created",
+        "edited": "Edited",
+        "submitted": "Submitted",
+        "referenceAssigned": "Reference Assigned",
+        "routed": "Routed",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "signatureRequested": "Signature Requested",
+        "signed": "Signed",
+        "emailSent": "Email Sent",
+        "reminder": "Reminder",
+        "reply": "Reply Received",
+        "expedited": "Expedited",
+        "delivered": "Delivered",
+        "acknowledged": "Acknowledged",
+        "reassigned": "Reassigned"
+      }
+    },
+    "thread": {
+      "reference": "Thread Reference Number",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "reminder": {
+      "notice": "Set a follow-up reminder if this sent item has not received a response.",
+      "followUpType": "Follow-up Type",
+      "date": "Reminder Date",
+      "note": "Note",
+      "notePlaceholder": "e.g. No response received after 7 days.",
+      "save": "Save Reminder",
+      "edit": "Edit",
+      "clear": "Clear",
+      "due": "Due {{date}}",
+      "type": {
+        "first": "1st Follow-up",
+        "second": "2nd Follow-up Letter",
+        "third": "3rd Follow-up Letter (Final)",
+        "escalation": "Escalation Notice"
+      }
+    },
+    "reply": {
+      "continue": "Continue",
+      "threadNote": "This reply will be linked to the same thread as the original correspondence.",
+      "newThreadNote": "This reply will start a new thread linked to the original correspondence."
+    },
+    "share": {
+      "copy": "Copy",
+      "copied": "Copied",
+      "revoke": "Revoke",
+      "generate": "Generate Link",
+      "intro": "Generate a shareable link to this correspondence.",
+      "notPermitted": "You don't have permission to share this item.",
+      "clearanceNote": "Anyone opening this link must meet this item's security clearance."
+    },
+    "direction": {
+      "Incoming": "Incoming",
+      "Outgoing": "Outgoing",
+      "External": "External"
+    }
+  },
+  "triageRouting": {
+    "accessDenied": {
+      "title": "Access restricted",
+      "description": "The Triage & Routing queue is only available to authorized receiving roles (Document Control, System Administrator, CEO Office)."
+    },
+    "stage": {
+      "incoming": {
+        "label": "Incoming Queue",
+        "description": "Unclassified items awaiting triage, metadata assignment, and routing."
+      },
+      "underReview": {
+        "label": "Under Review",
+        "description": "Items past intake, in secondary review or clearance before final dispatch."
+      },
+      "byClassification": {
+        "label": "By Classification",
+        "description": "The full triage set, narrowed by record type and security classification."
+      }
+    },
+    "section": {
+      "incoming": "INCOMING QUEUE",
+      "underReview": "UNDER REVIEW",
+      "byClassification": "BY CLASSIFICATION"
+    },
+    "itemCount": {
+      "pending": "{{count}} items pending",
+      "underReview": "{{count}} items in review"
+    },
+    "searchPlaceholder": "Search queue by keyword, subject, or reference number…",
+    "advancedSearch": "Advanced Search",
+    "filter": {
+      "allRecordTypes": "All record types",
+      "allClassifications": "All classifications"
+    },
+    "noItems": "No items in this queue.",
+    "card": {
+      "priority": "Priority",
+      "security": "Security Level",
+      "type": "Type",
+      "received": "Received",
+      "expedited": "Expedited",
+      "new": "New",
+      "complete": "Complete Triage"
+    },
+    "myWorkQueue": {
+      "title": "My Work Queue ({{count}})",
+      "empty": "No items in your work queue."
+    },
+    "classify": {
+      "urgencyNote": "⚡ Due in {{days}} days",
+      "classifyAndRoute": "Classify and route correspondence",
+      "classificationDetails": "Classification",
+      "classificationHelper": "Confirm the record metadata before assigning its next owner.",
+      "routingDetails": "Route",
+      "routingHelper": "Choose who receives the correspondence and the action they must take.",
+      "contentType": "Content Type",
+      "priority": "Priority",
+      "securityLevel": "Security Level",
+      "selectPlaceholder": "-- Select --",
+      "recordClassification": "Record Classification",
+      "recordClassificationLoadError": "Record classifications could not be loaded. Check the RecordsHub Classifications list URL in Admin Config and try again.",
+      "nextActionOption": {
+        "Review": "Review",
+        "Approve": "Approve",
+        "Sign": "Sign",
+        "Distribute": "Distribute",
+        "Archive": "Archive"
+      },
+      "responseDeadline": "Handling Deadline",
+      "responseDeadlineHelper": "Drives the escalation timers once the item is in play.",
+      "amend": "Amend",
+      "changeSecurity": "Change…",
+      "lockedNote": "This item has been routed onward — its classification is locked here.",
+      "fieldLabel": {
+        "type": "Content Type",
+        "priority": "Priority",
+        "securityTier": "Security Level",
+        "recordClassification": "Record Classification",
+        "responseDeadline": "Handling Deadline"
+      }
+    },
+    "newCount": "{{count}} new",
+    "live": {
+      "label": "Live",
+      "title": "The queue refreshes automatically as new correspondence arrives.",
+      "updatedAt": "Updated {{time}}"
+    },
+    "preview": {
+      "action": "Preview",
+      "title": "Correspondence Preview",
+      "openFull": "Open Full Record",
+      "expedited": "Expedited — {{reason}}",
+      "field": {
+        "reference": "Reference No.",
+        "type": "Type",
+        "status": "Status",
+        "priority": "Priority",
+        "security": "Security Level",
+        "department": "Department",
+        "received": "Date Received",
+        "sender": "Sender",
+        "recipient": "Recipient"
+      }
+    },
+    "amend": {
+      "title": "Amend Classification",
+      "submit": "Save Amendment",
+      "contentImmutableNote": "Correct or update the metadata below. The document content itself cannot be altered.",
+      "changesTitle": "Changes to record",
+      "noChanges": "No changes yet — edit a field above.",
+      "reasonLabel": "Reason for amendment",
+      "reasonPlaceholder": "e.g. Re-classified from Secret to Top Secret per DG directive #12",
+      "reasonRequired": "A reason is required and will be written to the audit log.",
+      "saving": "Saving amendment…",
+      "savedTitle": "Amendment saved",
+      "savedDescription": "The classification change has been recorded in the audit trail.",
+      "saveFailed": "The amendment could not be saved. Check your connection and try again."
+    },
+    "securityChange": {
+      "title": "Change Security Level",
+      "helper": "Update the security level for {{subject}}. This change is recorded in the audit trail.",
+      "changeSummary": "Change to record",
+      "submit": "Save security change",
+      "saving": "Saving security change…",
+      "savedTitle": "Security level updated",
+      "savedDescription": "The security change has been recorded in the audit trail.",
+      "saveFailed": "The security change could not be saved. Check your connection and try again."
+    },
+    "route": {
+      "step2": "Step 2 — Route",
+      "applyMatrix": "Apply matrix route",
+      "matrixHint": "Matrix suggests: {{recipients}} · {{action}}",
+      "departments": "Departments",
+      "individuals": "Individuals",
+      "individualsPlaceholder": "Search people…",
+      "nextAction": "Next Action",
+      "nextActionHelper": "Shown to the recipient as their Next Step.",
+      "routeButton": "Route",
+      "routing": "Routing…",
+      "matrixApplied": "From matrix",
+      "failed": "Routing failed. Please try again."
+    }
+  },
+  "workflowMatrix": {
+    "banner": "The Routing Matrix is CORMS-owned configuration, stored in the CORMS_WorkflowMatrix SharePoint list. Numbering schemes, security levels and record classifications are RecordsHub-owned reference data, stored in and managed from RecordsHub — consumed here read-only.",
+    "panelTitle": "Workflow Matrix",
+    "accessDenied": "The Workflow Matrix is only available to System Administrators.",
+    "testMode": "Test Mode",
+    "addRule": "Add Rule",
+    "actions": "Rule actions",
+    "col": {
+      "type": "Type",
+      "direction": "Direction",
+      "flow": "Flow",
+      "approver": "Approver",
+      "rule": "Rule",
+      "note": "Note",
+      "actions": "Actions",
+      "routeTo": "Route To"
+    },
+    "action": {
+      "edit": "Edit Rule",
+      "delete": "Delete Rule"
+    },
+    "condition": {
+      "any": "Any",
+      "external": "External"
+    },
+    "modal": {
+      "addTitle": "Add Routing Rule",
+      "editTitle": "Edit Routing Rule",
+      "save": "Save Rule",
+      "department": "Routes to Department",
+      "flowPlaceholder": "e.g. Review, Classify, Approve, Sign",
+      "flowHelper": "Ordered pipeline steps, separated by commas or →.",
+      "order": "Order",
+      "orderHelper": "Lower numbers run first (first-match wins).",
+      "matchMode": "Match Mode",
+      "matchModeFirst": "First match",
+      "matchModeAll": "All match",
+      "departmentCondition": "Source Department",
+      "routeToKind": "Route To (kind)",
+      "routeTo": "Route To",
+      "routeToPlaceholder": "Individual or role name"
+    },
+    "test": {
+      "title": "Test Routing (simulation only — does not affect live items)",
+      "matchedRule": "Matched rule: {{rule}}",
+      "resolvedDepartment": "Routes to: {{department}}",
+      "resolvedFlow": "Flow: {{flow}}",
+      "noMatch": "No rule matches these conditions.",
+      "firstMatchHeader": "First matching rule",
+      "allMatchHeader": "{{count}} matching rule(s)"
+    },
+    "noRules": "No routing rules configured.",
+    "deleteConfirm": {
+      "title": "Delete Routing Rule",
+      "message": "Delete the rule \"{{rule}}\"? This cannot be undone.",
+      "confirm": "Delete"
+    },
+    "targetKind": {
+      "department": "Department",
+      "individual": "Individual",
+      "role": "Role Group"
+    },
+    "matchMode": {
+      "label": "Match mode",
+      "first": "First match",
+      "all": "All matches"
+    }
+  },
+  "search": {
+    "subtitle": "Search across Correspondence and Tasks with advanced filters.",
+    "whatAreYouSearchingFor": "What are you searching for?",
+    "type": {
+      "correspondence": "Correspondence",
+      "tasks": "Tasks"
+    },
+    "filter": {
+      "all": "All",
+      "refNo": "Reference No.",
+      "subject": "Subject",
+      "sender": "Sender",
+      "recipient": "Recipient",
+      "type": "Type",
+      "priority": "Priority",
+      "team": "Team",
+      "dateFrom": "Date From",
+      "dateTo": "Date To",
+      "routing": "Routing"
+    },
+    "searchBoxPlaceholder": "Search by subject, reference, or keyword…",
+    "searchButton": "Search",
+    "resetFilters": "Reset Filters",
+    "emptyState": "Select a type, enter search criteria, and click Search to view results.",
+    "resultsFound": "{{count}} results found",
+    "noResults": "No results found.",
+    "col": {
+      "refNo": "Reference ID",
+      "subject": "Subject",
+      "fromTo": "From / To",
+      "security": "Security Level",
+      "status": "Status",
+      "date": "Date"
+    },
+    "rail": {
+      "title": "Saved Search Tabs",
+      "newSearch": "New Search",
+      "deleteTab": "Delete search"
+    },
+    "tab": {
+      "titleAllRecords": "{{type}}: All Records",
+      "titleQuery": "{{type}}: \"{{query}}\"",
+      "titleFiltered": "{{type}}: Filtered",
+      "titleWithResults": "{{base}} — {{count}} results",
+      "subtitleNotSearched": "Not yet searched",
+      "subtitleResults": "{{count}} results"
+    }
+  },
+  "pendingResponse": {
+    "modal": {
+      "title": "Flag as Pending Response",
+      "awaitedParty": "Awaited Party",
+      "flagItem": "Flag Item"
+    },
+    "action": {
+      "flag": "Flag Pending Response",
+      "clear": "Clear Pending Response"
+    },
+    "badge": "Pending Response",
+    "escalationBadge": "Escalation due"
+  },
+  "expedite": {
+    "modal": {
+      "title": "Expedite {{count}} item(s)",
+      "reason": "Reason",
+      "reasonPlaceholder": "Explain why this item needs to be expedited…",
+      "confirm": "Expedite"
+    },
+    "action": {
+      "set": "Expedite",
+      "remove": "Remove Expedite"
+    },
+    "badge": "Expedited",
+    "reasonTooltip": "Expedited — {{reason}}"
+  },
+  "delivery": {
+    "title": "Delivery",
+    "none": "No delivery channels recorded for this correspondence.",
+    "cc": "CC",
+    "channel": {
+      "Email": "Email",
+      "PhysicalMail": "Physical Mail"
+    },
+    "status": {
+      "Sent": "Sent",
+      "Delivered": "Delivered",
+      "Failed": "Failed"
+    },
+    "dispatch": {
+      "courier": "Courier — {{name}} ({{tracking}})",
+      "inPerson": "In-Person — {{name}}, {{date}}",
+      "postal": "Postal Service — {{service}} ({{receipt}})"
+    },
+    "acknowledgedBy": "Acknowledged by {{actor}} at {{timestamp}}",
+    "recordAcknowledgement": "Record Acknowledgement",
+    "ackConfirm": {
+      "title": "Record Acknowledgement",
+      "message": "Record acknowledgement as {{actor}}, timestamped now?",
+      "confirm": "Record"
+    }
+  },
+  "docControl": {
+    "tab": {
+      "pendingDistributions": "Pending Distributions",
+      "archival": "Archival",
+      "incomingRegister": "Incoming Register",
+      "outgoingRegister": "Outgoing Register",
+      "memoMinutesRegister": "Memo / Minutes Register"
+    },
+    "register": {
+      "col": {
+        "refNo": "Reference No.",
+        "subject": "Subject",
+        "type": "Type",
+        "date": "Date",
+        "status": "Status",
+        "department": "Department",
+        "securityLevel": "Security Level"
+      },
+      "noItems": "No records found in this register."
+    }
+  },
+  "statistics": {
+    "loading": "Loading dashboard…",
+    "notConfigured": "The Power BI report URL has not been configured in Admin Config."
+  },
+  "adminConfig": {
+    "panelTitle": "Admin Config",
+    "col": {
+      "key": "Key",
+      "value": "Value",
+      "description": "Description",
+      "owner": "Owner"
+    },
+    "owner": {
+      "recordsHub": "RecordsHub",
+      "corms": "CORMS"
+    },
+    "toggle": {
+      "on": "On",
+      "off": "Off",
+      "ariaLabel": "Toggle {{key}}"
+    },
+    "ownership": {
+      "corms": "CORMS configuration is stored in the CORMS_AdminConfig SharePoint list, owned and managed by CORMS.",
+      "recordsHub": "Rows marked RecordsHub connect CORMS to RecordsHub-owned reference data (numbering schemes, security levels, record classifications), which is stored in and managed from RecordsHub."
+    },
+    "category": {
+      "general": "General",
+      "integration": "Integration"
+    },
+    "add": {
+      "button": "Add configuration",
+      "title": "Add configuration value",
+      "submit": "Add",
+      "category": "Category",
+      "keyRequired": "A configuration key is required.",
+      "duplicate": "A configuration key \"{{key}}\" already exists."
+    },
+    "audit": {
+      "valueChanged": "Value changed from \"{{before}}\" to \"{{after}}\"",
+      "secretChanged": "Secret value changed (value masked)",
+      "added": "Added configuration \"{{key}}\" = \"{{value}}\"",
+      "secretAdded": "Secret configuration added (value masked)"
+    },
+    "edit": {
+      "title": "Edit configuration",
+      "invalidJson": "The value is not valid JSON. Fix it before saving."
+    }
+  },
+  "approvalWorkflows": {
+    "panelTitle": "Approval Workflows",
+    "description": "Manage the predefined approval workflows offered when creating a correspondence. Changes are saved to Admin Settings as JSON and are available immediately to new correspondence forms.",
+    "add": "New workflow",
+    "addTitle": "Create approval workflow",
+    "editTitle": "Edit approval workflow",
+    "name": "Workflow name",
+    "namePlaceholder": "e.g. Executive approval",
+    "steps": "Approval steps",
+    "stepCount": "{{count}} approval steps",
+    "delete": "Delete workflow",
+    "confirmDelete": "Delete \"{{name}}\"? This cannot be undone.",
+    "nameRequired": "Enter a workflow name.",
+    "nameDuplicate": "A workflow with this name already exists.",
+    "saveFailed": "The workflow configuration could not be saved. Please try again."
+  },
+  "userPermissions": {
+    "panelTitle": "User Permissions",
+    "description": "Manage per-user permissions as a JSON object controlling which views, tabs, buttons and dashboards each user can see. Unlisted features stay visible (default-allow) — set a key to false to hide it for that user. View visibility is enforced across navigation; tabs, buttons and dashboards consult the same rules as they adopt them.",
+    "col": {
+      "user": "User",
+      "permissions": "Permissions (JSON)",
+      "action": "Action"
+    },
+    "export": "Export",
+    "editTitle": "Edit Permissions — {{user}}",
+    "editHint": "Shape: { \"views\": { \"key\": false }, \"tabs\": {…}, \"buttons\": {…}, \"dashboards\": {…} }. A key set to false hides that feature for this user; anything omitted stays visible.",
+    "invalidJson": "Invalid JSON — please provide a valid permissions object before saving.",
+    "audit": {
+      "updated": "Permissions updated for {{user}}"
+    }
+  },
+  "translations": {
+    "panelTitle": "Translations",
+    "col": {
+      "language": "Language",
+      "jsonData": "JSON Data",
+      "action": "Action"
+    },
+    "export": "Export",
+    "editTitle": "Edit Translation — {{label}}",
+    "invalidJson": "Invalid JSON — please fix the syntax before saving.",
+    "audit": {
+      "updated": "{{label}} translation set updated"
+    }
+  },
+  "provisionLists": {
+    "panelTitle": "Provision SharePoint Lists",
+    "description": "Creates or updates the SharePoint lists CORMS needs on this site. Safe to run repeatedly — existing lists and data are never overwritten.",
+    "accessDenied": "Provisioning is only available to System Administrators.",
+    "actions": {
+      "provisionAll": "Create / Update All Lists",
+      "provisionOne": "Provision This List",
+      "seedSampleTasks": "Seed Sample Tasks"
+    },
+    "seedTasks": {
+      "confirmTitle": "Seed Sample Tasks",
+      "confirmMessage": "This adds sample task data for testing. Do not run this against a production tenant.",
+      "confirmMessageNonDev": "This environment is not configured as DEV ({{environment}}). This adds sample task data for testing — do not run this against a production tenant.",
+      "confirm": "Add Sample Tasks",
+      "cancel": "Cancel",
+      "running": "Seeding sample tasks…",
+      "success": "Added {{inserted}} sample task(s); {{skippedExisting}} already existed.",
+      "error": "Couldn't seed sample tasks: {{message}}"
+    },
+    "column": {
+      "listName": "List Name",
+      "status": "Status",
+      "fieldCount": "Field Count",
+      "lastProvisioned": "Last Provisioned",
+      "actions": "Actions"
+    },
+    "status": {
+      "notCreated": "Not Created",
+      "exists": "Exists",
+      "fieldsIncomplete": "Fields Incomplete"
+    },
+    "log": {
+      "title": "Provisioning Log",
+      "empty": "Run provisioning to see live progress here."
+    },
+    "step": {
+      "error": "error: {{message}}"
+    },
+    "tally": "Created: {{created}} · Already existed: {{exists}} · Removed: {{removed}} · Errors: {{errors}}",
+    "neverRun": "—"
+  },
+  "navigationMenu": {
+    "panelTitle": "Navigation Menu",
+    "description": "Controls which left-navigation entries are shown and to which roles. Changes take effect immediately — no redeploy required.",
+    "accessDenied": "Navigation Menu configuration is only available to System Administrators.",
+    "column": {
+      "key": "Key",
+      "translationKey": "Translation Key",
+      "icon": "Icon",
+      "route": "Route",
+      "sortOrder": "Sort Order",
+      "visible": "Visible",
+      "requiredRoles": "Required Roles",
+      "actions": "Actions"
+    },
+    "requiredRoles": {
+      "all": "All roles"
+    },
+    "action": {
+      "delete": "Delete"
+    },
+    "rolesModal": {
+      "title": "Required Roles — {{key}}",
+      "hint": "Only the checked roles can see this entry. Leave everything unchecked to show it to all roles."
+    },
+    "deleteConfirmTitle": "Delete Navigation Entry",
+    "deleteConfirmMessage": "Delete the navigation entry \"{{key}}\"? This cannot be undone."
+  },
+  "auditTrail": {
+    "col": {
+      "seq": "#",
+      "objectId": "Object ID",
+      "actor": "Actor",
+      "action": "Action",
+      "details": "Details",
+      "timestamp": "Timestamp",
+      "chainStatus": "Chain Status"
+    },
+    "category": {
+      "all": "All Actions",
+      "correspondence": "Correspondence Actions",
+      "system": "System & Configuration Events",
+      "access": "Access & Security Events"
+    },
+    "chainStatus": {
+      "valid": "Valid",
+      "broken": "Broken"
+    },
+    "exportDownload": "Export / Download",
+    "noEntries": "No audit entries found.",
+    "loading": "Loading audit entries…"
+  },
+  "scan": {
+    "scanning": "Scanning…",
+    "success": "Scanned successfully",
+    "notConfigured": "Scanning isn't configured yet — contact your administrator.",
+    "persistFailed": "The scan couldn't be saved. Please try again.",
+    "qualityGate": {
+      "title": "Scan quality check failed",
+      "dpiFailed": "Resolution is below the required 300 DPI.",
+      "formatFailed": "Output format isn't TIFF or PDF/A.",
+      "completenessFailed": "One or more pages look blank or incomplete.",
+      "reason": "Override reason",
+      "reasonPlaceholder": "Explain why this scan should be accepted anyway…",
+      "registerAnyway": "Register Anyway"
+    }
+  },
+  "physicalMail": {
+    "title": "Physical Mail Delivery",
+    "stepMethod": "Method",
+    "stepDetails": "Details",
+    "dispatchFor": "Dispatch for:",
+    "newCorrespondence": "New correspondence",
+    "next": "Next",
+    "back": "Back",
+    "submit": "Submit Dispatch",
+    "courier": "Courier",
+    "selectCourier": "— Select courier —",
+    "bearerName": "Bearer / Messenger Name",
+    "bearerNamePlaceholder": "Name of the person delivering",
+    "deliveryDateTime": "Delivery Date & Time",
+    "postalService": "Postal Service",
+    "postalServicePlaceholder": "e.g. Oman Post",
+    "receiptNumber": "Receipt / Reference Number",
+    "optional": "Optional",
+    "comment": "Comment",
+    "commentPlaceholder": "Any note about this dispatch — saved to the audit trail…",
+    "editDetails": "Edit dispatch details",
+    "openWizard": "Open delivery wizard",
+    "noneSelected": "No dispatch method selected yet.",
+    "method": {
+      "Courier": {
+        "name": "Courier / Express Delivery",
+        "desc": "Tracked dispatch via a courier company",
+        "short": "Courier"
+      },
+      "InPerson": {
+        "name": "In-Person / Hand Delivery",
+        "desc": "Handed over by a bearer or messenger",
+        "short": "In-Person"
+      },
+      "Postal": {
+        "name": "Postal Service",
+        "desc": "Sent through the national postal service",
+        "short": "Postal"
+      }
+    },
+    "trackingRef": "Tracking / Dispatch Ref",
+    "trackingRefHelper": "Generated on our side — not the courier's own number.",
+    "autoGenerated": "auto-generated",
+    "select": "— Select —"
+  },
+  "deliveryOptions": {
+    "title": "Delivery Options",
+    "method": "Dispatch Method",
+    "dispatchPending": "Physical mail selected — dispatch details not captured.",
+    "undeclaredBlocked": "Cannot be delivered to external parties until this record is declared."
+  },
+  "powerApps": {
+    "openInNewTab": "Open in new tab",
+    "loading": "Loading form…"
+  },
+  "reclassifications": {
+    "panelTitle": "Re-classification Requests",
+    "intro": "Pending security-level re-classification requests awaiting approval. Approving applies the new level immediately; the file-plan classification is never changed.",
+    "emptyTitle": "No pending requests",
+    "emptyDescription": "There are no re-classification requests awaiting a decision.",
+    "justification": "Justification",
+    "requestedBy": "Requested by {{name}}",
+    "approve": "Approve",
+    "reject": "Reject"
+  },
+  "templates": {
+    "panelTitle": "Correspondence Templates",
+    "panelDescription": "Authored and provided by SSL Oman. Only approved templates are offered to originators; updates apply to correspondence authored thereafter.",
+    "add": "New Template",
+    "addTitle": "New Template",
+    "editTitle": "Edit Template",
+    "name": "Name",
+    "namePlaceholder": "e.g. Standard Letter",
+    "nameRequired": "Enter a template name.",
+    "headerField": "Header (letterhead)",
+    "footerField": "Footer (letterhead)",
+    "bodyField": "Body",
+    "placeholderHint": "Use wildcards {{sender}}, {{recipient}}, {{referenceNumber}}, {{date}}, {{subject}}, {{role}} — replaced with the correspondence data across header, body and footer.",
+    "approved": "Approved for use",
+    "save": "Save Template",
+    "saveFailed": "Couldn't save the template. Please try again.",
+    "delete": "Delete",
+    "deleteFailed": "Couldn't delete the template. Please try again.",
+    "confirmDelete": "Delete the template \"{{name}}\"? Correspondence authored thereafter will no longer offer it.",
+    "status": "Status",
+    "actions": "Actions",
+    "statusApprovedLabel": "Approved",
+    "statusDraftLabel": "Draft",
+    "emptyTitle": "No templates yet",
+    "emptyDescription": "Add a correspondence template for originators to author against."
+  },
+  "signing": {
+    "title": "Signing Dashboard",
+    "intro": "Track and manage every digital-signature request. Search by signer, reference, status or date, and resend, cancel or review a request's signing history without opening each item.",
+    "searchPlaceholder": "Search by signer, reference or subject…",
+    "filter": {
+      "allStatuses": "All statuses",
+      "from": "From",
+      "to": "To",
+      "clear": "Clear"
+    },
+    "status": {
+      "Sent": "Sent",
+      "Viewed": "Viewed",
+      "Signed": "Signed",
+      "Declined": "Declined",
+      "Cancelled": "Cancelled",
+      "Expired": "Expired"
+    },
+    "col": {
+      "reference": "Reference",
+      "subject": "Subject",
+      "signer": "Signer",
+      "status": "Status",
+      "created": "Created",
+      "updated": "Last update",
+      "actions": "Actions"
+    },
+    "action": {
+      "resend": "Resend",
+      "cancel": "Cancel",
+      "history": "History"
+    },
+    "confirmCancel": "Cancel the signing request for {{ref}}? The signer will no longer be able to sign.",
+    "empty": {
+      "title": "No signing requests",
+      "filtered": "No signing requests match your search.",
+      "none": "No signing requests have been created yet. Requests appear here once an approved draft is submitted for signature."
+    },
+    "history": {
+      "title": "Signing History"
+    },
+    "event": {
+      "Created": "Request created",
+      "Sent": "Sent for signature",
+      "Viewed": "Viewed by signer",
+      "Signed": "Signed",
+      "Declined": "Declined",
+      "Resent": "Resent",
+      "Cancelled": "Cancelled",
+      "Reminded": "Reminder sent",
+      "Expired": "Expired"
+    }
+  },
+  "workQueue": {
+    "title": "My Work Queue ({{count}})",
+    "empty": "Nothing awaiting your action right now.",
+    "unreadCount": "{{count}} new",
+    "new": "New"
+  },
+  "existingDocument": {
+    "title": "Attach Existing Document",
+    "sites": "Sites",
+    "empty": {
+      "sites": "No Records Hub sites are available for browsing.",
+      "libraries": "No document libraries found in this site.",
+      "documents": "No documents found in this library."
+    },
+    "error": {
+      "sites": "Could not load the list of sites.",
+      "libraries": "Could not load the document libraries for this site.",
+      "documents": "Could not load the documents in this library.",
+      "file": "Could not open the selected document."
+    }
+  },
+  "actionComment": {
+    "label": "Comment",
+    "placeholder": "Enter a comment describing this change…"
+  }
+}

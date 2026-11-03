@@ -1,0 +1,27 @@
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--corms-text-secondary);
+
+  .icon {
+    color: var(--corms-text-secondary);
+    opacity: 0.6;
+    margin-bottom: 8px;
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--corms-text-primary);
+  }
+
+  .description {
+    font-size: 13px;
+    max-width: 320px;
+  }
+}

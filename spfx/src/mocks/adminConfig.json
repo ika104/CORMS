@@ -1,0 +1,32 @@
+[
+  {
+    "key": "RootSiteUrl",
+    "value": "https://TODO-CONFIRM.sharepoint.com/sites/RecordsHub",
+    "description": "Root SharePoint site URL for the RecordsHub connection."
+  },
+  {
+    "key": "Task-List",
+    "value": "CORMS_MyTasks",
+    "description": "SharePoint list name backing the My Tasks module."
+  },
+  {
+    "key": "SLA_ResponseDays",
+    "value": "5",
+    "description": "Default number of business days allowed for a response before an item is flagged overdue."
+  },
+  {
+    "key": "PowerAppsTaskFormUrl",
+    "value": "https://TODO-CONFIRM.apps.powerapps.com/play/task-form",
+    "description": "Power Apps task-creation form URL opened from My Tasks (CMS-050)."
+  },
+  {
+    "key": "Dynamsoft_License_Key",
+    "value": "",
+    "description": "Dynamsoft Document Scanner JS SDK license key (CMS-002). Empty until the team provisions a real license."
+  },
+  {
+    "key": "admin.approvalWorkflowsJson",
+    "value": "{\"workflows\":[{\"id\":\"standard\",\"name\":\"Standard Approval\",\"steps\":[]},{\"id\":\"board\",\"name\":\"Board-Level Approval\",\"steps\":[]},{\"id\":\"fast-track\",\"name\":\"Fast Track\",\"steps\":[]}]}",
+    "description": "Predefined approval workflows for Create Correspondence, stored as JSON."
+  }
+]

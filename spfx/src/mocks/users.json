@@ -1,0 +1,11 @@
+{
+  "currentUser": {
+    "id": "u-1001",
+    "displayName": "Zeyad El Maghraby",
+    "email": "zeyad.elmaghraby@gmail.com",
+    "roles": ["Administrator"],
+    "jobTitleKey": "role.administrator",
+    "photoUrl": "/_layouts/15/userphoto.aspx?size=L&accountname=zeyad.elmaghraby@gmail.com",
+    "clearanceTier": 5
+  }
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "id": "task-1",
+    "subject": "Review Q3 IT Audit Report",
+    "type": "To Do",
+    "priority": "High",
+    "status": "Overdue",
+    "dueDate": "2024-04-20",
+    "assignee": "Zeyad El Maghraby",
+    "hasAttachment": true,
+    "isMine": true,
+    "isOverdue": true
+  },
+  {
+    "id": "task-2",
+    "subject": "Draft Project Charter",
+    "type": "Follow-up Task",
+    "priority": "Normal",
+    "status": "In Progress",
+    "dueDate": "2024-05-10",
+    "assignee": "Zeyad El Maghraby",
+    "hasAttachment": false,
+    "isMine": true,
+    "isOverdue": false
+  },
+  {
+    "id": "task-3",
+    "subject": "Approve Budget Adjustments",
+    "type": "To Do",
+    "priority": "High",
+    "status": "Pending",
+    "dueDate": "2024-05-15",
+    "assignee": "Sara Al-Mansour",
+    "hasAttachment": true,
+    "isMine": false,
+    "isOverdue": false
+  },
+  {
+    "id": "task-4",
+    "subject": "Update HR Policy Manual",
+    "type": "Reminder",
+    "priority": "Low",
+    "status": "Pending",
+    "dueDate": "2024-05-25",
+    "assignee": "Layla Hassan",
+    "hasAttachment": false,
+    "isMine": false,
+    "isOverdue": false
+  },
+  {
+    "id": "task-5",
+    "subject": "Coordinate Board Pack",
+    "type": "Follow-up Task",
+    "priority": "High",
+    "status": "In Progress",
+    "dueDate": "2024-05-05",
+    "assignee": "Ali Al-Rashid",
+    "hasAttachment": true,
+    "isMine": false,
+    "isOverdue": false
+  },
+  {
+    "id": "task-6",
+    "subject": "Renew Vendor Contract",
+    "type": "To Do",
+    "priority": "Normal",
+    "status": "Completed",
+    "dueDate": "2024-04-01",
+    "assignee": "Ahmed Nasser",
+    "hasAttachment": false,
+    "isMine": false,
+    "isOverdue": false
+  },
+  {
+    "id": "task-7",
+    "subject": "Prepare Compliance Checklist",
+    "type": "Reminder",
+    "priority": "Normal",
+    "status": "Overdue",
+    "dueDate": "2024-04-18",
+    "assignee": "Zeyad El Maghraby",
+    "hasAttachment": false,
+    "isMine": true,
+    "isOverdue": true
+  },
+  {
+    "id": "task-8",
+    "subject": "Schedule Internal Audit Kickoff",
+    "type": "Follow-up Task",
+    "priority": "Low",
+    "status": "Pending",
+    "dueDate": "2024-06-01",
+    "assignee": "Nour Ibrahim",
+    "hasAttachment": true,
+    "isMine": false,
+    "isOverdue": false
+  }
+]

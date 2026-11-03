@@ -1,0 +1,110 @@
+.dashboard {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--corms-content-bg);
+}
+
+// ─── Summary tiles row ───────────────────────────────────────────────────────
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+// ─── Master Task Log / Task Queue cards ──────────────────────────────────────
+.logCard {
+  background: var(--corms-card-surface);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  overflow: visible;
+}
+
+// ─── Table cell content ──────────────────────────────────────────────────────
+.tableSubject {
+  font-weight: 600;
+  color: var(--corms-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// A compact, Microsoft-style sharing stack: enough identity to scan card ownership without
+// expanding the Assignee field into a list of names. Native title tooltips expose the individual
+// email on hover; the overflow avatar exposes the complete assignee list.
+.assigneeAvatars {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+  padding-left: 2px;
+}
+
+.assigneeAvatar {
+  width: 24px;
+  height: 24px;
+  margin-left: -5px;
+  border: 2px solid var(--corms-card-surface);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background: var(--corms-toolbar-primary);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  cursor: default;
+}
+
+.assigneeAvatar:first-child {
+  margin-left: 0;
+}
+
+.assigneeAvatarOverflow {
+  position: relative;
+  z-index: 0;
+  background: var(--corms-neutral-page);
+  color: var(--corms-toolbar-primary);
+  font-size: 9px;
+}
+
+.noAssignee {
+  color: var(--corms-text-secondary);
+}
+
+// ─── My Task Queue panel ──────────────────────────────────────────────────────
+.queueHeader {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--corms-neutral-border);
+}
+
+.queueTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--corms-text-primary);
+}
+
+.queueEmpty {
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--corms-text-secondary);
+}
+
+// The queue's grid layout is the card grid's — DataGrid.module.scss owns
+// .cardsGrid/.cardsGridNarrow/.cardsGridWide and the view reuses them directly, so the two
+// panels on this screen can't drift apart at a breakpoint.
+
+.queueItem {
+  background: var(--corms-neutral-page);
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 8px;
+  overflow: hidden;
+}

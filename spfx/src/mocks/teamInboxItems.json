@@ -1,0 +1,90 @@
+[
+  {
+    "id": "ti-1",
+    "referenceNo": "CR-2024-1001",
+    "subject": "Vendor Contract Renewal",
+    "type": "Contract",
+    "priority": "Normal",
+    "securityTier": 2,
+    "status": "New",
+    "date": "2024-05-02",
+    "ownerId": "u-layla"
+  },
+  {
+    "id": "ti-2",
+    "referenceNo": "CR-2024-1002",
+    "subject": "HSE Training Report",
+    "type": "Report",
+    "priority": "High",
+    "securityTier": 3,
+    "status": "InProgress",
+    "date": "2024-05-04",
+    "ownerId": "u-layla"
+  },
+  {
+    "id": "ti-3",
+    "referenceNo": "CR-2024-1003",
+    "subject": "Facility Access Request",
+    "type": "Memo",
+    "priority": "Normal",
+    "securityTier": 5,
+    "status": "PendingResponse",
+    "date": "2024-05-06",
+    "ownerId": "u-layla"
+  },
+  {
+    "id": "ti-4",
+    "referenceNo": "CR-2024-1010",
+    "subject": "Litigation Case Update",
+    "type": "Legal Memo",
+    "priority": "High",
+    "securityTier": 4,
+    "status": "New",
+    "date": "2024-05-01",
+    "ownerId": "u-ahmed"
+  },
+  {
+    "id": "ti-5",
+    "referenceNo": "CR-2024-1011",
+    "subject": "NDA Review",
+    "type": "Contract",
+    "priority": "Normal",
+    "securityTier": 2,
+    "status": "PendingResponse",
+    "date": "2024-05-03",
+    "ownerId": "u-ahmed"
+  },
+  {
+    "id": "ti-6",
+    "referenceNo": "CR-2024-1020",
+    "subject": "Audit Findings Q1",
+    "type": "Report",
+    "priority": "High",
+    "securityTier": 3,
+    "status": "InProgress",
+    "date": "2024-04-28",
+    "ownerId": "u-nour"
+  },
+  {
+    "id": "ti-7",
+    "referenceNo": "CR-2024-1021",
+    "subject": "Compliance Checklist",
+    "type": "Checklist",
+    "priority": "Normal",
+    "securityTier": 1,
+    "status": "New",
+    "date": "2024-04-30",
+    "ownerId": "u-nour"
+  },
+  {
+    "id": "ti-8",
+    "referenceNo": "CR-2024-1022",
+    "subject": "Internal Control Memo",
+    "type": "Memo",
+    "priority": "Normal",
+    "securityTier": 4,
+    "status": "PendingResponse",
+    "date": "2024-05-05",
+    "ownerId": "u-nour"
+  }
+]

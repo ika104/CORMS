@@ -1,0 +1,44 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+// Casing is presentation, not translation — the strings stay title-case in both locales
+// (Arabic has no case to transform), matching CoreMetadataSection's field labels.
+.label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--corms-text-secondary);
+}
+
+.input,
+.select {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 7px 9px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page);
+}
+
+.helper {
+  font-size: 11px;
+  color: var(--corms-text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 10px;
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}

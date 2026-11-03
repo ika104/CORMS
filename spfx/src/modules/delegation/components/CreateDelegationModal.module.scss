@@ -1,0 +1,109 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--corms-text-secondary);
+}
+
+.dateRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.input,
+.select,
+.textarea {
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 7px 9px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--corms-text-primary);
+  background: var(--corms-neutral-page);
+
+  &:disabled {
+    background: var(--corms-neutral-panel);
+    color: var(--corms-text-secondary);
+    cursor: not-allowed;
+  }
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.invalid {
+  border-color: var(--corms-brand-red);
+}
+
+.error {
+  font-size: 11px;
+  color: var(--corms-brand-red);
+}
+
+.saveError {
+  background: #fde7e9;
+  color: #c50f1f;
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.docList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.docRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--corms-neutral-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--corms-text-secondary);
+}
+
+.docName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--corms-text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    color: var(--corms-brand-red);
+  }
+}
+
+.infoNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  background: #fff8e6;
+  border: 1px solid var(--corms-state-warning);
+  color: #6b4e00;
+  font-size: 12px;
+  line-height: 1.4;
+}

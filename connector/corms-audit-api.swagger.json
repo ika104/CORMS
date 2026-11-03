@@ -1,0 +1,135 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "CORMS Audit API",
+    "description": "Writes CORMS task audit entries to the GroupDoc audit service and reads them back from the sslaudit Elasticsearch index.",
+    "version": "1.0"
+  },
+  "host": "sslomanonline.com:9220",
+  "basePath": "/",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/api/Audit/log": {
+      "post": {
+        "operationId": "LogAudit",
+        "summary": "Log an audit entry",
+        "description": "Writes one audit entry to the external audit system.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/AuditLogModel" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK" }
+        }
+      }
+    },
+    "/api/Search/elasticsearch": {
+      "post": {
+        "operationId": "SearchAudit",
+        "summary": "Search audit entries",
+        "description": "Runs an Elasticsearch query body against an index and returns the matching documents.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/ElasticSearchRequest" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": { "$ref": "#/definitions/ElasticSearchResponse" }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AuditLogModel": {
+      "type": "object",
+      "required": ["action", "entity", "userName"],
+      "properties": {
+        "action": { "type": "string", "description": "What happened, for example Task Created" },
+        "entity": { "type": "string", "description": "Entity type or id, for example CORMSTask" },
+        "entity_id": { "type": "integer", "format": "int32", "description": "Numeric id of the record" },
+        "entity_id_record": { "type": "string", "description": "Business key of the record, for example TSK-2026-0030" },
+        "recordTitle": { "type": "string", "description": "Title of the record" },
+        "userName": { "type": "string", "description": "User who performed the action" },
+        "details": { "type": "string", "description": "Free text description" },
+        "comment": { "type": "string", "description": "Optional comment" },
+        "siteUrl": { "type": "string", "description": "Link to the record" },
+        "parentEntity": { "type": "string", "description": "Parent entity id" },
+        "parentEntity_Id": { "type": "integer", "format": "int32" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "aggregationNumber": { "type": "string" },
+        "aggregationTitle": { "type": "string" },
+        "classificationNumber": { "type": "string" },
+        "classificationTitle": { "type": "string" }
+      }
+    },
+    "ElasticSearchRequest": {
+      "type": "object",
+      "required": ["query"],
+      "properties": {
+        "query": { "type": "string", "description": "Elasticsearch request body as JSON text" },
+        "index": { "type": "string", "description": "Index to search, for example sslaudit" },
+        "size": { "type": "integer", "format": "int32" },
+        "from": { "type": "integer", "format": "int32" }
+      }
+    },
+    "ElasticSearchResponse": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "message": { "type": "string" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "took": { "type": "integer", "format": "int32" },
+            "hits": {
+              "type": "object",
+              "properties": {
+                "hits": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": { "type": "string" },
+                      "_index": { "type": "string" },
+                      "_source": {
+                        "type": "object",
+                        "properties": {
+                          "action": { "type": "string" },
+                          "entity": { "type": "string" },
+                          "entity_id_record": { "type": "string" },
+                          "recordTitle": { "type": "string" },
+                          "userName": { "type": "string" },
+                          "userEmail": { "type": "string" },
+                          "parentEntity": { "type": "string" },
+                          "entityType": { "type": "string" },
+                          "Details": { "type": "string" },
+                          "details": { "type": "string" },
+                          "comment": { "type": "string" },
+                          "SiteUrl": { "type": "string" },
+                          "siteUrl": { "type": "string" },
+                          "timestamp": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

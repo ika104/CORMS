@@ -1,0 +1,26 @@
+.moduleHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--corms-neutral-border);
+  background: var(--corms-neutral-page);
+
+  .titleGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .icon {
+      color: var(--corms-brand-navy);
+      display: flex;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--corms-brand-navy);
+      margin: 0;
+    }
+  }
+}

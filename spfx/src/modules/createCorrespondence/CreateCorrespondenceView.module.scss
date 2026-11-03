@@ -1,0 +1,249 @@
+.page {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--corms-content-bg);
+}
+
+.header {
+  background: var(--corms-brand-navy);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.headerText {
+  flex: 1;
+  min-width: 240px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 12px;
+  opacity: 0.85;
+  margin: 4px 0 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* CMS-005 AC8 — quiet auto-save indicator; the header sits on the brand banner so the text is light. */
+.autosaveStatus {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+
+.actionButton {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.actionButtonPrimary {
+  background: var(--corms-brand-navy);
+  border-color: var(--corms-brand-navy);
+}
+
+.actionButtonPrimary:hover:not(:disabled) {
+  background: var(--corms-brand-navy-hover);
+  border-color: var(--corms-brand-navy-hover);
+}
+
+.actionButtonPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+// Inline loader shown inside a button while its action is in flight. Uses currentColor so it
+// reads correctly on both the light Save Draft button and the navy primary button.
+.buttonSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-right-color: currentColor;
+  border-radius: 50%;
+  animation: buttonSpin 0.6s linear infinite;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+@keyframes buttonSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Full-screen dimming overlay shown while Save Draft / Send is in flight. position:fixed + inset:0
+// covers the whole viewport (including the nav rail) so no further clicks land anywhere until the
+// action finishes; the high z-index keeps it above modals/sticky headers.
+.busyOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  cursor: progress;
+}
+
+.busyDialog {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 22px;
+  border-radius: 8px;
+  background: var(--corms-neutral-page, #ffffff);
+  color: var(--corms-text-primary, #1a1a1a);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.busySpinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--corms-neutral-border, #d0d0d0);
+  border-top-color: var(--corms-brand-navy, #1a3d6b);
+  border-radius: 50%;
+  animation: buttonSpin 0.6s linear infinite;
+  flex: 0 0 auto;
+}
+
+.busyLabel {
+  white-space: nowrap;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footerActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.footerButton {
+  border: 1px solid var(--corms-neutral-border);
+  background: var(--corms-neutral-page);
+  color: var(--corms-text-primary);
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footerButtonPrimary {
+  background: var(--corms-brand-navy);
+  border-color: var(--corms-brand-navy);
+  color: #ffffff;
+}
+
+.footerButtonPrimary:hover:not(:disabled) {
+  background: var(--corms-brand-navy-hover);
+  border-color: var(--corms-brand-navy-hover);
+}
+
+.footerButtonPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.confirmation {
+  background: var(--corms-card-surface);
+  border: 1px solid var(--corms-card-border);
+  border-radius: 4px;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+// The submitted correspondence's title — shown first (prominent) on the confirmation screen.
+.confirmationSubject {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--corms-toolbar-primary);
+}
+
+// The assigned request (reference) number — shown under the title.
+.confirmationNumber {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--corms-brand-navy);
+  font-family: monospace;
+}
+
+.errorBanner {
+  background: #fde7e9;
+  color: #c50f1f;
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+// CMS-041 — reply indication banner (informational, not an error).
+.replyBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #eff6fc;
+  color: #115ea3;
+  border: 1px solid #c7e0f4;
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
