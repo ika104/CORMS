@@ -31,3 +31,6 @@ canvas-app-snapshots/
 # never in source. Keep it that way.
 *.xlsx
 *.csv
+
+# macOS
+.DS_Store

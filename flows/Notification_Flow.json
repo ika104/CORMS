@@ -1,0 +1,429 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "corms_sharedoffice365_63afd"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      },
+      "shared_teams": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "corms_sharedteams_0a33b"
+        },
+        "api": {
+          "name": "shared_teams"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {},
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "triggerAuthenticationType": "All",
+            "schema": {
+              "type": "object",
+              "required": [
+                "event",
+                "correspondenceId",
+                "url",
+                "recipients"
+              ],
+              "properties": {
+                "event": {
+                  "type": "string",
+                  "enum": [
+                    "Dispatched",
+                    "ApprovalStepActive",
+                    "ExternalDelivery",
+                    "SignedDocuments"
+                  ]
+                },
+                "correspondenceId": {
+                  "type": "string"
+                },
+                "correspondenceNumber": {
+                  "type": "string"
+                },
+                "subject": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Direct link to the correspondence in CORMS. Empty for External recipients."
+                },
+                "actionSummary": {
+                  "type": "string",
+                  "description": "What the person is asked to do."
+                },
+                "teamsTeamId": {
+                  "type": "string",
+                  "description": "Admin Settings > notification.teamsTeamId. When set, approvers and recipients also get a Teams card from Flow bot. Blank = email only."
+                },
+                "recipients": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "email"
+                    ],
+                    "properties": {
+                      "email": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "role": {
+                        "type": "string",
+                        "enum": [
+                          "Recipient",
+                          "Approver",
+                          "External"
+                        ],
+                        "description": "External: an organisation outside the tenant. Email only, with the attachments and no CORMS link."
+                      }
+                    }
+                  }
+                },
+                "emailSubject": {
+                  "type": "string",
+                  "description": "Optional. The subject from the CORMS email template, ready to use."
+                },
+                "emailBodyHtml": {
+                  "type": "string",
+                  "description": "Optional. The body from the CORMS email template, ready to use except {{recipientName}}."
+                },
+                "templateEvent": {
+                  "type": "string",
+                  "description": "Optional. Which CORMS email template was used (information only)."
+                },
+                "attachments": {
+                  "type": "array",
+                  "description": "Optional. Files for External emails (the signed PDF). CORMS - Notification Bridge reads the file and fills contentBytes.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "File name shown in the email."
+                      },
+                      "contentBytes": {
+                        "type": "string",
+                        "description": "The file, base64. Empty when it couldn't be read."
+                      }
+                    }
+                  }
+                },
+                "details": {
+                  "type": "object",
+                  "description": "Optional. The correspondence's details for the Teams card, each as SharePoint shows it.",
+                  "properties": {
+                    "correspondenceType": {
+                      "type": "string"
+                    },
+                    "priority": {
+                      "type": "string"
+                    },
+                    "dueDate": {
+                      "type": "string"
+                    },
+                    "sender": {
+                      "type": "string"
+                    },
+                    "securityLevel": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "CORMS and the CORMS Approvals app post here: Dispatched, ApprovalStepActive, and ExternalDelivery (the signed document to external organisations). Copy this trigger's URL into Admin Settings > notification.flowUrl."
+        }
+      },
+      "actions": {
+        "Accepted": {
+          "runAfter": {},
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 202,
+            "body": {
+              "accepted": "@length(triggerBody()?['recipients'])"
+            }
+          },
+          "description": "Answer CORMS straight away; the notifications are sent after."
+        },
+        "Reference": {
+          "runAfter": {
+            "Accepted": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": "@{if(empty(triggerBody()?['correspondenceNumber']), triggerBody()?['subject'], triggerBody()?['correspondenceNumber'])}",
+          "description": "The correspondence number, or the subject while it has none."
+        },
+        "Notify_each_person": {
+          "foreach": "@triggerBody()?['recipients']",
+          "actions": {
+            "Is_external": {
+              "actions": {
+                "All_files_read": {
+                  "actions": {
+                    "Send_external_email": {
+                      "type": "OpenApiConnection",
+                      "inputs": {
+                        "parameters": {
+                          "emailMessage/To": "@items('Notify_each_person')?['email']",
+                          "emailMessage/Subject": "@{if(empty(coalesce(triggerBody()?['emailSubject'], '')), concat('Signed correspondence: ', outputs('Reference')), triggerBody()?['emailSubject'])}",
+                          "emailMessage/Body": "@{if(empty(coalesce(triggerBody()?['emailBodyHtml'], '')), concat('<p>Dear ', replace(replace(replace(coalesce(coalesce(items('Notify_each_person')?['name'], items('Notify_each_person')?['email']), ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), ',</p><p>', replace(replace(replace(coalesce(triggerBody()?['actionSummary'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '</p><p><strong>Correspondence number:</strong> ', replace(replace(replace(coalesce(outputs('Reference'), ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '<br/><strong>Subject:</strong> ', replace(replace(replace(coalesce(triggerBody()?['subject'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '</p>'), replace(triggerBody()?['emailBodyHtml'], '{{recipientName}}', replace(replace(replace(coalesce(coalesce(items('Notify_each_person')?['name'], items('Notify_each_person')?['email']), ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;')))}",
+                          "emailMessage/Attachments": "@body('Email_attachments')",
+                          "emailMessage/Importance": "Normal"
+                        },
+                        "host": {
+                          "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                          "operationId": "SendEmailV2",
+                          "connectionName": "shared_office365"
+                        }
+                      },
+                      "description": "Email to the organisation with the signed document attached and no CORMS link."
+                    }
+                  },
+                  "else": {
+                    "actions": {}
+                  },
+                  "expression": {
+                    "equals": [
+                      "@length(body('Email_attachments'))",
+                      "@length(coalesce(triggerBody()?['attachments'], json('[]')))"
+                    ]
+                  },
+                  "type": "If",
+                  "description": "A file that couldn't be read means there is nothing to deliver: the email is not sent."
+                }
+              },
+              "else": {
+                "actions": {
+                  "Send_email": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "emailMessage/To": "@items('Notify_each_person')?['email']",
+                        "emailMessage/Subject": "@{if(empty(coalesce(triggerBody()?['emailSubject'], '')), concat(if(equals(items('Notify_each_person')?['role'], 'Approver'), 'Action required', 'For your attention'), ': ', outputs('Reference')), triggerBody()?['emailSubject'])}",
+                        "emailMessage/Body": "@{if(empty(coalesce(triggerBody()?['emailBodyHtml'], '')), concat('<p>Dear ', replace(replace(replace(coalesce(coalesce(items('Notify_each_person')?['name'], items('Notify_each_person')?['email']), ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), ',</p><p><strong>Correspondence number:</strong> ', replace(replace(replace(coalesce(outputs('Reference'), ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '<br/><strong>Subject:</strong> ', replace(replace(replace(coalesce(triggerBody()?['subject'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '</p><p><strong>Required action:</strong> ', replace(replace(replace(coalesce(triggerBody()?['actionSummary'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), '</p><p><a href=\"', triggerBody()?['url'], '\">Open the correspondence in CORMS</a></p>'), replace(triggerBody()?['emailBodyHtml'], '{{recipientName}}', replace(replace(replace(coalesce(coalesce(items('Notify_each_person')?['name'], items('Notify_each_person')?['email']), ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;')))}",
+                        "emailMessage/Attachments": "@body('Email_attachments')",
+                        "emailMessage/Importance": "@{if(equals(items('Notify_each_person')?['role'], 'Approver'), 'High', 'Normal')}"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                        "operationId": "SendEmailV2",
+                        "connectionName": "shared_office365"
+                      }
+                    },
+                    "description": "Email with the correspondence number, the required action and the direct link."
+                  },
+                  "Has_team": {
+                    "actions": {
+                      "Card": {
+                        "type": "Compose",
+                        "inputs": {
+                          "type": "AdaptiveCard",
+                          "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                          "version": "1.4",
+                          "body": [
+                            {
+                              "type": "TextBlock",
+                              "text": "@{if(equals(items('Notify_each_person')?['role'], 'Approver'), 'Action required', 'For your attention')}",
+                              "weight": "Bolder",
+                              "size": "Medium",
+                              "color": "@{if(equals(items('Notify_each_person')?['role'], 'Approver'), 'Attention', 'Accent')}"
+                            },
+                            {
+                              "type": "TextBlock",
+                              "text": "@{coalesce(triggerBody()?['subject'], outputs('Reference'))}",
+                              "weight": "Bolder",
+                              "wrap": true
+                            },
+                            {
+                              "type": "FactSet",
+                              "facts": "@body('Card_facts')"
+                            }
+                          ],
+                          "actions": "@if(empty(coalesce(triggerBody()?['url'], '')), json('[]'), createArray(addProperty(json('{\"type\":\"Action.OpenUrl\",\"title\":\"Open in CORMS\"}'), 'url', triggerBody()?['url'])))"
+                        },
+                        "description": "The adaptive card: subject, reference, what to do, type, priority, due date, sender, security level and Open in CORMS."
+                      },
+                      "Post_card_in_chat": {
+                        "runAfter": {
+                          "Card": [
+                            "Succeeded"
+                          ]
+                        },
+                        "type": "OpenApiConnection",
+                        "inputs": {
+                          "parameters": {
+                            "poster": "Flow bot",
+                            "location": "Chat with Flow bot",
+                            "body/recipient": "@items('Notify_each_person')?['email']",
+                            "body/messageBody": "@{string(outputs('Card'))}"
+                          },
+                          "host": {
+                            "apiId": "/providers/Microsoft.PowerApps/apis/shared_teams",
+                            "operationId": "PostCardToConversation",
+                            "connectionName": "shared_teams"
+                          }
+                        },
+                        "description": "Teams chat message from Flow bot with the correspondence's details."
+                      }
+                    },
+                    "runAfter": {
+                      "Send_email": [
+                        "Succeeded",
+                        "Failed"
+                      ]
+                    },
+                    "else": {
+                      "actions": {}
+                    },
+                    "expression": {
+                      "not": {
+                        "equals": [
+                          "@coalesce(triggerBody()?['teamsTeamId'], '')",
+                          ""
+                        ]
+                      }
+                    },
+                    "type": "If",
+                    "description": "Teams card, only when Admin Settings > notification.teamsTeamId is set (blank = email only)."
+                  }
+                }
+              },
+              "expression": {
+                "equals": [
+                  "@items('Notify_each_person')?['role']",
+                  "External"
+                ]
+              },
+              "type": "If",
+              "description": "External organisations get email only, with the attachments; everyone else as before plus the Teams card."
+            }
+          },
+          "runAfter": {
+            "Card_facts": [
+              "Succeeded"
+            ]
+          },
+          "type": "Foreach",
+          "runtimeConfiguration": {
+            "concurrency": {
+              "repetitions": 10
+            }
+          }
+        },
+        "Readable_attachments": {
+          "runAfter": {
+            "Reference": [
+              "Succeeded"
+            ]
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@coalesce(triggerBody()?['attachments'], json('[]'))",
+            "where": "@not(empty(coalesce(item()?['contentBytes'], '')))"
+          },
+          "description": "The files that arrived with their content."
+        },
+        "Email_attachments": {
+          "runAfter": {
+            "Readable_attachments": [
+              "Succeeded"
+            ]
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@body('Readable_attachments')",
+            "select": {
+              "Name": "@item()?['name']",
+              "ContentBytes": "@base64ToBinary(item()?['contentBytes'])"
+            }
+          },
+          "description": "As Outlook takes them (Name + ContentBytes). Empty unless the caller sent files."
+        },
+        "Card_facts_all": {
+          "runAfter": {
+            "Email_attachments": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": [
+            {
+              "title": "Reference",
+              "value": "@{outputs('Reference')}"
+            },
+            {
+              "title": "What to do",
+              "value": "@{coalesce(triggerBody()?['actionSummary'], '')}"
+            },
+            {
+              "title": "Type \u00b7 Priority",
+              "value": "@{if(and(not(empty(coalesce(triggerBody()?['details']?['correspondenceType'], ''))), not(empty(coalesce(triggerBody()?['details']?['priority'], '')))), concat(triggerBody()?['details']?['correspondenceType'], ' \u00b7 ', triggerBody()?['details']?['priority']), concat(coalesce(triggerBody()?['details']?['correspondenceType'], ''), coalesce(triggerBody()?['details']?['priority'], '')))}"
+            },
+            {
+              "title": "Due date",
+              "value": "@{coalesce(triggerBody()?['details']?['dueDate'], '')}"
+            },
+            {
+              "title": "From",
+              "value": "@{coalesce(triggerBody()?['details']?['sender'], '')}"
+            },
+            {
+              "title": "Security level",
+              "value": "@{coalesce(triggerBody()?['details']?['securityLevel'], '')}"
+            }
+          ],
+          "description": "Every row the Teams card can show."
+        },
+        "Card_facts": {
+          "runAfter": {
+            "Card_facts_all": [
+              "Succeeded"
+            ]
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@outputs('Card_facts_all')",
+            "where": "@not(empty(trim(coalesce(item()?['value'], ''))))"
+          },
+          "description": "Rows without a value are left out."
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

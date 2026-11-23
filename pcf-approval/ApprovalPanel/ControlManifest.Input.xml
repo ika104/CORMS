@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <control namespace="CORMS" constructor="ApprovalPanel" version="0.0.20"
+  <control namespace="CORMS" constructor="ApprovalPanel" version="0.0.22"
            display-name-key="CORMS Approval Panel"
            description-key="Approval task in context - header, chain progress, decision buttons and the in-app signing session"
            control-type="standard">

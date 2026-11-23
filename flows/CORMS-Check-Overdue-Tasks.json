@@ -1,0 +1,150 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline-2": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_00d04"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "undefined",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)": {
+          "defaultValue": "https://ssloman.sharepoint.com/sites/CORMS",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+          }
+        },
+        "CORMS_Tasks (new_shared_sharepointonline_fcf52443a8474cd1b2f8ff34a9e5642e)": {
+          "defaultValue": "b9a3889c-805e-4394-9e4a-198f2f99a4b8",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_fcf52443a8474cd1b2f8ff34a9e5642e"
+          }
+        }
+      },
+      "triggers": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Day",
+            "interval": 1,
+            "timeZone": "Arab Standard Time",
+            "startTime": "2026-09-26T21:00:00Z"
+          },
+          "evaluatedRecurrence": {
+            "frequency": "Day",
+            "interval": "1",
+            "startTime": "2026-09-26T21:00:00Z",
+            "timeZone": "Arab Standard Time"
+          },
+          "metadata": {
+            "operationMetadataId": "f7fdf5ea-614d-48eb-b035-11a8ac81467a"
+          },
+          "type": "Recurrence"
+        }
+      },
+      "actions": {
+        "Get_items": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "5700e055-02ca-49f1-878a-7d8ebfa5fe8d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_sharepointonline-2",
+              "operationId": "GetItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+            },
+            "parameters": {
+              "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+              "table": "@parameters('CORMS_Tasks (new_shared_sharepointonline_fcf52443a8474cd1b2f8ff34a9e5642e)')",
+              "$filter": "(Status eq 'Pending' or Status eq 'In Progress') and DueDate lt '@{formatDateTime(utcNow(),'yyyy-MM-dd')}'\n"
+            },
+            "authentication": "@parameters('$authentication')"
+          },
+          "runtimeConfiguration": {
+            "paginationPolicy": {
+              "minimumItemCount": 5000
+            }
+          }
+        },
+        "For_each": {
+          "foreach": "@outputs('Get_items')?['body/value']",
+          "actions": {
+            "Update_item": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "23a1c904-875b-4b4d-81a3-e102d36d482b"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                  "table": "@parameters('CORMS_Tasks (new_shared_sharepointonline_fcf52443a8474cd1b2f8ff34a9e5642e)')",
+                  "id": "@items('For_each')?['ID']",
+                  "item/Title": "@items('For_each')?['Title']",
+                  "item/RH_Vital": false,
+                  "item/RH_ForcedVital": false,
+                  "item/RH_Hold": false,
+                  "item/RH_ForcedHold": false,
+                  "item/RH_Record": false,
+                  "item/RH_ForcedRecord": false,
+                  "item/RH_IsInheritedFromParent": false,
+                  "item/RH_NoCapture": false,
+                  "item/RH_SyncStatus/Value": "Pending",
+                  "item/Record": "",
+                  "item/Record_x0020_Status": ""
+                },
+                "host": {
+                  "connectionName": "shared_sharepointonline-2",
+                  "operationId": "PatchItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "88ebb58c-8900-4263-881f-1f9e89dade9d"
+          },
+          "type": "Foreach"
+        },
+        "Compose": {
+          "runAfter": {
+            "Get_items": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ef944e49-0358-471f-969f-caa316e2a823"
+          },
+          "type": "Compose",
+          "inputs": "@length(outputs('Get_items')?['body/value'])"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

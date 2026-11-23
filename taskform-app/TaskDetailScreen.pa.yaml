@@ -5,7 +5,6 @@ Screens:
       LoadingSpinnerColor: =RGBA(0, 120, 212, 1)
       OnVisible: |-
         =Set(varTab, "Details");
-        ClearCollect(colStatusChoices, Choices(CORMS_Tasks.Status));
         Reset(tabDet);
         Set(varEditField, "");
         Reset(inpFltDetField); Reset(inpFltDetValue); Reset(inpFltFilesName); Reset(inpFltFilesDate); Reset(inpFltFilesSource); Reset(inpFltSecPrincipal); Reset(inpFltSecLevel); Reset(inpFltSecType); Reset(inpFltAuditNo); Reset(inpFltAuditAction); Reset(inpFltAuditActor); Reset(inpFltAuditDetails); Reset(inpFltAuditTime); UpdateContext({locFltDetField: "", locFltDetValue: "", locFltFilesName: "", locFltFilesDate: "", locFltFilesSource: "", locFltSecPrincipal: "", locFltSecLevel: "", locFltSecType: "", locFltAuditNo: "", locFltAuditAction: "", locFltAuditActor: "", locFltAuditDetails: "", locFltAuditTime: ""});
@@ -21,173 +20,8 @@ Screens:
                 locType: Blank(), locStatus: Blank(), locPriority: Blank(), locMember: Blank(), locMemberSet: false
             }
         );
-        Set(
-            varTaskId,
-            Value(Coalesce(Param("taskId"), "0"))
-        );
-        Set(varCurrentTask, LookUp(CORMS_Tasks, ID = varTaskId));
-        Set(
-            varIsOverdue,
-            !IsBlank(varCurrentTask.DueDate) && varCurrentTask.DueDate < Today() &&
-            !(varCurrentTask.Status.Value in ["Completed", "Rejected"])
-        );
-        // Related correspondence (stored as its ID; older tasks may hold the reference number)
-        Set(
-            varRelCorr,
-            If(
-                IsBlank(varCurrentTask.RelatedCorrespondenceId),
-                Blank(),
-                IsNumeric(varCurrentTask.RelatedCorrespondenceId),
-                LookUp(CORMS_Correspondence, ID = Value(varCurrentTask.RelatedCorrespondenceId)),
-                LookUp(CORMS_Correspondence, ReferenceNo = varCurrentTask.RelatedCorrespondenceId)
-            )
-        );
-        // Files = documents uploaded for this task (CORMS_Attachments.TaskReferenceNo)
-        //         + documents of its related correspondence (CORMS_Attachments.CorrespondenceId)
-        ClearCollect(
-            colTaskFiles,
-            ForAll(
-                Filter(CORMS_Attachments, TaskReferenceNo = varCurrentTask.ReferenceNo),
-                {
-                    DocId: ThisRecord.ID,
-                    FileName: Coalesce(ThisRecord.FileName, ThisRecord.Name),
-                    Uploaded: ThisRecord.Created,
-                    Url: fxSiteUrl & "/_layouts/download.aspx?SourceUrl=" & fxSiteUrl & "/" & ThisRecord.'Full Path',
-                    Source: "Task",
-                    Link: ThisRecord.'Link to item',
-                    IsMain: false
-                }
-            )
-        );
-        If(
-            !IsBlank(varRelCorr),
-            Collect(
-                colTaskFiles,
-                ForAll(
-                    Filter(
-                        CORMS_Attachments,
-                        CorrespondenceId = Text(varRelCorr.ID) || CorrespondenceId = varRelCorr.ReferenceNo
-                    ),
-                    {
-                        DocId: ThisRecord.ID,
-                        FileName: Coalesce(ThisRecord.FileName, ThisRecord.Name),
-                        Uploaded: ThisRecord.Created,
-                        Url: fxSiteUrl & "/_layouts/download.aspx?SourceUrl=" & fxSiteUrl & "/" & ThisRecord.'Full Path',
-                        Source: "Correspondence",
-                        Link: ThisRecord.'Link to item',
-                        IsMain: ThisRecord.IsMainLetter
-                    }
-                )
-            )
-        );
-        // A task file linked to the same correspondence would otherwise be listed twice
-        RemoveIf(
-            colTaskFiles,
-            Source = "Correspondence" && DocId in Filter(colTaskFiles, Source = "Task").DocId
-        );
-        // Document shown on the Document & Approval tab: the correspondence main letter, else the first file
-        Set(
-            varMainDoc,
-            If(
-                IsBlank(LookUp(colTaskFiles, IsMain)),
-                First(colTaskFiles),
-                LookUp(colTaskFiles, IsMain)
-            )
-        );
-        ClearCollect(
-            colDetRows,
-            ForAll(
-                Table(
-                    {Idx: 1, Key: "ref", Label: "Reference No.", Editable: false},
-                    {Idx: 2, Key: "subject", Label: "Subject", Editable: true},
-                    {Idx: 3, Key: "type", Label: "Type", Editable: true},
-                    {Idx: 4, Key: "status", Label: "Status", Editable: true},
-                    {Idx: 5, Key: "priority", Label: "Priority", Editable: true},
-                    {Idx: 6, Key: "team", Label: "Assignee Team", Editable: true},
-                    {Idx: 7, Key: "member", Label: "Team Member", Editable: true},
-                    {Idx: 8, Key: "createdby", Label: "Created By", Editable: false},
-                    {Idx: 9, Key: "created", Label: "Date Created", Editable: false},
-                    {Idx: 10, Key: "modified", Label: "Last Updated", Editable: false},
-                    {Idx: 11, Key: "due", Label: "Due Date", Editable: true},
-                    {Idx: 12, Key: "corr", Label: "Related Correspondence", Editable: true},
-                    {Idx: 13, Key: "attach", Label: "Attachment", Editable: false},
-                    {Idx: 14, Key: "description", Label: "Description", Editable: true}
-                ),
-                Patch(
-                    ThisRecord,
-                    {
-                        Val: Switch(
-                            ThisRecord.Key,
-                            "ref", varCurrentTask.ReferenceNo,
-                            "subject", varCurrentTask.Title,
-                            "type", varCurrentTask.TaskType.Value,
-                            "status", varCurrentTask.Status.Value,
-                            "priority", varCurrentTask.Priority.Value,
-                            "team", varCurrentTask.AssignedToTeam,
-                            "member", Concat(varCurrentTask.AssignedToUser, DisplayName, ", "),
-                            "createdby", varCurrentTask.'Created By'.DisplayName,
-                            "created", Text(varCurrentTask.Created, "yyyy-mm-dd hh:mm"),
-                            "modified", Text(varCurrentTask.Modified, "yyyy-mm-dd hh:mm"),
-                            "due", Text(varCurrentTask.DueDate, "yyyy-mm-dd") & If(varIsOverdue, " Overdue", ""),
-                            "corr", varRelCorr.ReferenceNo & " " & varRelCorr.Title,
-                            "attach", Concat(colTaskFiles, FileName, " "),
-                            "description", varCurrentTask.Description,
-                            ""
-                        )
-                    }
-                )
-            )
-        );
-        ClearCollect(
-            colTaskAudit,
-            ForAll(
-                Sort(
-                    Filter(CORMS_AuditLog, ObjectId = varCurrentTask.ReferenceNo || ObjectId = Text(varCurrentTask.ID)),
-                    Created,
-                    SortOrder.Descending
-                ),
-                {
-                    ID: ThisRecord.ID,
-                    Action: ThisRecord.Action,
-                    ActorName: ThisRecord.Actor.DisplayName,
-                    Details: ThisRecord.Details,
-                    Created: ThisRecord.Created
-                }
-            )
-        );
-        ClearCollect(
-            colTaskEvents,
-            ForAll(
-                Sort(
-                    Filter(
-                        CORMS_Timeline,
-                        CorrespondenceId = varCurrentTask.ReferenceNo ||
-                        (!IsBlank(varCurrentTask.RelatedCorrespondenceId) && CorrespondenceId = varCurrentTask.RelatedCorrespondenceId)
-                    ),
-                    Created,
-                    SortOrder.Ascending
-                ),
-                {
-                    Title: ThisRecord.Title,
-                    EventType: ThisRecord.EventType.Value,
-                    Description: ThisRecord.Description,
-                    Created: ThisRecord.Created,
-                    ActorName: ThisRecord.Actor.DisplayName,
-                    IsTaskNote: ThisRecord.Title = "Note" && ThisRecord.CorrespondenceId = varCurrentTask.ReferenceNo
-                }
-            )
-        );
-        // Security tab = the SharePoint permissions on the CORMS_Tasks list itself, which apply to every task.
-        // Reading them live from SharePoint needs a premium connector, so they are listed here.
-        // Update this table if the site groups or their permission levels change.
-        ClearCollect(
-            colTaskRoles,
-            Table(
-                { Principal: "CORMS Owners", Level: "Full Control", TypeText: "SharePoint Group" },
-                { Principal: "CORMS Visitors", Level: "Read", TypeText: "SharePoint Group" },
-                { Principal: "CORMS Members", Level: "Edit", TypeText: "SharePoint Group" }
-            )
-        )
+        Set(varTaskId, Value(Coalesce(Param("taskId"), "0")));
+        Select(btnDetRefresh)
     Children:
       - conDetRoot:
           Control: GroupContainer
@@ -226,6 +60,7 @@ Screens:
                   - txtDetTopRef:
                       Control: ModernText
                       Properties:
+                        AccessibleLabel: =Self.Text
                         Color: =RGBA(255, 255, 255, 1)
                         Font: =Font.'Segoe UI'
                         FontWeight: =FontWeight.Semibold
@@ -236,6 +71,7 @@ Screens:
                   - txtDetTopSubject:
                       Control: ModernText
                       Properties:
+                        AccessibleLabel: =Self.Text
                         Align: =Align.Right
                         Color: =RGBA(255, 255, 255, 0.9)
                         FillPortions: =1
@@ -257,7 +93,6 @@ Screens:
                   Items: |-
                     =Table(
                         {Value: "Details"},
-                        //{Value: "Document & Approval"},
                         {Value: "Files"},
                         {Value: "Notes"},
                         {Value: "Security"},
@@ -269,11 +104,13 @@ Screens:
                   OnChange: =Set(varTab, Self.Selected.Value)
                   PaddingLeft: =8
                   TabSize: =TabSize.Medium
-            - recDetTabLine:
-                Control: Rectangle
+            - divDetTabLine:
+                Control: GroupContainer
+                Variant: ManualLayout
                 Properties:
-                  AlignInContainer: =AlignInContainer.Stretch
+                  DropShadow: =DropShadow.None
                   Fill: =RGBA(229, 231, 235, 1)
+                  FillPortions: =0
                   Height: =1
                   LayoutMinHeight: =1
             - conDetDetails:
@@ -310,6 +147,7 @@ Screens:
                         - txtDetDetailsTitle:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               Color: =RGBA(36, 36, 36, 1)
                               FillPortions: =1
                               Font: =Font.'Segoe UI'
@@ -321,6 +159,7 @@ Screens:
                         - btnFltClearDetails:
                             Control: ModernButton
                             Properties:
+                              AccessibleLabel: ="Clear the details filters"
                               Appearance: =ButtonAppearance.Outline
                               Height: =34
                               Icon: ="FilterDismiss"
@@ -332,6 +171,7 @@ Screens:
                         - txtDetOverdue:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               Align: =Align.Center
                               BorderColor: =RGBA(238, 172, 178, 1)
                               BorderStyle: =BorderStyle.Solid
@@ -353,6 +193,7 @@ Screens:
                         - btnDetCancelEdit:
                             Control: ModernButton
                             Properties:
+                              AccessibleLabel: =Self.Text
                               Appearance: =ButtonAppearance.Outline
                               Height: =34
                               OnSelect: |-
@@ -374,6 +215,7 @@ Screens:
                         - btnDetSave:
                             Control: ModernButton
                             Properties:
+                              AccessibleLabel: =Self.Text
                               BasePaletteColor: =RGBA(15, 108, 189, 1)
                               DisplayMode: =If(locDirty && !varIsLoading, DisplayMode.Edit, DisplayMode.Disabled)
                               Height: =34
@@ -422,7 +264,7 @@ Screens:
                                         Description: If(locDescSet, locDescription, varCurrentTask.Description)
                                       }
                                     );
-                                    // Assignees picked from the directory -> SharePoint person values
+                                    // Assignees picked from the directory -> SharePoint person values.
                                     If(
                                       locMemberSet,
                                       Patch(
@@ -444,23 +286,31 @@ Screens:
                                         }
                                       )
                                     );
-                                    Patch(
-                                      CORMS_AuditLog,
-                                      Defaults(CORMS_AuditLog),
-                                      {
-                                        Title: varCurrentTask.ReferenceNo,
-                                        ObjectId: varCurrentTask.ReferenceNo,
-                                        Action: If(locOldStatus = locNewStatus, "Task Updated", "Status Changed"),
-                                        Actor: fxMe,
-                                        Details: If(
-                                          locOldStatus = locNewStatus,
-                                          "Updated: " & locChanges,
-                                          "Status changed from " & locOldStatus & " to " & locNewStatus &
-                                          If(IsBlank(locChanges), "", ". Updated: " & locChanges)
+                                    If(
+                                        nfAuditOn,
+                                        IfError(
+                                            If(
+                                                'CORMS-AuditBridge'.Run(
+                                                    nfAuditEndpoint,
+                                                    nfAuditKey,
+                                                    fxAuditDoc(
+                                                        varCurrentTask.ReferenceNo,
+                                                        If(locOldStatus = locNewStatus, "Task Updated", "Status Changed"),
+                                                        If(
+                                                            locOldStatus = locNewStatus,
+                                                            "Updated: " & locChanges,
+                                                            "Status changed from " & locOldStatus & " to " & locNewStatus &
+                                                            If(IsBlank(locChanges), "", ". Updated: " & locChanges)
+                                                            )
+                                                    ),
+                                                    {text_1: nfAuditIndex}
+                                                ).ok <> "true",
+                                                Trace("Audit entry could not be written", TraceSeverity.Warning, {action: "Task audit"})
+                                            ),
+                                            Trace("Audit entry could not be written", TraceSeverity.Warning, {action: "Task audit"})
                                         )
-                                      }
                                     );
-                                    // CMS-052.4: every edit shows on the timeline too
+                                    // CMS-052.4: every edit shows on the timeline too.
                                     If(
                                       !IsBlank(locChanges),
                                       Patch(
@@ -470,7 +320,7 @@ Screens:
                                           Title: "Task updated",
                                           CorrespondenceId: varCurrentTask.ReferenceNo,
                                           Actor: fxMe,
-                                          EventTimestamp: Today(),
+                                          EventTimestamp: Now(),
                                           Description: "Changed: " & locChanges
                                         }
                                       )
@@ -484,7 +334,7 @@ Screens:
                                           Title: "Status changed to " & locNewStatus,
                                           CorrespondenceId: varCurrentTask.ReferenceNo,
                                           Actor: fxMe,
-                                          EventTimestamp: Today(),
+                                          EventTimestamp: Now(),
                                           Description: "Previous status " & locOldStatus
                                         }
                                       )
@@ -498,7 +348,7 @@ Screens:
                                           Title: "Assigned",
                                           CorrespondenceId: varCurrentTask.ReferenceNo,
                                           Actor: fxMe,
-                                          EventTimestamp: Today(),
+                                          EventTimestamp: Now(),
                                           Description: "Assigned to " & Concat(locMember, DisplayName, ", ")
                                         }
                                       )
@@ -512,124 +362,39 @@ Screens:
                                           Title: "Linked",
                                           CorrespondenceId: varCurrentTask.ReferenceNo,
                                           Actor: fxMe,
-                                          EventTimestamp: Today(),
+                                          EventTimestamp: Now(),
                                           Description: "Linked to correspondence " & locCorr.ReferenceNo
                                         }
                                       )
                                     );
                                     Notify("Changes saved.", NotificationType.Success),
 
-                                    Notify("Could not save the changes. " & FirstError.Message, NotificationType.Error)
+                                    Trace("Task save failed", TraceSeverity.Error, {task: varCurrentTask.ReferenceNo, error: FirstError.Message});
+                                    Notify("The changes couldn't be saved. Please try again.", NotificationType.Error)
                                   )
                                 );
-                                Set(varCurrentTask, LookUp(CORMS_Tasks, ID = varTaskId));
-                                Set(
-                                  varIsOverdue,
-                                  !IsBlank(varCurrentTask.DueDate) && varCurrentTask.DueDate < Today() &&
-                                  !(varCurrentTask.Status.Value in ["Completed", "Rejected"])
+                                Set(varEditField, "");
+                                UpdateContext(
+                                    {
+                                        locDirty: false,
+                                        locSubject: "", locSubjectSet: false,
+                                        locDescription: "", locDescSet: false,
+                                        locTeam: "", locTeamSet: false,
+                                        locDue: Blank(), locDueSet: false,
+                                        locCorr: Blank(), locCorrSet: false,
+                                        locType: Blank(), locStatus: Blank(), locPriority: Blank(), locMember: Blank(), locMemberSet: false
+                                    }
                                 );
-                                Set(
-                                  varRelCorr,
-                                  If(
-                                    IsBlank(varCurrentTask.RelatedCorrespondenceId),
-                                    Blank(),
-                                    IsNumeric(varCurrentTask.RelatedCorrespondenceId),
-                                    LookUp(CORMS_Correspondence, ID = Value(varCurrentTask.RelatedCorrespondenceId)),
-                                    LookUp(CORMS_Correspondence, ReferenceNo = varCurrentTask.RelatedCorrespondenceId)
-                                  )
-                                );
-                                ClearCollect(
-                                    colDetRows,
-                                    ForAll(
-                                        Table(
-                                            {Idx: 1, Key: "ref", Label: "Reference No.", Editable: false},
-                                            {Idx: 2, Key: "subject", Label: "Subject", Editable: true},
-                                            {Idx: 3, Key: "type", Label: "Type", Editable: true},
-                                            {Idx: 4, Key: "status", Label: "Status", Editable: true},
-                                            {Idx: 5, Key: "priority", Label: "Priority", Editable: true},
-                                            {Idx: 6, Key: "team", Label: "Assignee Team", Editable: true},
-                                            {Idx: 7, Key: "member", Label: "Team Member", Editable: true},
-                                            {Idx: 8, Key: "createdby", Label: "Created By", Editable: false},
-                                            {Idx: 9, Key: "created", Label: "Date Created", Editable: false},
-                                            {Idx: 10, Key: "modified", Label: "Last Updated", Editable: false},
-                                            {Idx: 11, Key: "due", Label: "Due Date", Editable: true},
-                                            {Idx: 12, Key: "corr", Label: "Related Correspondence", Editable: true},
-                                            {Idx: 13, Key: "attach", Label: "Attachment", Editable: false},
-                                            {Idx: 14, Key: "description", Label: "Description", Editable: true}
-                                        ),
-                                        Patch(
-                                            ThisRecord,
-                                            {
-                                                Val: Switch(
-                                                    ThisRecord.Key,
-                                                    "ref", varCurrentTask.ReferenceNo,
-                                                    "subject", varCurrentTask.Title,
-                                                    "type", varCurrentTask.TaskType.Value,
-                                                    "status", varCurrentTask.Status.Value,
-                                                    "priority", varCurrentTask.Priority.Value,
-                                                    "team", varCurrentTask.AssignedToTeam,
-                                                    "member", Concat(varCurrentTask.AssignedToUser, DisplayName, ", "),
-                                                    "createdby", varCurrentTask.'Created By'.DisplayName,
-                                                    "created", Text(varCurrentTask.Created, "yyyy-mm-dd hh:mm"),
-                                                    "modified", Text(varCurrentTask.Modified, "yyyy-mm-dd hh:mm"),
-                                                    "due", Text(varCurrentTask.DueDate, "yyyy-mm-dd") & If(varIsOverdue, " Overdue", ""),
-                                                    "corr", varRelCorr.ReferenceNo & " " & varRelCorr.Title,
-                                                    "attach", Concat(colTaskFiles, FileName, " "),
-                                                    "description", varCurrentTask.Description,
-                                                    ""
-                                                )
-                                            }
-                                        )
-                                    )
-                                );
-                                ClearCollect(
-                                    colTaskAudit,
-                                    ForAll(
-                                        Sort(
-                                            Filter(CORMS_AuditLog, ObjectId = varCurrentTask.ReferenceNo || ObjectId = Text(varCurrentTask.ID)),
-                                            Created,
-                                            SortOrder.Descending
-                                        ),
-                                        {
-                                            ID: ThisRecord.ID,
-                                            Action: ThisRecord.Action,
-                                            ActorName: ThisRecord.Actor.DisplayName,
-                                            Details: ThisRecord.Details,
-                                            Created: ThisRecord.Created
-                                        }
-                                    )
-                                );
-                                ClearCollect(
-                                    colTaskEvents,
-                                    ForAll(
-                                        Sort(
-                                            Filter(
-                                                CORMS_Timeline,
-                                                CorrespondenceId = varCurrentTask.ReferenceNo ||
-                                                (!IsBlank(varCurrentTask.RelatedCorrespondenceId) && CorrespondenceId = varCurrentTask.RelatedCorrespondenceId)
-                                            ),
-                                            Created,
-                                            SortOrder.Ascending
-                                        ),
-                                        {
-                                            Title: ThisRecord.Title,
-                                            EventType: ThisRecord.EventType.Value,
-                                            Description: ThisRecord.Description,
-                                            Created: ThisRecord.Created,
-                                            ActorName: ThisRecord.Actor.DisplayName,
-                                            IsTaskNote: ThisRecord.Title = "Note" && ThisRecord.CorrespondenceId = varCurrentTask.ReferenceNo
-                                        }
-                                    )
-                                );
-                                Select(btnDetCancelEdit);
-                                Set(varIsLoading, false)
+                                Select(btnDetRefresh)
                               Text: ="Save Changes"
                               Width: =150
-                  - recDetDetailsLine:
-                      Control: Rectangle
+                  - divDetDetailsLine:
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
-                        AlignInContainer: =AlignInContainer.Stretch
+                        DropShadow: =DropShadow.None
                         Fill: =RGBA(229, 231, 235, 1)
+                        FillPortions: =0
                         Height: =1
                         LayoutMinHeight: =1
                   - conDetFieldTable:
@@ -769,6 +534,7 @@ Screens:
                         - txtFltEmptyDetails:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               Color: =RGBA(79, 90, 94, 1)
                               Font: =Font.'Segoe UI'
@@ -778,18 +544,20 @@ Screens:
                               PaddingLeft: =14
                               Size: =13
                               Text: ="No rows match the filters."
-                              Visible: =(!IsBlank(locFltDetField) || !IsBlank(locFltDetValue)) && IsEmpty(Filter(colDetRows, (IsBlank(locFltDetField) || locFltDetField in Label) && (IsBlank(locFltDetValue) || locFltDetValue in Val)))
+                              Visible: =(!IsBlank(locFltDetField) || !IsBlank(locFltDetValue)) && IsEmpty(Filter(nfDetRows, (IsBlank(locFltDetField) || locFltDetField in Label) && (IsBlank(locFltDetValue) || locFltDetValue in Val)))
                         - galDetFields:
                             Control: Gallery
                             Variant: Vertical
                             Properties:
+                              AccessibleLabel: ="Task details"
                               DelayItemLoading: =false
                               Items: |-
                                 =With(
-                                    { locShown: Filter(colDetRows, (IsBlank(locFltDetField) || locFltDetField in Label) && (IsBlank(locFltDetValue) || locFltDetValue in Val)) },
+                                    { locShown: Filter(nfDetRows, (IsBlank(locFltDetField) || locFltDetField in Label) && (IsBlank(locFltDetValue) || locFltDetValue in Val)) },
                                     ForAll(Sequence(CountRows(locShown)), Patch(Index(locShown, Value), { Idx: Value }))
                                 )
                               LayoutMinHeight: =0
+                              TabIndex: =0
                               TemplatePadding: =0
                               TemplateSize: =55
                             Children:
@@ -827,6 +595,7 @@ Screens:
                                           - txtDetLabel:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(36, 36, 36, 1)
                                                 Font: =Font.'Segoe UI'
                                                 FontWeight: =FontWeight.Semibold
@@ -852,9 +621,11 @@ Screens:
                                                 - txtDetValue:
                                                     Control: ModernText
                                                     Properties:
-                                                      Color: =If(ThisItem.Key = "due" && varIsOverdue, RGBA(196, 43, 28, 1), RGBA(51, 51, 51, 1))
+                                                      AccessibleLabel: =Self.Text
+                                                      Color: =If(ThisItem.Key = "description" || (ThisItem.Key = "due" && varIsOverdue), RGBA(196, 43, 28, 1), RGBA(51, 51, 51, 1))
                                                       FillPortions: =1
                                                       Font: =Font.'Segoe UI'
+                                                      FontWeight: =If(ThisItem.Key = "description", FontWeight.Bold, FontWeight.Normal)
                                                       LayoutMinWidth: =0
                                                       Size: =14
                                                       Text: |-
@@ -889,6 +660,7 @@ Screens:
                                                 - txtDetChip:
                                                     Control: ModernText
                                                     Properties:
+                                                      AccessibleLabel: =Self.Text
                                                       Align: =Align.Center
                                                       Color: |-
                                                         =Switch(
@@ -932,11 +704,12 @@ Screens:
                                                 - txtDetCorrLink:
                                                     Control: ModernText
                                                     Properties:
+                                                      AccessibleLabel: =Self.Text
                                                       Color: =RGBA(15, 108, 189, 1)
                                                       FillPortions: =1
                                                       Font: =Font.'Segoe UI'
                                                       LayoutMinWidth: =0
-                                                      OnSelect: =Launch(varRelCorr.'Link to item')
+                                                      OnSelect: =Launch(fxCorrespondenceUrl(Text(varRelCorr.ID)))
                                                       Size: =14
                                                       Text: =If(IsBlank(varRelCorr.ReferenceNo), varRelCorr.Title, varRelCorr.ReferenceNo & If(IsBlank(varRelCorr.Title), "", " - " & varRelCorr.Title))
                                                       Underline: =true
@@ -1022,8 +795,8 @@ Screens:
                                                             PaddingLeft: =10
                                                             PaddingRight: =10
                                                             Size: =12
-                                                            Text: =If(CountRows(colStatusChoices) >= 1, Index(colStatusChoices, 1).Value, "")
-                                                            Visible: =CountRows(colStatusChoices) >= 1
+                                                            Text: =If(CountRows(nfStatusChoices) >= 1, Index(nfStatusChoices, 1).Value, "")
+                                                            Visible: =CountRows(nfStatusChoices) >= 1
                                                             Width: =Len(Self.Text) * 8 + 26
                                                       - btnDetStatus2:
                                                           Control: ModernButton
@@ -1040,8 +813,8 @@ Screens:
                                                             PaddingLeft: =10
                                                             PaddingRight: =10
                                                             Size: =12
-                                                            Text: =If(CountRows(colStatusChoices) >= 2, Index(colStatusChoices, 2).Value, "")
-                                                            Visible: =CountRows(colStatusChoices) >= 2
+                                                            Text: =If(CountRows(nfStatusChoices) >= 2, Index(nfStatusChoices, 2).Value, "")
+                                                            Visible: =CountRows(nfStatusChoices) >= 2
                                                             Width: =Len(Self.Text) * 8 + 26
                                                       - btnDetStatus3:
                                                           Control: ModernButton
@@ -1058,8 +831,8 @@ Screens:
                                                             PaddingLeft: =10
                                                             PaddingRight: =10
                                                             Size: =12
-                                                            Text: =If(CountRows(colStatusChoices) >= 3, Index(colStatusChoices, 3).Value, "")
-                                                            Visible: =CountRows(colStatusChoices) >= 3
+                                                            Text: =If(CountRows(nfStatusChoices) >= 3, Index(nfStatusChoices, 3).Value, "")
+                                                            Visible: =CountRows(nfStatusChoices) >= 3
                                                             Width: =Len(Self.Text) * 8 + 26
                                                       - btnDetStatus4:
                                                           Control: ModernButton
@@ -1076,8 +849,8 @@ Screens:
                                                             PaddingLeft: =10
                                                             PaddingRight: =10
                                                             Size: =12
-                                                            Text: =If(CountRows(colStatusChoices) >= 4, Index(colStatusChoices, 4).Value, "")
-                                                            Visible: =CountRows(colStatusChoices) >= 4
+                                                            Text: =If(CountRows(nfStatusChoices) >= 4, Index(nfStatusChoices, 4).Value, "")
+                                                            Visible: =CountRows(nfStatusChoices) >= 4
                                                             Width: =Len(Self.Text) * 8 + 26
                                                       - btnDetStatus5:
                                                           Control: ModernButton
@@ -1094,8 +867,8 @@ Screens:
                                                             PaddingLeft: =10
                                                             PaddingRight: =10
                                                             Size: =12
-                                                            Text: =If(CountRows(colStatusChoices) >= 5, Index(colStatusChoices, 5).Value, "")
-                                                            Visible: =CountRows(colStatusChoices) >= 5
+                                                            Text: =If(CountRows(nfStatusChoices) >= 5, Index(nfStatusChoices, 5).Value, "")
+                                                            Visible: =CountRows(nfStatusChoices) >= 5
                                                             Width: =Len(Self.Text) * 8 + 26
                                                       - btnDetStatus6:
                                                           Control: ModernButton
@@ -1112,8 +885,8 @@ Screens:
                                                             PaddingLeft: =10
                                                             PaddingRight: =10
                                                             Size: =12
-                                                            Text: =If(CountRows(colStatusChoices) >= 6, Index(colStatusChoices, 6).Value, "")
-                                                            Visible: =CountRows(colStatusChoices) >= 6
+                                                            Text: =If(CountRows(nfStatusChoices) >= 6, Index(nfStatusChoices, 6).Value, "")
+                                                            Visible: =CountRows(nfStatusChoices) >= 6
                                                             Width: =Len(Self.Text) * 8 + 26
                                                 - ddDetPriority:
                                                     Control: ModernDropdown
@@ -1200,7 +973,43 @@ Screens:
                                                       DefaultSelectedItems: =If(!IsBlank(varRelCorr), Table(varRelCorr))
                                                       FillPortions: =1
                                                       ItemDisplayText: =Trim(ThisItem.ReferenceNo & "  " & ThisItem.Title)
-                                                      Items: =Sort(CORMS_Correspondence, ID, SortOrder.Descending)
+                                                      Items: |-
+                                                        =With(
+                                                            {
+                                                                all: nfSeeAllLevels, me: User().Email,
+                                                                l1: nfLvl1, l2: nfLvl2, l3: nfLvl3, l4: nfLvl4, l5: nfLvl5, l6: nfLvl6,
+                                                                l7: nfLvl7, l8: nfLvl8, l9: nfLvl9, l10: nfLvl10, l11: nfLvl11, l12: nfLvl12,
+                                                                s1: nfSt1, s2: nfSt2, s3: nfSt3, s4: nfSt4, s5: nfSt5, s6: nfSt6, s7: nfSt7, s8: nfSt8, s9: nfSt9, s10: nfSt10,
+                                                                s11: nfSt11, s12: nfSt12, s13: nfSt13, s14: nfSt14, s15: nfSt15, s16: nfSt16, s17: nfSt17, s18: nfSt18, s19: nfSt19, s20: nfSt20
+                                                            },
+                                                            // Only after the SharePoint query: the user's own untitled drafts, which have no reference
+                                                            // number either, would show as blank rows.
+                                                            Filter(
+                                                                Sort(
+                                                                    Filter(
+                                                                        CORMS_Correspondence,
+                                                                        (
+                                                                            all || SecurityLevel.Value = Blank() ||
+                                                                            SecurityLevel.Value = l1 || SecurityLevel.Value = l2 || SecurityLevel.Value = l3 ||
+                                                                            SecurityLevel.Value = l4 || SecurityLevel.Value = l5 || SecurityLevel.Value = l6 ||
+                                                                            SecurityLevel.Value = l7 || SecurityLevel.Value = l8 || SecurityLevel.Value = l9 ||
+                                                                            SecurityLevel.Value = l10 || SecurityLevel.Value = l11 || SecurityLevel.Value = l12
+                                                                        ) &&
+                                                                        (
+                                                                            Status.Value = Blank() || Author.Email = me || Sender.Email = me ||
+                                                                            Status.Value = s1 || Status.Value = s2 || Status.Value = s3 || Status.Value = s4 ||
+                                                                            Status.Value = s5 || Status.Value = s6 || Status.Value = s7 || Status.Value = s8 ||
+                                                                            Status.Value = s9 || Status.Value = s10 || Status.Value = s11 || Status.Value = s12 ||
+                                                                            Status.Value = s13 || Status.Value = s14 || Status.Value = s15 || Status.Value = s16 ||
+                                                                            Status.Value = s17 || Status.Value = s18 || Status.Value = s19 || Status.Value = s20
+                                                                        )
+                                                                    ),
+                                                                    ID,
+                                                                    SortOrder.Descending
+                                                                ),
+                                                                !IsBlank(Trim(ReferenceNo & Title))
+                                                            )
+                                                        )
                                                       LayoutMaxWidth: =640
                                                       LayoutMinWidth: =0
                                                       OnChange: |-
@@ -1232,414 +1041,17 @@ Screens:
                                                 Text: =""
                                                 Visible: |-
                                                   =ThisItem.Editable &&
-                                                  (fxIsAdmin || (ThisItem.Key = "status" && varCurrentTask.Status.Value <> "Completed"))
+                                                  (fxIsAdmin || (ThisItem.Key = "status" && nfCanEditStatus))
                                                 Width: =40
-                                    - recDetRowLine:
-                                        Control: Rectangle
+                                    - divDetRowLine:
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
                                         Properties:
-                                          AlignInContainer: =AlignInContainer.Stretch
+                                          DropShadow: =DropShadow.None
                                           Fill: =RGBA(229, 231, 235, 1)
+                                          FillPortions: =0
                                           Height: =1
                                           LayoutMinHeight: =1
-            - conDetDoc:
-                Control: GroupContainer
-                Variant: AutoLayout
-                Properties:
-                  DropShadow: =DropShadow.None
-                  LayoutAlignItems: =LayoutAlignItems.Stretch
-                  LayoutDirection: =LayoutDirection.Vertical
-                  LayoutMinHeight: =0
-                  RadiusBottomLeft: =0
-                  RadiusBottomRight: =0
-                  RadiusTopLeft: =0
-                  RadiusTopRight: =0
-                  Visible: =varTab = "Document & Approval"
-                Children:
-                  - conDetDocHead:
-                      Control: GroupContainer
-                      Variant: AutoLayout
-                      Properties:
-                        DropShadow: =DropShadow.None
-                        FillPortions: =0
-                        Height: =64
-                        LayoutAlignItems: =LayoutAlignItems.Center
-                        LayoutDirection: =LayoutDirection.Horizontal
-                        LayoutGap: =10
-                        PaddingLeft: =24
-                        PaddingRight: =24
-                        RadiusBottomLeft: =0
-                        RadiusBottomRight: =0
-                        RadiusTopLeft: =0
-                        RadiusTopRight: =0
-                      Children:
-                        - txtDetDocTitle:
-                            Control: ModernText
-                            Properties:
-                              Color: =RGBA(36, 36, 36, 1)
-                              FillPortions: =1
-                              Font: =Font.'Segoe UI'
-                              FontWeight: =FontWeight.Semibold
-                              Height: =Parent.Height
-                              LayoutMinWidth: =0
-                              Size: =17
-                              Text: ="Document & Approval"
-                        - btnDetOpenRecord:
-                            Control: ModernButton
-                            Properties:
-                              Appearance: =ButtonAppearance.Outline
-                              Height: =34
-                              Icon: ="FolderOpen"
-                              OnSelect: =Launch(If(IsBlank(varRelCorr), varCurrentTask.'Link to item', varRelCorr.'Link to item'))
-                              Text: ="Open Full Record"
-                              Width: =170
-                  - recDetDocLine:
-                      Control: Rectangle
-                      Properties:
-                        AlignInContainer: =AlignInContainer.Stretch
-                        Fill: =RGBA(229, 231, 235, 1)
-                        Height: =1
-                        LayoutMinHeight: =1
-                  - conDetDocBody:
-                      Control: GroupContainer
-                      Variant: AutoLayout
-                      Properties:
-                        DropShadow: =DropShadow.None
-                        LayoutAlignItems: =LayoutAlignItems.Stretch
-                        LayoutDirection: =LayoutDirection.Vertical
-                        LayoutGap: =16
-                        LayoutMinHeight: =0
-                        PaddingBottom: =16
-                        PaddingLeft: =24
-                        PaddingRight: =24
-                        PaddingTop: =18
-                        RadiusBottomLeft: =0
-                        RadiusBottomRight: =0
-                        RadiusTopLeft: =0
-                        RadiusTopRight: =0
-                      Children:
-                        - conDetDocCard:
-                            Control: GroupContainer
-                            Variant: AutoLayout
-                            Properties:
-                              BorderColor: =RGBA(229, 231, 235, 1)
-                              BorderThickness: =1
-                              DropShadow: =DropShadow.None
-                              Fill: =RGBA(248, 249, 250, 1)
-                              FillPortions: =0
-                              Height: =72
-                              LayoutAlignItems: =LayoutAlignItems.Center
-                              LayoutDirection: =LayoutDirection.Horizontal
-                              PaddingRight: =18
-                            Children:
-                              - recDetDocAccent:
-                                  Control: Rectangle
-                                  Properties:
-                                    AlignInContainer: =AlignInContainer.Stretch
-                                    Fill: =RGBA(15, 108, 189, 1)
-                                    LayoutMinHeight: =0
-                                    Width: =4
-                              - conDetDocCardText:
-                                  Control: GroupContainer
-                                  Variant: AutoLayout
-                                  Properties:
-                                    DropShadow: =DropShadow.None
-                                    Height: =Parent.Height
-                                    LayoutDirection: =LayoutDirection.Vertical
-                                    LayoutJustifyContent: =LayoutJustifyContent.Center
-                                    LayoutMaxHeight: =Parent.Height
-                                    LayoutMinHeight: =Parent.Height
-                                    LayoutMinWidth: =0
-                                    PaddingLeft: =16
-                                    RadiusBottomLeft: =0
-                                    RadiusBottomRight: =0
-                                    RadiusTopLeft: =0
-                                    RadiusTopRight: =0
-                                  Children:
-                                    - txtDetDocCardTitle:
-                                        Control: ModernText
-                                        Properties:
-                                          AlignInContainer: =AlignInContainer.Stretch
-                                          Color: =RGBA(36, 36, 36, 1)
-                                          Font: =Font.'Segoe UI'
-                                          FontWeight: =FontWeight.Bold
-                                          Height: =26
-                                          LayoutMinWidth: =0
-                                          PaddingBottom: =0
-                                          PaddingTop: =0
-                                          Text: =If(IsBlank(varRelCorr), "No related correspondence", varRelCorr.Title)
-                                          Wrap: =false
-                                    - txtDetDocCardMeta:
-                                        Control: ModernText
-                                        Properties:
-                                          AlignInContainer: =AlignInContainer.Stretch
-                                          Color: =RGBA(79, 90, 94, 1)
-                                          Font: =Font.'Courier New'
-                                          Height: =22
-                                          LayoutMinWidth: =0
-                                          PaddingBottom: =0
-                                          PaddingTop: =0
-                                          Size: =12
-                                          Text: |-
-                                            =If(
-                                                IsBlank(varRelCorr),
-                                                "Link a correspondence from the Details tab to review its document here.",
-                                                Concat(
-                                                    Filter(
-                                                        Table(
-                                                            {Part: varRelCorr.ReferenceNo},
-                                                            {Part: varRelCorr.CorrespondenceType},
-                                                            {Part: varRelCorr.CurrentDepartment}
-                                                        ),
-                                                        !IsBlank(Part)
-                                                    ),
-                                                    Part,
-                                                    "  ·  "
-                                                )
-                                            )
-                                          Wrap: =false
-                              - txtDetDocStatus:
-                                  Control: ModernText
-                                  Properties:
-                                    Align: =Align.Center
-                                    Color: =RGBA(15, 108, 189, 1)
-                                    Fill: =RGBA(222, 236, 249, 1)
-                                    Font: =Font.'Segoe UI'
-                                    FontWeight: =FontWeight.Semibold
-                                    Height: =28
-                                    LayoutMinWidth: =0
-                                    RadiusBottomLeft: =4
-                                    RadiusBottomRight: =4
-                                    RadiusTopLeft: =4
-                                    RadiusTopRight: =4
-                                    Size: =12
-                                    Text: =varRelCorr.Status.Value
-                                    Visible: =!IsBlank(varRelCorr.Status.Value)
-                                    Width: =Len(Self.Text) * 8 + 28
-                                    Wrap: =false
-                        - conDetDocViewer:
-                            Control: GroupContainer
-                            Variant: AutoLayout
-                            Properties:
-                              BorderColor: =RGBA(229, 231, 235, 1)
-                              BorderThickness: =1
-                              DropShadow: =DropShadow.None
-                              LayoutAlignItems: =LayoutAlignItems.Stretch
-                              LayoutDirection: =LayoutDirection.Vertical
-                              LayoutMinHeight: =160
-                            Children:
-                              - conDetDocViewerHead:
-                                  Control: GroupContainer
-                                  Variant: AutoLayout
-                                  Properties:
-                                    DropShadow: =DropShadow.None
-                                    FillPortions: =0
-                                    Height: =52
-                                    LayoutAlignItems: =LayoutAlignItems.Center
-                                    LayoutDirection: =LayoutDirection.Horizontal
-                                    PaddingLeft: =16
-                                    PaddingRight: =12
-                                    RadiusBottomLeft: =0
-                                    RadiusBottomRight: =0
-                                    RadiusTopLeft: =0
-                                    RadiusTopRight: =0
-                                  Children:
-                                    - txtDetDocViewerTitle:
-                                        Control: ModernText
-                                        Properties:
-                                          Color: =RGBA(79, 90, 94, 1)
-                                          FillPortions: =1
-                                          Font: =Font.'Segoe UI'
-                                          FontWeight: =FontWeight.Semibold
-                                          LayoutMinWidth: =0
-                                          Size: =13
-                                          Text: =If(IsBlank(varMainDoc), "Document", varMainDoc.FileName)
-                                          Wrap: =false
-                                    - btnDetOpenDoc:
-                                        Control: ModernButton
-                                        Properties:
-                                          BasePaletteColor: =RGBA(15, 108, 189, 1)
-                                          DisplayMode: =If(IsBlank(varMainDoc), DisplayMode.Disabled, DisplayMode.Edit)
-                                          Height: =34
-                                          Icon: ="Open"
-                                          OnSelect: =Launch(varMainDoc.Link)
-                                          Text: ="Open Document"
-                                          Width: =160
-                              - conDetDocViewerBody:
-                                  Control: GroupContainer
-                                  Variant: AutoLayout
-                                  Properties:
-                                    DropShadow: =DropShadow.None
-                                    Fill: =RGBA(233, 236, 239, 1)
-                                    LayoutAlignItems: =LayoutAlignItems.Center
-                                    LayoutDirection: =LayoutDirection.Vertical
-                                    LayoutJustifyContent: =LayoutJustifyContent.Center
-                                    LayoutMinHeight: =0
-                                    RadiusTopLeft: =0
-                                    RadiusTopRight: =0
-                                  Children:
-                                    - txtDetDocViewerMsg:
-                                        Control: ModernText
-                                        Properties:
-                                          Align: =Align.Center
-                                          Color: =RGBA(79, 90, 94, 1)
-                                          Font: =Font.'Segoe UI'
-                                          Height: =60
-                                          LayoutMinWidth: =0
-                                          Size: =13
-                                          Text: |-
-                                            =If(
-                                                IsBlank(varMainDoc),
-                                                "No document is attached to this task or its correspondence.",
-                                                "Use Open Document to review the file in SharePoint. Inline annotation is not available in this app yet."
-                                            )
-                                          Width: =Min(560, Parent.Width - 32)
-                        - conDetDocFooter:
-                            Control: GroupContainer
-                            Variant: AutoLayout
-                            Properties:
-                              BorderColor: =RGBA(229, 231, 235, 1)
-                              BorderThickness: =1
-                              DropShadow: =DropShadow.None
-                              FillPortions: =0
-                              Height: =64
-                              LayoutAlignItems: =LayoutAlignItems.Center
-                              LayoutDirection: =LayoutDirection.Horizontal
-                              LayoutGap: =12
-                              PaddingLeft: =18
-                              PaddingRight: =16
-                            Children:
-                              - txtDetDocFooterMsg:
-                                  Control: ModernText
-                                  Properties:
-                                    Color: =RGBA(51, 51, 51, 1)
-                                    FillPortions: =1
-                                    Font: =Font.'Segoe UI'
-                                    LayoutMinWidth: =0
-                                    Size: =13
-                                    Text: |-
-                                      =If(
-                                          varCurrentTask.Status.Value = "Completed",
-                                          "This task has been approved and completed.",
-                                          "Review the document above, then approve to complete this task."
-                                      )
-                              - btnDetApprove:
-                                  Control: ModernButton
-                                  Properties:
-                                    BasePaletteColor: =RGBA(15, 108, 189, 1)
-                                    DisplayMode: |-
-                                      =If(
-                                          !varIsLoading && (fxIsAdmin || !IsBlank(LookUp(varCurrentTask.AssignedToUser, Lower(Email) = Lower(User().Email)))),
-                                          DisplayMode.Edit,
-                                          DisplayMode.Disabled
-                                      )
-                                    Height: =36
-                                    Icon: ="Checkmark"
-                                    OnSelect: |-
-                                      =Set(varIsLoading, true);
-                                      IfError(
-                                        Patch(CORMS_Tasks, varCurrentTask, { Status: { Value: "Completed" } });
-                                        Patch(
-                                          CORMS_AuditLog,
-                                          Defaults(CORMS_AuditLog),
-                                          { Title: varCurrentTask.ReferenceNo, ObjectId: varCurrentTask.ReferenceNo, Action: "Approved", Actor: fxMe, Details: "Approved from Document & Approval" }
-                                        );
-                                        Patch(
-                                          CORMS_Timeline,
-                                          Defaults(CORMS_Timeline),
-                                          { Title: "Approved", CorrespondenceId: varCurrentTask.ReferenceNo, Actor: fxMe, EventTimestamp: Today(), Description: "Task approved and completed" }
-                                        );
-                                        Set(varCurrentTask, LookUp(CORMS_Tasks, ID = varTaskId));
-                                        Set(varIsOverdue, false);
-                                        ClearCollect(
-                                            colDetRows,
-                                            ForAll(
-                                                Table(
-                                                    {Idx: 1, Key: "ref", Label: "Reference No.", Editable: false},
-                                                    {Idx: 2, Key: "subject", Label: "Subject", Editable: true},
-                                                    {Idx: 3, Key: "type", Label: "Type", Editable: true},
-                                                    {Idx: 4, Key: "status", Label: "Status", Editable: true},
-                                                    {Idx: 5, Key: "priority", Label: "Priority", Editable: true},
-                                                    {Idx: 6, Key: "team", Label: "Assignee Team", Editable: true},
-                                                    {Idx: 7, Key: "member", Label: "Team Member", Editable: true},
-                                                    {Idx: 8, Key: "createdby", Label: "Created By", Editable: false},
-                                                    {Idx: 9, Key: "created", Label: "Date Created", Editable: false},
-                                                    {Idx: 10, Key: "modified", Label: "Last Updated", Editable: false},
-                                                    {Idx: 11, Key: "due", Label: "Due Date", Editable: true},
-                                                    {Idx: 12, Key: "corr", Label: "Related Correspondence", Editable: true},
-                                                    {Idx: 13, Key: "attach", Label: "Attachment", Editable: false},
-                                                    {Idx: 14, Key: "description", Label: "Description", Editable: true}
-                                                ),
-                                                Patch(
-                                                    ThisRecord,
-                                                    {
-                                                        Val: Switch(
-                                                            ThisRecord.Key,
-                                                            "ref", varCurrentTask.ReferenceNo,
-                                                            "subject", varCurrentTask.Title,
-                                                            "type", varCurrentTask.TaskType.Value,
-                                                            "status", varCurrentTask.Status.Value,
-                                                            "priority", varCurrentTask.Priority.Value,
-                                                            "team", varCurrentTask.AssignedToTeam,
-                                                            "member", Concat(varCurrentTask.AssignedToUser, DisplayName, ", "),
-                                                            "createdby", varCurrentTask.'Created By'.DisplayName,
-                                                            "created", Text(varCurrentTask.Created, "yyyy-mm-dd hh:mm"),
-                                                            "modified", Text(varCurrentTask.Modified, "yyyy-mm-dd hh:mm"),
-                                                            "due", Text(varCurrentTask.DueDate, "yyyy-mm-dd") & If(varIsOverdue, " Overdue", ""),
-                                                            "corr", varRelCorr.ReferenceNo & " " & varRelCorr.Title,
-                                                            "attach", Concat(colTaskFiles, FileName, " "),
-                                                            "description", varCurrentTask.Description,
-                                                            ""
-                                                        )
-                                                    }
-                                                )
-                                            )
-                                        );
-                                        ClearCollect(
-                                            colTaskAudit,
-                                            ForAll(
-                                                Sort(
-                                                    Filter(CORMS_AuditLog, ObjectId = varCurrentTask.ReferenceNo || ObjectId = Text(varCurrentTask.ID)),
-                                                    Created,
-                                                    SortOrder.Descending
-                                                ),
-                                                {
-                                                    ID: ThisRecord.ID,
-                                                    Action: ThisRecord.Action,
-                                                    ActorName: ThisRecord.Actor.DisplayName,
-                                                    Details: ThisRecord.Details,
-                                                    Created: ThisRecord.Created
-                                                }
-                                            )
-                                        );
-                                        ClearCollect(
-                                            colTaskEvents,
-                                            ForAll(
-                                                Sort(
-                                                    Filter(
-                                                        CORMS_Timeline,
-                                                        CorrespondenceId = varCurrentTask.ReferenceNo ||
-                                                        (!IsBlank(varCurrentTask.RelatedCorrespondenceId) && CorrespondenceId = varCurrentTask.RelatedCorrespondenceId)
-                                                    ),
-                                                    Created,
-                                                    SortOrder.Ascending
-                                                ),
-                                                {
-                                                    Title: ThisRecord.Title,
-                                                    EventType: ThisRecord.EventType.Value,
-                                                    Description: ThisRecord.Description,
-                                                    Created: ThisRecord.Created,
-                                                    ActorName: ThisRecord.Actor.DisplayName,
-                                                    IsTaskNote: ThisRecord.Title = "Note" && ThisRecord.CorrespondenceId = varCurrentTask.ReferenceNo
-                                                }
-                                            )
-                                        );
-                                        Notify("Task approved.", NotificationType.Success),
-                                        Notify("Could not approve the task. " & FirstError.Message, NotificationType.Error)
-                                      );
-                                      Set(varIsLoading, false)
-                                    Text: ="Approve"
-                                    Visible: =varCurrentTask.Status.Value <> "Completed"
-                                    Width: =120
             - conDetFiles:
                 Control: GroupContainer
                 Variant: AutoLayout
@@ -1673,6 +1085,7 @@ Screens:
                         - txtDetFilesTitle:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               Color: =RGBA(36, 36, 36, 1)
                               FillPortions: =1
                               Font: =Font.'Segoe UI'
@@ -1684,6 +1097,7 @@ Screens:
                         - btnFltClearFiles:
                             Control: ModernButton
                             Properties:
+                              AccessibleLabel: ="Clear the file filters"
                               Appearance: =ButtonAppearance.Outline
                               Height: =34
                               Icon: ="FilterDismiss"
@@ -1692,11 +1106,13 @@ Screens:
                               Text: ="Clear filters"
                               Visible: =!IsBlank(locFltFilesName) || !IsBlank(locFltFilesDate) || !IsBlank(locFltFilesSource)
                               Width: =140
-                  - recDetFilesLine:
-                      Control: Rectangle
+                  - divDetFilesLine:
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
-                        AlignInContainer: =AlignInContainer.Stretch
+                        DropShadow: =DropShadow.None
                         Fill: =RGBA(229, 231, 235, 1)
+                        FillPortions: =0
                         Height: =1
                         LayoutMinHeight: =1
                   - conDetFilesTable:
@@ -1804,6 +1220,7 @@ Screens:
                               - txtDetFilesColAction:
                                   Control: ModernText
                                   Properties:
+                                    AccessibleLabel: ="File actions"
                                     Color: =RGBA(255, 255, 255, 1)
                                     Font: =Font.'Segoe UI'
                                     LayoutMinWidth: =0
@@ -1882,12 +1299,14 @@ Screens:
                               - txtFltSpacerFiles:
                                   Control: ModernText
                                   Properties:
+                                    AccessibleLabel: ="Files filter row"
                                     LayoutMinWidth: =0
                                     Text: =""
                                     Width: =48
                         - txtDetFilesEmpty:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               Color: =RGBA(79, 90, 94, 1)
                               Font: =Font.'Segoe UI'
@@ -1902,6 +1321,7 @@ Screens:
                             Control: Gallery
                             Variant: Vertical
                             Properties:
+                              AccessibleLabel: ="Files"
                               DelayItemLoading: =false
                               Items: |-
                                 =With(
@@ -1916,6 +1336,7 @@ Screens:
                                     ForAll(Sequence(CountRows(locSorted)), Patch(Index(locSorted, Value), { Idx: Value }))
                                 )
                               LayoutMinHeight: =0
+                              TabIndex: =0
                               TemplatePadding: =0
                               TemplateSize: =48
                             Children:
@@ -1967,6 +1388,7 @@ Screens:
                                           - txtDetFileDate:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(51, 51, 51, 1)
                                                 FillPortions: =2
                                                 Font: =Font.'Segoe UI'
@@ -1976,6 +1398,7 @@ Screens:
                                           - txtDetFileSource:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(79, 90, 94, 1)
                                                 FillPortions: =2
                                                 Font: =Font.'Segoe UI'
@@ -1994,10 +1417,13 @@ Screens:
                                                 OnSelect: =Download(ThisItem.Url)
                                                 Text: =""
                                                 Width: =48
-                                    - recDetFileLine:
-                                        Control: Rectangle
+                                    - divDetFileLine:
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
                                         Properties:
+                                          DropShadow: =DropShadow.None
                                           Fill: =RGBA(229, 231, 235, 1)
+                                          FillPortions: =0
                                           Height: =1
                                           LayoutMinHeight: =1
             - conDetNotes:
@@ -2033,6 +1459,7 @@ Screens:
                         - txtDetNotesTitle:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               Color: =RGBA(36, 36, 36, 1)
                               FillPortions: =1
                               Font: =Font.'Segoe UI'
@@ -2040,12 +1467,14 @@ Screens:
                               Height: =Parent.Height
                               LayoutMinWidth: =0
                               Size: =17
-                              Text: ="Notes (" & CountRows(Filter(colTaskEvents, IsTaskNote)) & ")"
-                  - recDetNotesLine:
-                      Control: Rectangle
+                              Text: ="Notes (" & CountRows(Filter(varTaskEvents, IsTaskNote)) & ")"
+                  - divDetNotesLine:
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
-                        AlignInContainer: =AlignInContainer.Stretch
+                        DropShadow: =DropShadow.None
                         Fill: =RGBA(229, 231, 235, 1)
+                        FillPortions: =0
                         Height: =1
                         LayoutMinHeight: =1
                   - conDetNotesBody:
@@ -2069,6 +1498,7 @@ Screens:
                         - txtDetNotesEmpty:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               Color: =RGBA(79, 90, 94, 1)
                               Font: =Font.'Segoe UI'
@@ -2078,7 +1508,7 @@ Screens:
                               PaddingLeft: =0
                               Size: =13
                               Text: ="No notes yet. Tasks carry working notes instead of document annotations."
-                              Visible: =IsEmpty(Filter(colTaskEvents, IsTaskNote))
+                              Visible: =IsEmpty(Filter(varTaskEvents, IsTaskNote))
                         - conDetNoteInput:
                             Control: GroupContainer
                             Variant: AutoLayout
@@ -2106,6 +1536,7 @@ Screens:
                               - btnDetAddNote:
                                   Control: ModernButton
                                   Properties:
+                                    AccessibleLabel: =Self.Text
                                     AlignInContainer: =AlignInContainer.Start
                                     BasePaletteColor: =RGBA(15, 108, 189, 1)
                                     DisplayMode: =If(IsBlank(Trim(inpDetNote.Text)), DisplayMode.Disabled, DisplayMode.Edit)
@@ -2119,73 +1550,46 @@ Screens:
                                                   Title: "Note",
                                                   CorrespondenceId: varCurrentTask.ReferenceNo,
                                                   Actor: fxMe,
-                                                  EventTimestamp: Today(),
+                                                  EventTimestamp: Now(),
                                                   Description: Trim(inpDetNote.Text)
                                               }
                                           );
-                                          Patch(
-                                              CORMS_AuditLog,
-                                              Defaults(CORMS_AuditLog),
-                                              {
-                                                  Title: varCurrentTask.ReferenceNo,
-                                                  ObjectId: varCurrentTask.ReferenceNo,
-                                                  Action: "Note Added",
-                                                  Actor: fxMe,
-                                                  Details: Trim(inpDetNote.Text)
-                                              }
+                                          If(
+                                              nfAuditOn,
+                                              IfError(
+                                                  If(
+                                                      'CORMS-AuditBridge'.Run(
+                                                          nfAuditEndpoint,
+                                                          nfAuditKey,
+                                                          fxAuditDoc(
+                                                              varCurrentTask.ReferenceNo,
+                                                              "Note Added",
+                                                              Trim(inpDetNote.Text)
+                                                          ),
+                                                          {text_1: nfAuditIndex}
+                                                      ).ok <> "true",
+                                                      Trace("Audit entry could not be written", TraceSeverity.Warning, {action: "Note Added"})
+                                                  ),
+                                                  Trace("Audit entry could not be written", TraceSeverity.Warning, {action: "Note Added"})
+                                              )
                                           );
                                           Reset(inpDetNote);
-                                          ClearCollect(
-                                              colTaskAudit,
-                                              ForAll(
-                                                  Sort(
-                                                      Filter(CORMS_AuditLog, ObjectId = varCurrentTask.ReferenceNo || ObjectId = Text(varCurrentTask.ID)),
-                                                      Created,
-                                                      SortOrder.Descending
-                                                  ),
-                                                  {
-                                                      ID: ThisRecord.ID,
-                                                      Action: ThisRecord.Action,
-                                                      ActorName: ThisRecord.Actor.DisplayName,
-                                                      Details: ThisRecord.Details,
-                                                      Created: ThisRecord.Created
-                                                  }
-                                              )
-                                          );
-                                          ClearCollect(
-                                              colTaskEvents,
-                                              ForAll(
-                                                  Sort(
-                                                      Filter(
-                                                          CORMS_Timeline,
-                                                          CorrespondenceId = varCurrentTask.ReferenceNo ||
-                                                          (!IsBlank(varCurrentTask.RelatedCorrespondenceId) && CorrespondenceId = varCurrentTask.RelatedCorrespondenceId)
-                                                      ),
-                                                      Created,
-                                                      SortOrder.Ascending
-                                                  ),
-                                                  {
-                                                      Title: ThisRecord.Title,
-                                                      EventType: ThisRecord.EventType.Value,
-                                                      Description: ThisRecord.Description,
-                                                      Created: ThisRecord.Created,
-                                                      ActorName: ThisRecord.Actor.DisplayName,
-                                                      IsTaskNote: ThisRecord.Title = "Note" && ThisRecord.CorrespondenceId = varCurrentTask.ReferenceNo
-                                                  }
-                                              )
-                                          );
                                           Notify("Note added.", NotificationType.Success),
-                                          Notify("Could not save the note. " & FirstError.Message, NotificationType.Error)
-                                      )
+                                          Trace("Task note failed", TraceSeverity.Error, {task: varCurrentTask.ReferenceNo, error: FirstError.Message});
+                                          Notify("The note couldn't be saved. Please try again.", NotificationType.Error)
+                                      );
+                                      Select(btnDetRefresh)
                                     Text: ="Add Note"
                                     Width: =110
                         - galDetNotes:
                             Control: Gallery
                             Variant: Vertical
                             Properties:
+                              AccessibleLabel: ="Notes"
                               DelayItemLoading: =false
-                              Items: =Sort(Filter(colTaskEvents, IsTaskNote), Created, SortOrder.Descending)
+                              Items: =Sort(Filter(varTaskEvents, IsTaskNote), Created, SortOrder.Descending)
                               LayoutMinHeight: =0
+                              TabIndex: =0
                               TemplatePadding: =0
                               TemplateSize: =84
                             Children:
@@ -2200,11 +1604,13 @@ Screens:
                                     LayoutDirection: =LayoutDirection.Horizontal
                                     Width: =320
                                   Children:
-                                    - recDetNoteAccent:
-                                        Control: Rectangle
+                                    - divDetNoteAccent:
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
                                         Properties:
-                                          AlignInContainer: =AlignInContainer.Stretch
+                                          DropShadow: =DropShadow.None
                                           Fill: =RGBA(15, 108, 189, 1)
+                                          FillPortions: =0
                                           LayoutMinHeight: =0
                                           Width: =4
                                     - conDetNoteText:
@@ -2226,6 +1632,7 @@ Screens:
                                           - txtDetNoteMeta:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 AlignInContainer: =AlignInContainer.Stretch
                                                 Color: =RGBA(36, 36, 36, 1)
                                                 Font: =Font.'Segoe UI'
@@ -2239,6 +1646,7 @@ Screens:
                                           - txtDetNoteBody:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 AlignInContainer: =AlignInContainer.Stretch
                                                 Color: =RGBA(51, 51, 51, 1)
                                                 FillPortions: =1
@@ -2282,6 +1690,7 @@ Screens:
                         - txtDetSecTitle:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               Color: =RGBA(36, 36, 36, 1)
                               FillPortions: =1
                               Font: =Font.'Segoe UI'
@@ -2293,6 +1702,7 @@ Screens:
                         - btnFltClearSecurity:
                             Control: ModernButton
                             Properties:
+                              AccessibleLabel: ="Clear the security filters"
                               Appearance: =ButtonAppearance.Outline
                               Height: =34
                               Icon: ="FilterDismiss"
@@ -2301,11 +1711,13 @@ Screens:
                               Text: ="Clear filters"
                               Visible: =!IsBlank(locFltSecPrincipal) || !IsBlank(locFltSecLevel) || !IsBlank(locFltSecType)
                               Width: =140
-                  - recDetSecLine:
-                      Control: Rectangle
+                  - divDetSecLine:
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
-                        AlignInContainer: =AlignInContainer.Stretch
+                        DropShadow: =DropShadow.None
                         Fill: =RGBA(229, 231, 235, 1)
+                        FillPortions: =0
                         Height: =1
                         LayoutMinHeight: =1
                   - conDetSecTable:
@@ -2482,6 +1894,7 @@ Screens:
                         - txtFltEmptySecurity:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               Color: =RGBA(79, 90, 94, 1)
                               Font: =Font.'Segoe UI'
@@ -2491,18 +1904,20 @@ Screens:
                               PaddingLeft: =14
                               Size: =13
                               Text: ="No rows match the filters."
-                              Visible: =(!IsBlank(locFltSecPrincipal) || !IsBlank(locFltSecLevel) || !IsBlank(locFltSecType)) && IsEmpty(Filter(colTaskRoles, (IsBlank(locFltSecPrincipal) || locFltSecPrincipal in Principal) && (IsBlank(locFltSecLevel) || locFltSecLevel in Level) && (IsBlank(locFltSecType) || locFltSecType in TypeText)))
+                              Visible: =(!IsBlank(locFltSecPrincipal) || !IsBlank(locFltSecLevel) || !IsBlank(locFltSecType)) && IsEmpty(Filter(nfTaskRoles, (IsBlank(locFltSecPrincipal) || locFltSecPrincipal in Principal) && (IsBlank(locFltSecLevel) || locFltSecLevel in Level) && (IsBlank(locFltSecType) || locFltSecType in TypeText)))
                         - galDetSecurity:
                             Control: Gallery
                             Variant: Vertical
                             Properties:
+                              AccessibleLabel: ="Permissions"
                               DelayItemLoading: =false
                               Items: |-
                                 =With(
-                                    { locShown: Filter(colTaskRoles, (IsBlank(locFltSecPrincipal) || locFltSecPrincipal in Principal) && (IsBlank(locFltSecLevel) || locFltSecLevel in Level) && (IsBlank(locFltSecType) || locFltSecType in TypeText)) },
+                                    { locShown: Filter(nfTaskRoles, (IsBlank(locFltSecPrincipal) || locFltSecPrincipal in Principal) && (IsBlank(locFltSecLevel) || locFltSecLevel in Level) && (IsBlank(locFltSecType) || locFltSecType in TypeText)) },
                                     ForAll(Sequence(CountRows(locShown)), Patch(Index(locShown, Value), { Idx: Value }))
                                 )
                               LayoutMinHeight: =0
+                              TabIndex: =0
                               TemplatePadding: =0
                               TemplateSize: =41
                             Children:
@@ -2540,6 +1955,7 @@ Screens:
                                           - txtDetSecPrincipal:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(36, 36, 36, 1)
                                                 FillPortions: =1
                                                 Font: =Font.'Segoe UI'
@@ -2550,6 +1966,7 @@ Screens:
                                           - txtDetSecLevel:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(51, 51, 51, 1)
                                                 FillPortions: =1
                                                 Font: =Font.'Segoe UI'
@@ -2559,17 +1976,20 @@ Screens:
                                           - txtDetSecType:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(79, 90, 94, 1)
                                                 FillPortions: =1
                                                 Font: =Font.'Segoe UI'
                                                 LayoutMinWidth: =0
                                                 Size: =13
                                                 Text: =ThisItem.TypeText
-                                    - recDetSecLineRow:
-                                        Control: Rectangle
+                                    - divDetSecLineRow:
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
                                         Properties:
-                                          AlignInContainer: =AlignInContainer.Stretch
+                                          DropShadow: =DropShadow.None
                                           Fill: =RGBA(229, 231, 235, 1)
+                                          FillPortions: =0
                                           Height: =1
                                           LayoutMinHeight: =1
             - conDetAudit:
@@ -2605,6 +2025,7 @@ Screens:
                         - txtDetAuditTitle:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AutoHeight: =true
                               Color: =RGBA(36, 36, 36, 1)
                               FillPortions: =1
@@ -2617,6 +2038,7 @@ Screens:
                         - btnFltClearAudit:
                             Control: ModernButton
                             Properties:
+                              AccessibleLabel: ="Clear the audit filters"
                               Appearance: =ButtonAppearance.Outline
                               Height: =34
                               Icon: ="FilterDismiss"
@@ -2625,11 +2047,13 @@ Screens:
                               Text: ="Clear filters"
                               Visible: =!IsBlank(locFltAuditNo) || !IsBlank(locFltAuditAction) || !IsBlank(locFltAuditActor) || !IsBlank(locFltAuditDetails) || !IsBlank(locFltAuditTime)
                               Width: =140
-                  - recDetAuditLine:
-                      Control: Rectangle
+                  - divDetAuditLine:
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
-                        AlignInContainer: =AlignInContainer.Stretch
+                        DropShadow: =DropShadow.None
                         Fill: =RGBA(229, 231, 235, 1)
+                        FillPortions: =0
                         Height: =1
                         LayoutMinHeight: =1
                   - conDetAuditTable:
@@ -2890,6 +2314,7 @@ Screens:
                         - txtDetAuditEmpty:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               Color: =RGBA(79, 90, 94, 1)
                               Font: =Font.'Segoe UI'
@@ -2899,18 +2324,20 @@ Screens:
                               PaddingLeft: =14
                               Size: =13
                               Text: =If(!IsBlank(locFltAuditNo) || !IsBlank(locFltAuditAction) || !IsBlank(locFltAuditActor) || !IsBlank(locFltAuditDetails) || !IsBlank(locFltAuditTime), "No rows match the filters.", "No audit entries for this task yet.")
-                              Visible: =IsEmpty(Filter(colTaskAudit, (IsBlank(locFltAuditNo) || locFltAuditNo in Text(ID)) && (IsBlank(locFltAuditAction) || locFltAuditAction in Action) && (IsBlank(locFltAuditActor) || locFltAuditActor in ActorName) && (IsBlank(locFltAuditDetails) || locFltAuditDetails in Details) && (IsBlank(locFltAuditTime) || locFltAuditTime in Text(Created, "yyyy-mm-dd hh:mm:ss"))))
+                              Visible: =IsEmpty(Filter(varTaskAudit, (IsBlank(locFltAuditNo) || locFltAuditNo in Text(ID)) && (IsBlank(locFltAuditAction) || locFltAuditAction in Action) && (IsBlank(locFltAuditActor) || locFltAuditActor in ActorName) && (IsBlank(locFltAuditDetails) || locFltAuditDetails in Details) && (IsBlank(locFltAuditTime) || locFltAuditTime in Text(Created, "yyyy-mm-dd hh:mm:ss"))))
                         - galDetAudit:
                             Control: Gallery
                             Variant: Vertical
                             Properties:
+                              AccessibleLabel: ="Audit entries"
                               DelayItemLoading: =false
                               Items: |-
                                 =With(
-                                    { locShown: Filter(colTaskAudit, (IsBlank(locFltAuditNo) || locFltAuditNo in Text(ID)) && (IsBlank(locFltAuditAction) || locFltAuditAction in Action) && (IsBlank(locFltAuditActor) || locFltAuditActor in ActorName) && (IsBlank(locFltAuditDetails) || locFltAuditDetails in Details) && (IsBlank(locFltAuditTime) || locFltAuditTime in Text(Created, "yyyy-mm-dd hh:mm:ss"))) },
+                                    { locShown: Filter(varTaskAudit, (IsBlank(locFltAuditNo) || locFltAuditNo in Text(ID)) && (IsBlank(locFltAuditAction) || locFltAuditAction in Action) && (IsBlank(locFltAuditActor) || locFltAuditActor in ActorName) && (IsBlank(locFltAuditDetails) || locFltAuditDetails in Details) && (IsBlank(locFltAuditTime) || locFltAuditTime in Text(Created, "yyyy-mm-dd hh:mm:ss"))) },
                                     ForAll(Sequence(CountRows(locShown)), Patch(Index(locShown, Value), { Idx: Value }))
                                 )
                               LayoutMinHeight: =0
+                              TabIndex: =0
                               TemplatePadding: =0
                               TemplateSize: =41
                             Children:
@@ -2948,6 +2375,7 @@ Screens:
                                           - txtDetAuditNo:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(128, 128, 128, 1)
                                                 Font: =Font.'Segoe UI'
                                                 LayoutMinWidth: =0
@@ -2957,6 +2385,7 @@ Screens:
                                           - txtDetAuditAction:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(36, 36, 36, 1)
                                                 FillPortions: =2
                                                 Font: =Font.'Segoe UI'
@@ -2968,6 +2397,7 @@ Screens:
                                           - txtDetAuditActor:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(51, 51, 51, 1)
                                                 FillPortions: =1
                                                 Font: =Font.'Segoe UI'
@@ -2978,6 +2408,7 @@ Screens:
                                           - txtDetAuditDetails:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(79, 90, 94, 1)
                                                 FillPortions: =3
                                                 Font: =Font.'Segoe UI'
@@ -2988,17 +2419,20 @@ Screens:
                                           - txtDetAuditTime:
                                               Control: ModernText
                                               Properties:
+                                                AccessibleLabel: =Self.Text
                                                 Color: =RGBA(128, 128, 128, 1)
                                                 Font: =Font.'Courier New'
                                                 LayoutMinWidth: =0
                                                 Size: =12
                                                 Text: =Text(ThisItem.Created, "yyyy-mm-dd hh:mm:ss")
                                                 Width: =190
-                                    - recDetAuditRowLine:
-                                        Control: Rectangle
+                                    - divDetAuditRowLine:
+                                        Control: GroupContainer
+                                        Variant: ManualLayout
                                         Properties:
-                                          AlignInContainer: =AlignInContainer.Stretch
+                                          DropShadow: =DropShadow.None
                                           Fill: =RGBA(229, 231, 235, 1)
+                                          FillPortions: =0
                                           Height: =1
                                           LayoutMinHeight: =1
             - conDetTimeline:
@@ -3034,6 +2468,7 @@ Screens:
                         - txtDetTlTitle:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               Color: =RGBA(36, 36, 36, 1)
                               FillPortions: =1
                               Font: =Font.'Segoe UI'
@@ -3042,16 +2477,19 @@ Screens:
                               LayoutMinWidth: =0
                               Size: =17
                               Text: ="Timeline"
-                  - recDetTlLine:
-                      Control: Rectangle
+                  - divDetTlLine:
+                      Control: GroupContainer
+                      Variant: ManualLayout
                       Properties:
-                        AlignInContainer: =AlignInContainer.Stretch
+                        DropShadow: =DropShadow.None
                         Fill: =RGBA(229, 231, 235, 1)
+                        FillPortions: =0
                         Height: =1
                         LayoutMinHeight: =1
                   - txtDetTlEmpty:
                       Control: ModernText
                       Properties:
+                        AccessibleLabel: =Self.Text
                         AlignInContainer: =AlignInContainer.Stretch
                         Color: =RGBA(79, 90, 94, 1)
                         Font: =Font.'Segoe UI'
@@ -3061,7 +2499,7 @@ Screens:
                         PaddingLeft: =24
                         Size: =13
                         Text: ="No timeline events yet."
-                        Visible: =IsEmpty(colTaskEvents) && !varIsOverdue
+                        Visible: =IsEmpty(varTaskEvents) && !varIsOverdue
                   - conDetTlBody:
                       Control: GroupContainer
                       Variant: AutoLayout
@@ -3080,39 +2518,52 @@ Screens:
                             Control: Gallery
                             Variant: Vertical
                             Properties:
+                              AccessibleLabel: ="Timeline"
                               DelayItemLoading: =false
                               Items: |-
-                                =With(
-                                    { locCount: CountRows(colTaskEvents) + If(varIsOverdue, 1, 0) },
+                                =// Newest first: "Due (Overdue)" (the task's current state) on top, then the events.
+                                With(
+                                    { locOff: If(varIsOverdue, 1, 0), locCount: CountRows(varTaskEvents) + If(varIsOverdue, 1, 0) },
                                     ForAll(
                                         Sequence(locCount),
                                         If(
-                                            Value <= CountRows(colTaskEvents),
+                                            Value > locOff,
                                             With(
-                                                { locEv: Index(colTaskEvents, Value) },
-                                                {
-                                                    Title: Coalesce(locEv.Title, locEv.EventType, locEv.Description),
-                                                    Detail: If(IsBlank(locEv.Title) && IsBlank(locEv.EventType), "", locEv.Description),
-                                                    Meta: Text(locEv.Created, "yyyy-mm-dd hh:mm") & "  ·  " & Coalesce(locEv.ActorName, "System"),
-                                                    IsLast: Value = locCount
-                                                }
+                                                { locEv: Index(varTaskEvents, Value - locOff) },
+                                                With(
+                                                    {
+                                                        locTitle: Coalesce(
+                                                            locEv.Title,
+                                                            fxTimelineTitle(Coalesce(locEv.EventType, ""), Coalesce(locEv.Description, ""))
+                                                        )
+                                                    },
+                                                    {
+                                                        Title: Coalesce(locTitle, locEv.Description),
+                                                        Detail: If(IsBlank(locTitle), "", locEv.Description),
+                                                        Meta: Text(locEv.Created, "yyyy-mm-dd hh:mm") & "  ·  " & Coalesce(locEv.ActorName, "System"),
+                                                        IsLast: Value = locCount
+                                                    }
+                                                )
                                             ),
                                             {
                                                 Title: "Due (Overdue)",
                                                 Detail: "Past its due date",
                                                 Meta: Text(varCurrentTask.DueDate, "yyyy-mm-dd") & "  ·  —",
-                                                IsLast: true
+                                                IsLast: Value = locCount
                                             }
                                         )
                                     )
                                 )
                               LayoutMinHeight: =0
+                              TabIndex: =0
                               TemplatePadding: =0
                               TemplateSize: =78
                             Children:
-                              - recDetTlConnector:
-                                  Control: Rectangle
+                              - divDetTlConnector:
+                                  Control: GroupContainer
+                                  Variant: ManualLayout
                                   Properties:
+                                    DropShadow: =DropShadow.None
                                     Fill: =RGBA(214, 218, 222, 1)
                                     Height: =Parent.TemplateHeight - 34
                                     Visible: =!ThisItem.IsLast
@@ -3122,6 +2573,7 @@ Screens:
                               - txtDetTlEvent:
                                   Control: ModernText
                                   Properties:
+                                    AccessibleLabel: =Self.Text
                                     Color: =RGBA(36, 36, 36, 1)
                                     Font: =Font.'Segoe UI'
                                     FontWeight: =FontWeight.Semibold
@@ -3137,6 +2589,7 @@ Screens:
                               - txtDetTlDetail:
                                   Control: ModernText
                                   Properties:
+                                    AccessibleLabel: =Self.Text
                                     Color: =RGBA(51, 51, 51, 1)
                                     Font: =Font.'Segoe UI'
                                     Height: =20
@@ -3151,6 +2604,7 @@ Screens:
                               - txtDetTlMeta:
                                   Control: ModernText
                                   Properties:
+                                    AccessibleLabel: =Self.Text
                                     Color: =RGBA(128, 128, 128, 1)
                                     Font: =Font.'Segoe UI'
                                     Height: =20
@@ -3227,3 +2681,165 @@ Screens:
                                     Width: =34
                                     X: =24
                                     Y: =4
+      - btnDetRefresh:
+          Control: ModernButton
+          Properties:
+            AccessibleLabel: ="Reload the task"
+            Height: =1
+            OnSelect: |-
+              =// Everything the tabs show, read again from SharePoint. Called last by the handlers that write.
+              Set(varIsLoading, true);
+              Set(varCurrentTask, LookUp(CORMS_Tasks, ID = varTaskId));
+              Set(
+                  varIsOverdue,
+                  !IsBlank(varCurrentTask.DueDate) && varCurrentTask.DueDate < Today() &&
+                  !(varCurrentTask.Status.Value in ["Completed", "Rejected"])
+              );
+              // Related correspondence (stored as its ID; older tasks may hold the reference number).
+              Set(
+                  varRelCorr,
+                  If(
+                      IsBlank(varCurrentTask.RelatedCorrespondenceId),
+                      Blank(),
+                      IsNumeric(varCurrentTask.RelatedCorrespondenceId),
+                      LookUp(CORMS_Correspondence, ID = Value(varCurrentTask.RelatedCorrespondenceId)),
+                      LookUp(CORMS_Correspondence, ReferenceNo = varCurrentTask.RelatedCorrespondenceId)
+                  )
+              );
+              // Keys for the reads below. A task without a reference must match nothing, not every blank row.
+              Set(varTaskRef, Coalesce(varCurrentTask.ReferenceNo, "#none#"));
+              // Files = documents uploaded for this task (CORMS_Attachments.TaskReferenceNo)
+              //         + documents of its related correspondence (CORMS_Attachments.CorrespondenceId).
+              ClearCollect(
+                  colTaskFiles,
+                  ForAll(
+                      Filter(CORMS_Attachments, TaskReferenceNo = varTaskRef),
+                      {
+                          DocId: ThisRecord.ID,
+                          FileName: Coalesce(ThisRecord.FileName, ThisRecord.Name),
+                          Uploaded: ThisRecord.Created,
+                          Url: fxDownloadUrl(ThisRecord.'Full Path'),
+                          Source: "Task",
+                          Link: ThisRecord.'Link to item',
+                          IsMain: false
+                      }
+                  )
+              );
+              If(
+                  !IsBlank(varRelCorr),
+                  Collect(
+                      colTaskFiles,
+                      ForAll(
+                          Filter(
+                              CORMS_Attachments,
+                              CorrespondenceId = Text(varRelCorr.ID) || CorrespondenceId = varRelCorr.ReferenceNo
+                          ),
+                          {
+                              DocId: ThisRecord.ID,
+                              FileName: Coalesce(ThisRecord.FileName, ThisRecord.Name),
+                              Uploaded: ThisRecord.Created,
+                              Url: fxDownloadUrl(ThisRecord.'Full Path'),
+                              Source: "Correspondence",
+                              Link: ThisRecord.'Link to item',
+                              IsMain: ThisRecord.IsMainLetter
+                          }
+                      )
+                  )
+              );
+              // A task file linked to the same correspondence would otherwise be listed twice.
+              RemoveIf(colTaskFiles, Source = "Correspondence" && DocId in Filter(colTaskFiles, Source = "Task").DocId);
+              // The task's audit entries, from the CORMS audit index. Numbered like CORMS's Audit tab:
+              // AUD-0001 is the oldest shown.
+              Set(
+                  varTaskAuditHits,
+                  If(
+                      nfAuditOn && varTaskRef <> "#none#",
+                      IfError(
+                          With(
+                              {
+                                  r: 'CORMS-AuditSearch'.Run(
+                                      nfAuditEndpoint,
+                                      nfAuditKey,
+                                      fxAuditQuery(varTaskRef),
+                                      {text_1: nfAuditIndex}
+                                  )
+                              },
+                              If(
+                                  r.ok = "true",
+                                  Table(ParseJSON(r.hits)),
+                                  Trace("Task audit could not be read", TraceSeverity.Warning, {status: r.status});
+                                  Blank()
+                              )
+                          ),
+                          Trace("Task audit could not be read", TraceSeverity.Warning, {task: varTaskRef});
+                          Blank()
+                      )
+                  )
+              );
+              Set(
+                  varTaskAudit,
+                  ForAll(
+                      Sequence(CountRows(varTaskAuditHits)) As n,
+                      With(
+                          { h: Index(varTaskAuditHits, n.Value).Value._source },
+                          {
+                              ID: "AUD-" & Text(CountRows(varTaskAuditHits) - n.Value + 1, "0000"),
+                              Action: Text(h.action),
+                              ActorName: Text(h.userName),
+                              Details: Text(h.Details),
+                              Created: DateTimeValue(Text(h.timestamp))
+                          }
+                      )
+                  )
+              );
+              Set(
+                  varTaskEvents,
+                  ForAll(
+                      // Newest first; events recorded in the same second by the order they were written.
+                      SortByColumns(
+                          Filter(
+                              CORMS_Timeline,
+                              CorrespondenceId = varTaskRef ||
+                              (!IsBlank(varCurrentTask.RelatedCorrespondenceId) && CorrespondenceId = varCurrentTask.RelatedCorrespondenceId)
+                          ),
+                          "Created",
+                          SortOrder.Descending,
+                          "ID",
+                          SortOrder.Descending
+                      ),
+                      {
+                          ID: ThisRecord.ID,
+                          Title: ThisRecord.Title,
+                          EventType: ThisRecord.EventType.Value,
+                          Description: ThisRecord.Description,
+                          Created: ThisRecord.Created,
+                          ActorName: ThisRecord.Actor.DisplayName,
+                          IsTaskNote: ThisRecord.Title = "Note" && ThisRecord.CorrespondenceId = varTaskRef
+                      }
+                  )
+              );
+              Set(varIsLoading, false)
+            Visible: =false
+            Width: =1
+            X: =-200
+            Y: =-200
+      - conDetBusy:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =RGBA(255, 255, 255, 0.7)
+            Height: =Parent.Height
+            Visible: =varIsLoading
+            Width: =Parent.Width
+          Children:
+            - spnDetBusy:
+                Control: ModernSpinner
+                Properties:
+                  AccessibleLabel: ="Working, please wait"
+                  Height: =96
+                  Label: ="Please wait..."
+                  LabelPosition: =SpinnerLabelPosition.Below
+                  Width: =200
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =(Parent.Height - Self.Height) / 2

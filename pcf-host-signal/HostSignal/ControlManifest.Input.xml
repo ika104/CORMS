@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="CORMS" constructor="HostSignal" version="0.0.1"
+           display-name-key="CORMS Host Signal"
+           description-key="Tells the CORMS page hosting the app that the user is finished (cancelled, created, ...), so CORMS can close its panel"
+           control-type="standard">
+    <!-- What to report, for example "cancel" or "created;ref=TSK-2026-0051". Anything after the last
+         "@" is ignored, so the app can add a timestamp to report the same signal twice. -->
+    <property name="Signal" display-name-key="Signal"
+              description-key="The signal to send to CORMS; sent each time it changes"
+              of-type="SingleLine.Text" usage="input" required="false" />
+    <resources>
+      <code path="index.ts" order="1"/>
+    </resources>
+  </control>
+</manifest>

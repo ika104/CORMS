@@ -1,0 +1,781 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_00d04"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)": {
+          "defaultValue": "https://ssloman.sharepoint.com/sites/CORMS",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+          }
+        },
+        "CORMS_Correspondence (new_shared_sharepointonline_d2f9f57a69aa41b2b3c5611f65e36719)": {
+          "defaultValue": "39a658e1-7067-4e38-a80c-d7ecc9ede459",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_d2f9f57a69aa41b2b3c5611f65e36719"
+          }
+        },
+        "CORMS_Attachments (new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349)": {
+          "defaultValue": "48ef8677-f89d-4cd2-901c-fb7ee5cd5590",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349"
+          }
+        },
+        "CORMS_Templates (new_shared_sharepointonline_f65693355dfe4fe3b41a68917be77e50)": {
+          "defaultValue": "a729856a-c2da-48b8-8b04-cb5b0bf096ee",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_f65693355dfe4fe3b41a68917be77e50"
+          }
+        },
+        "CORMS_Timeline (new_shared_sharepointonline_39f9161a015244d68915d0194823f536)": {
+          "defaultValue": "626e0339-0434-4181-adaf-3e767bafb3cb",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_39f9161a015244d68915d0194823f536"
+          }
+        },
+        "CORMS_AdminConfig (new_shared_sharepointonline_c53c5a63715c45818e8eb4d3b5e548a5)": {
+          "defaultValue": "c23d295d-dfa9-425a-b314-219e3eaeed9d",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_c53c5a63715c45818e8eb4d3b5e548a5"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_correspondence_changes": {
+          "recurrence": {
+            "frequency": "Minute",
+            "interval": 1
+          },
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+              "table": "@parameters('CORMS_Correspondence (new_shared_sharepointonline_d2f9f57a69aa41b2b3c5611f65e36719)')"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetOnUpdatedItems",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "conditions": [
+            {
+              "expression": "@equals(triggerOutputs()?['body/Status/Value'], 'Signed')"
+            }
+          ],
+          "description": "A CORMS_Correspondence item whose Status is Signed was created or changed."
+        }
+      },
+      "actions": {
+        "Init_attachments": {
+          "runAfter": {},
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Attachments",
+                "type": "array",
+                "value": []
+              }
+            ]
+          }
+        },
+        "Init_total_bytes": {
+          "runAfter": {
+            "Init_attachments": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "TotalBytes",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Get_changes": {
+          "runAfter": {
+            "Init_total_bytes": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+              "table": "@parameters('CORMS_Correspondence (new_shared_sharepointonline_d2f9f57a69aa41b2b3c5611f65e36719)')",
+              "id": "@triggerOutputs()?['body/ID']",
+              "since": "@triggerOutputs()?['body/{TriggerWindowStartToken}']",
+              "includeDrafts": false
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetItemChanges",
+              "connectionName": "shared_sharepointonline"
+            }
+          },
+          "description": "What changed in this edit."
+        },
+        "Status_just_changed": {
+          "actions": {
+            "Get_settings": {
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                  "table": "@parameters('CORMS_AdminConfig (new_shared_sharepointonline_c53c5a63715c45818e8eb4d3b5e548a5)')",
+                  "$filter": "Title eq 'notification.flowUrl' or Title eq 'notification.teamsTeamId' or Title eq 'site.baseUrl'"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "GetItems",
+                  "connectionName": "shared_sharepointonline"
+                }
+              },
+              "description": "notification.flowUrl, notification.teamsTeamId and site.baseUrl from CORMS_AdminConfig."
+            },
+            "Flow_url_row": {
+              "runAfter": {
+                "Get_settings": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('Get_settings')?['value']",
+                "where": "@equals(item()?['Title'], 'notification.flowUrl')"
+              }
+            },
+            "Teams_row": {
+              "runAfter": {
+                "Get_settings": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('Get_settings')?['value']",
+                "where": "@equals(item()?['Title'], 'notification.teamsTeamId')"
+              }
+            },
+            "Site_row": {
+              "runAfter": {
+                "Get_settings": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('Get_settings')?['value']",
+                "where": "@equals(item()?['Title'], 'site.baseUrl')"
+              }
+            },
+            "Correspondence_url": {
+              "runAfter": {
+                "Flow_url_row": [
+                  "Succeeded"
+                ],
+                "Teams_row": [
+                  "Succeeded"
+                ],
+                "Site_row": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@{concat(if(empty(trim(coalesce(first(body('Site_row'))?['Value'], ''))), parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)'), if(endsWith(trim(coalesce(first(body('Site_row'))?['Value'], '')), '/'), substring(trim(coalesce(first(body('Site_row'))?['Value'], '')), 0, sub(length(trim(coalesce(first(body('Site_row'))?['Value'], ''))), 1)), trim(coalesce(first(body('Site_row'))?['Value'], '')))), '#/correspondence/', triggerOutputs()?['body/ID'])}",
+              "description": "The CORMS link: site.baseUrl, else the site this flow points to."
+            },
+            "Recipients_all": {
+              "runAfter": {
+                "Correspondence_url": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": [
+                {
+                  "email": "@{toLower(trim(coalesce(triggerOutputs()?['body']?['Author']?['Email'], '')))}",
+                  "name": "@{coalesce(triggerOutputs()?['body']?['Author']?['DisplayName'], '')}",
+                  "role": "Recipient"
+                },
+                {
+                  "email": "@{toLower(trim(coalesce(triggerOutputs()?['body']?['AssignedTo']?['Email'], '')))}",
+                  "name": "@{coalesce(triggerOutputs()?['body']?['AssignedTo']?['DisplayName'], '')}",
+                  "role": "Recipient"
+                }
+              ],
+              "description": "Created By and Assigned To."
+            },
+            "Recipients_with_email": {
+              "runAfter": {
+                "Recipients_all": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@outputs('Recipients_all')",
+                "where": "@not(empty(item()?['email']))"
+              }
+            },
+            "Recipients": {
+              "runAfter": {
+                "Recipients_with_email": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@if(and(equals(length(body('Recipients_with_email')), 2), equals(first(body('Recipients_with_email'))?['email'], last(body('Recipients_with_email'))?['email'])), take(body('Recipients_with_email'), 1), body('Recipients_with_email'))",
+              "description": "Each person once."
+            },
+            "Recipient_names": {
+              "runAfter": {
+                "Recipients": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@outputs('Recipients')",
+                "select": "@if(empty(item()?['name']), item()?['email'], item()?['name'])"
+              }
+            },
+            "Get_files": {
+              "runAfter": {
+                "Recipient_names": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                  "table": "@parameters('CORMS_Attachments (new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349)')",
+                  "$filter": "CorrespondenceId eq '@{triggerOutputs()?['body/ID']}'",
+                  "$orderby": "IsMainLetter desc"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "GetFileItems",
+                  "connectionName": "shared_sharepointonline"
+                }
+              },
+              "description": "The correspondence's documents, main document first."
+            },
+            "Files_to_attach": {
+              "runAfter": {
+                "Get_files": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('Get_files')?['value']",
+                "where": "@and(and(not(equals(item()?['{IsFolder}'], true)), empty(coalesce(item()?['TaskReferenceNo'], '')), empty(coalesce(item()?['TaskReference'], ''))), not(contains(createArray('RecordHubReference', 'Linked'), coalesce(item()?['Source']?['Value'], ''))))"
+              },
+              "description": "Not folders, not task files, not references without a file of their own."
+            },
+            "Linked_documents": {
+              "runAfter": {
+                "Get_files": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('Get_files')?['value']",
+                "where": "@and(and(not(equals(item()?['{IsFolder}'], true)), empty(coalesce(item()?['TaskReferenceNo'], '')), empty(coalesce(item()?['TaskReference'], ''))), contains(createArray('RecordHubReference', 'Linked'), coalesce(item()?['Source']?['Value'], '')))"
+              },
+              "description": "References (RecordsHub, linked): named in the email instead."
+            },
+            "Linked_names": {
+              "runAfter": {
+                "Linked_documents": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@body('Linked_documents')",
+                "select": "@coalesce(item()?['{FilenameWithExtension}'], item()?['{Name}'], item()?['Title'])"
+              }
+            },
+            "Read_files": {
+              "foreach": "@body('Files_to_attach')",
+              "actions": {
+                "Get_file_content": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                      "id": "@items('Read_files')?['{Identifier}']",
+                      "inferContentType": true
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                      "operationId": "GetFileContent",
+                      "connectionName": "shared_sharepointonline"
+                    }
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": [
+                        "outputs"
+                      ]
+                    }
+                  }
+                },
+                "Add_attachment": {
+                  "runAfter": {
+                    "File_name": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "AppendToArrayVariable",
+                  "inputs": {
+                    "name": "Attachments",
+                    "value": {
+                      "name": "@outputs('File_name')",
+                      "contentBytes": "@body('Get_file_content')?['$content']",
+                      "main": "@equals(items('Read_files')?['IsMainLetter'], true)"
+                    }
+                  }
+                },
+                "Add_size": {
+                  "runAfter": {
+                    "Add_attachment": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "TotalBytes",
+                    "value": "@div(mul(length(string(body('Get_file_content')?['$content'])), 3), 4)"
+                  }
+                },
+                "File_name": {
+                  "runAfter": {
+                    "Get_file_content": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "Compose",
+                  "inputs": "@if(and(equals(items('Read_files')?['IsMainLetter'], true), not(contains(string(variables('Attachments')), '\"main\":true'))), concat('Correspondence_', items('Read_files')?['{FilenameWithExtension}']), concat('Attachment_', string(add(sub(length(variables('Attachments')), if(contains(string(variables('Attachments')), '\"main\":true'), 1, 0)), 1)), '_', items('Read_files')?['{FilenameWithExtension}']))"
+                }
+              },
+              "runAfter": {
+                "Files_to_attach": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Foreach",
+              "description": "Read each file. One that can't be read is left out.",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 1
+                }
+              }
+            },
+            "Too_large": {
+              "runAfter": {
+                "Read_files": [
+                  "Succeeded",
+                  "Failed"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@greater(variables('TotalBytes'), 20971520)",
+              "description": "Over 20 MB: only the main document is attached."
+            },
+            "Main_document": {
+              "runAfter": {
+                "Too_large": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@variables('Attachments')",
+                "where": "@equals(item()?['main'], true)"
+              }
+            },
+            "Attachments_to_send": {
+              "runAfter": {
+                "Main_document": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@if(outputs('Too_large'), take(body('Main_document'), 1), variables('Attachments'))",
+                "select": {
+                  "name": "@item()?['name']",
+                  "contentBytes": "@item()?['contentBytes']"
+                }
+              }
+            },
+            "Action_summary": {
+              "runAfter": {
+                "Attachments_to_send": [
+                  "Succeeded"
+                ],
+                "Linked_names": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@{concat('Every signer has signed. The signed document and its attachments are attached.', if(outputs('Too_large'), ' The attachments are too large to email. Open the correspondence in CORMS to download them.', ''), if(greater(length(body('Linked_names')), 0), concat(' Linked documents (not attached): ', join(body('Linked_names'), ', '), '.'), ''))}"
+            },
+            "Get_templates": {
+              "runAfter": {
+                "Action_summary": [
+                  "Succeeded"
+                ]
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "parameters": {
+                  "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                  "table": "@parameters('CORMS_Templates (new_shared_sharepointonline_f65693355dfe4fe3b41a68917be77e50)')",
+                  "$filter": "TemplateType eq 'CorrespondenceEmail'"
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "GetItems",
+                  "connectionName": "shared_sharepointonline"
+                }
+              },
+              "description": "The admin's correspondence email templates (Templates > Correspondence Email Templates)."
+            },
+            "Active_templates": {
+              "runAfter": {
+                "Get_templates": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('Get_templates')?['value']",
+                "where": "@and(equals(coalesce(item()?['TemplateType']?['Value'], ''), 'CorrespondenceEmail'), not(equals(item()?['Approved'], false)))"
+              },
+              "description": "Active ones only (Approved not false)."
+            },
+            "Fill_subject": {
+              "runAfter": {
+                "Document_values": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@skip(split(coalesce(outputs('Template')?['EmailSubject'], ''), '{{'), 1)",
+                "select": "@if(contains(item(), '}}'), concat(if(equals(trim(first(split(item(), '}}'))), 'referenceNumber'), coalesce(triggerOutputs()?['body']?['ReferenceNo'], ''), if(equals(trim(first(split(item(), '}}'))), 'subject'), coalesce(triggerOutputs()?['body']?['Title'], ''), if(equals(trim(first(split(item(), '}}'))), 'link'), outputs('Correspondence_url'), if(equals(trim(first(split(item(), '}}'))), 'actionSummary'), outputs('Action_summary'), if(equals(trim(first(split(item(), '}}'))), 'recipientName'), '{{recipientName}}', if(startsWith(trim(first(split(item(), '}}'))), 'Document.'), string(coalesce(outputs('Document_values')?[trim(first(split(item(), '}}')))], '')), if(startsWith(string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '{'), coalesce(json(if(startsWith(string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '{'), string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '{}'))?['Value'], json(if(startsWith(string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '{'), string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '{}'))?['DisplayName'], ''), if(startsWith(string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '['), '', string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')))))))))), if(contains(item(), '}}'), slice(item(), add(indexOf(item(), '}}'), 2)), '')), concat('{{', item()))"
+              }
+            },
+            "Fill_body": {
+              "runAfter": {
+                "Document_values": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@skip(split(coalesce(outputs('Template')?['BodyHtml'], ''), '{{'), 1)",
+                "select": "@if(contains(item(), '}}'), concat(if(equals(trim(first(split(item(), '}}'))), 'referenceNumber'), replace(replace(replace(coalesce(triggerOutputs()?['body']?['ReferenceNo'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), if(equals(trim(first(split(item(), '}}'))), 'subject'), replace(replace(replace(coalesce(triggerOutputs()?['body']?['Title'], ''), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), if(equals(trim(first(split(item(), '}}'))), 'link'), concat('<a href=\"', outputs('Correspondence_url'), '\">', outputs('Correspondence_url'), '</a>'), if(equals(trim(first(split(item(), '}}'))), 'actionSummary'), replace(replace(replace(outputs('Action_summary'), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), if(equals(trim(first(split(item(), '}}'))), 'recipientName'), '{{recipientName}}', if(startsWith(trim(first(split(item(), '}}'))), 'Document.'), replace(replace(replace(string(coalesce(outputs('Document_values')?[trim(first(split(item(), '}}')))], '')), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'), replace(replace(replace(if(startsWith(string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '{'), coalesce(json(if(startsWith(string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '{'), string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '{}'))?['Value'], json(if(startsWith(string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '{'), string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '{}'))?['DisplayName'], ''), if(startsWith(string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')), '['), '', string(coalesce(triggerOutputs()?['body']?[trim(first(split(item(), '}}')))], '')))), '&', '&amp;'), '<', '&lt;'), '>', '&gt;'))))))), if(contains(item(), '}}'), slice(item(), add(indexOf(item(), '}}'), 2)), '')), concat('{{', item()))"
+              }
+            },
+            "Email_text": {
+              "runAfter": {
+                "Fill_subject": [
+                  "Succeeded"
+                ],
+                "Fill_body": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": {
+                "subject": "@{if(empty(trim(concat(first(split(coalesce(outputs('Template')?['EmailSubject'], ''), '{{')), join(body('Fill_subject'), '')))), if(empty(coalesce(triggerOutputs()?['body']?['ReferenceNo'], '')), coalesce(triggerOutputs()?['body']?['Title'], ''), concat(triggerOutputs()?['body']?['ReferenceNo'], ': ', coalesce(triggerOutputs()?['body']?['Title'], ''))), concat(first(split(coalesce(outputs('Template')?['EmailSubject'], ''), '{{')), join(body('Fill_subject'), '')))}",
+                "body": "@{concat(first(split(coalesce(outputs('Template')?['BodyHtml'], ''), '{{')), join(body('Fill_body'), ''))}"
+              },
+              "description": "The chosen template with its placeholders filled ({{recipientName}} is left for Notification_Flow). Without one: subject \"<ReferenceNo>: <Title>\" and no body, so Notification_Flow's standard text is used."
+            },
+            "Can_send": {
+              "actions": {
+                "Post_to_notification_flow": {
+                  "type": "Http",
+                  "inputs": {
+                    "uri": "@trim(coalesce(first(body('Flow_url_row'))?['Value'], ''))",
+                    "method": "POST",
+                    "headers": {
+                      "Content-Type": "application/json"
+                    },
+                    "body": {
+                      "event": "SignedDocuments",
+                      "templateEvent": "Signed",
+                      "correspondenceId": "@{triggerOutputs()?['body/ID']}",
+                      "correspondenceNumber": "@{coalesce(triggerOutputs()?['body']?['ReferenceNo'], '')}",
+                      "subject": "@{coalesce(triggerOutputs()?['body']?['Title'], '')}",
+                      "url": "@{outputs('Correspondence_url')}",
+                      "actionSummary": "@{outputs('Action_summary')}",
+                      "teamsTeamId": "@{trim(coalesce(first(body('Teams_row'))?['Value'], ''))}",
+                      "recipients": "@outputs('Recipients')",
+                      "attachments": "@body('Attachments_to_send')",
+                      "emailSubject": "@{outputs('Email_text')?['subject']}",
+                      "emailBodyHtml": "@{outputs('Email_text')?['body']}"
+                    }
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": [
+                        "inputs"
+                      ]
+                    }
+                  }
+                },
+                "Add_timeline_entry": {
+                  "runAfter": {
+                    "Post_to_notification_flow": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                      "table": "@parameters('CORMS_Timeline (new_shared_sharepointonline_39f9161a015244d68915d0194823f536)')",
+                      "item/Title": "Email sent",
+                      "item/CorrespondenceId": "@{triggerOutputs()?['body/ID']}",
+                      "item/EventType/Value": "EmailSent",
+                      "item/Description": "@{concat('Signed documents emailed to ', join(body('Recipient_names'), ', '))}",
+                      "item/EventTimestamp": "@utcNow()"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                      "operationId": "PostItem",
+                      "connectionName": "shared_sharepointonline"
+                    }
+                  }
+                }
+              },
+              "runAfter": {
+                "Email_text": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {}
+              },
+              "expression": {
+                "and": [
+                  {
+                    "not": {
+                      "equals": [
+                        "@trim(coalesce(first(body('Flow_url_row'))?['Value'], ''))",
+                        ""
+                      ]
+                    }
+                  },
+                  {
+                    "greater": [
+                      "@length(outputs('Recipients'))",
+                      0
+                    ]
+                  }
+                ]
+              },
+              "type": "If",
+              "description": "Needs notification.flowUrl and at least one person to send to."
+            },
+            "Template_for_type": {
+              "runAfter": {
+                "Active_templates": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('Active_templates')",
+                "where": "@and(not(empty(toLower(trim(coalesce(triggerOutputs()?['body']?['ContentTypeName'], ''))))), equals(toLower(trim(coalesce(item()?['ContentTypeName'], ''))), toLower(trim(coalesce(triggerOutputs()?['body']?['ContentTypeName'], '')))))"
+              },
+              "description": "The active template for the correspondence's content type (ContentTypeName, ignoring case)."
+            },
+            "Template_for_all": {
+              "runAfter": {
+                "Active_templates": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('Active_templates')",
+                "where": "@empty(trim(coalesce(item()?['ContentTypeName'], '')))"
+              },
+              "description": "The active template for all content types (empty ContentTypeName)."
+            },
+            "Main_file": {
+              "runAfter": {
+                "Get_files": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('Get_files')?['value']",
+                "where": "@equals(item()?['IsMainLetter'], true)"
+              },
+              "description": "The main document's item (its metadata fills {{Document.<InternalName>}})."
+            },
+            "Template": {
+              "runAfter": {
+                "Template_for_type": [
+                  "Succeeded"
+                ],
+                "Template_for_all": [
+                  "Succeeded"
+                ],
+                "Main_file": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@coalesce(first(body('Template_for_type')), first(body('Template_for_all')))",
+              "description": "This content type's template, else the one for all content types, else none (null)."
+            },
+            "Placeholders": {
+              "runAfter": {
+                "Template": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@skip(split(concat(coalesce(outputs('Template')?['EmailSubject'], ''), ' ', coalesce(outputs('Template')?['BodyHtml'], '')), '{{'), 1)",
+                "select": "@trim(first(split(item(), '}}')))"
+              },
+              "description": "Every placeholder the template uses."
+            },
+            "Document_placeholders": {
+              "runAfter": {
+                "Placeholders": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Query",
+              "inputs": {
+                "from": "@body('Placeholders')",
+                "where": "@startsWith(item(), 'Document.')"
+              }
+            },
+            "Document_raw": {
+              "runAfter": {
+                "Document_placeholders": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@union(body('Document_placeholders'), body('Document_placeholders'))",
+                "select": {
+                  "key": "@item()",
+                  "raw": "@if(startsWith(substring(item(), 9), '_'), coalesce(first(body('Main_file'))?[substring(item(), 9)], first(body('Main_file'))?[concat('OData_', substring(item(), 9))]), first(body('Main_file'))?[substring(item(), 9)])"
+                }
+              },
+              "description": "Each Document.<InternalName> once, with the main document's value (a column starting with _ comes back as OData_<name>)."
+            },
+            "Document_text": {
+              "runAfter": {
+                "Document_raw": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@body('Document_raw')",
+                "select": {
+                  "key": "@item()?['key']",
+                  "text": "@if(equals(item()?['raw'], null), '', if(equals(item()?['raw'], true), 'Yes', if(equals(item()?['raw'], false), 'No', if(startsWith(string(item()?['raw']), '['), join(xpath(xml(json(concat('{\"r\":{\"v\":', if(startsWith(string(item()?['raw']), '['), string(item()?['raw']), '[]'), '}}'))), '//v/Value/text() | //v/DisplayName/text()'), '; '), if(startsWith(string(item()?['raw']), '{'), string(coalesce(json(if(startsWith(string(item()?['raw']), '{'), string(item()?['raw']), '{}'))?['Value'], json(if(startsWith(string(item()?['raw']), '{'), string(item()?['raw']), '{}'))?['DisplayName'], '')), if(and(or(equals(length(string(item()?['raw'])), 10), and(greaterOrEquals(length(string(item()?['raw'])), 20), equals(substring(concat(string(item()?['raw']), '..........'), 10, 1), 'T'), endsWith(string(item()?['raw']), 'Z'))), equals(substring(concat(string(item()?['raw']), '..........'), 4, 1), '-'), equals(substring(concat(string(item()?['raw']), '..........'), 7, 1), '-'), isInt(substring(concat(string(item()?['raw']), '..........'), 0, 4)), isInt(substring(concat(string(item()?['raw']), '..........'), 5, 2)), isInt(substring(concat(string(item()?['raw']), '..........'), 8, 2))), if(equals(length(string(item()?['raw'])), 10), formatDateTime(if(and(or(equals(length(string(item()?['raw'])), 10), and(greaterOrEquals(length(string(item()?['raw'])), 20), equals(substring(concat(string(item()?['raw']), '..........'), 10, 1), 'T'), endsWith(string(item()?['raw']), 'Z'))), equals(substring(concat(string(item()?['raw']), '..........'), 4, 1), '-'), equals(substring(concat(string(item()?['raw']), '..........'), 7, 1), '-'), isInt(substring(concat(string(item()?['raw']), '..........'), 0, 4)), isInt(substring(concat(string(item()?['raw']), '..........'), 5, 2)), isInt(substring(concat(string(item()?['raw']), '..........'), 8, 2))), string(item()?['raw']), '2000-01-01'), 'dd/MM/yyyy'), convertFromUtc(if(and(or(equals(length(string(item()?['raw'])), 10), and(greaterOrEquals(length(string(item()?['raw'])), 20), equals(substring(concat(string(item()?['raw']), '..........'), 10, 1), 'T'), endsWith(string(item()?['raw']), 'Z'))), equals(substring(concat(string(item()?['raw']), '..........'), 4, 1), '-'), equals(substring(concat(string(item()?['raw']), '..........'), 7, 1), '-'), isInt(substring(concat(string(item()?['raw']), '..........'), 0, 4)), isInt(substring(concat(string(item()?['raw']), '..........'), 5, 2)), isInt(substring(concat(string(item()?['raw']), '..........'), 8, 2))), string(item()?['raw']), '2000-01-01T00:00:00Z'), 'Arabian Standard Time', 'dd/MM/yyyy')), string(item()?['raw'])))))))"
+                }
+              },
+              "description": "Each value as text: choice/lookup Value, person DisplayName, several joined with '; ', date dd/MM/yyyy (Oman time), yes/no Yes/No, empty blank."
+            },
+            "Document_pairs": {
+              "runAfter": {
+                "Document_text": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Select",
+              "inputs": {
+                "from": "@body('Document_text')",
+                "select": "@concat(substring(string(createArray(item()?['key'])), 1, sub(length(string(createArray(item()?['key']))), 2)), ':', substring(string(createArray(string(item()?['text']))), 1, sub(length(string(createArray(string(item()?['text'])))), 2)))"
+              },
+              "description": "\"key\":\"text\" as JSON."
+            },
+            "Document_values": {
+              "runAfter": {
+                "Document_pairs": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Compose",
+              "inputs": "@json(concat('{', join(body('Document_pairs'), ','), '}'))",
+              "description": "{ \"Document.<InternalName>\": text }"
+            }
+          },
+          "runAfter": {
+            "Get_changes": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {}
+          },
+          "expression": {
+            "equals": [
+              "@body('Get_changes')?['ColumnHasChanged']?['Status']",
+              true
+            ]
+          },
+          "type": "If",
+          "description": "Only the edit that made it Signed: later edits of a signed item send nothing."
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

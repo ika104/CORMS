@@ -44,10 +44,13 @@ interface IPanelData {
     decisionComment?: string;
   };
   steps?: IStep[];
+  /** A line under the task, e.g. why the user can't act on it here. */
+  notice?: string;
   labels?: Record<string, string>;
 }
 
 type Decision = "Approved" | "Rejected" | "Returned";
+type SigningState = "idle" | "waiting" | "confirming";
 
 const DEFAULT_LABELS: Record<string, string> = {
   reference: "REFERENCE NO.",
@@ -58,15 +61,14 @@ const DEFAULT_LABELS: Record<string, string> = {
   task: "Task",
   progress: "Approval progress",
   openCorrespondence: "Open correspondence",
-  close: "Close",
   return: "Return",
   reject: "Reject",
   approve: "Approve",
+  sign: "Sign",
   signatureRequired: "Signature required",
   comment: "Comment",
-  commentRequired: "A comment is required to return a task.",
+  commentRequired: "Please enter a comment.",
   cancel: "Cancel",
-  confirm: "Confirm",
   signDocument: "Sign document",
   signingRequired: "This step needs your signature before it can be approved.",
   actionComment: "Action Comment:",
@@ -76,16 +78,18 @@ const DEFAULT_LABELS: Record<string, string> = {
   awaitingSignature: "Awaiting signature",
   signingWaiting: "After you finish signing, keep this open - the approval is confirmed and completed automatically.",
   signingConfirming: "Confirming your signature and completing the approval...",
+  signingSlow: "Your signature hasn't been confirmed yet. If you finished signing, check again.",
+  checkAgain: "Check again",
   signingComplete: "Signature complete.",
-  signingDeclined: "Signing was declined.",
-  signingClosed: "The signing window was closed.",
+  loading: "Loading...",
+  working: "Please wait...",
   empty: "No approval task is open.",
 };
 
-const RETURN_MARKER = "cormsSigning";
-const RESULT_PARAM = "signingResult";
-const POLL_MS = 400;
-const BUILD = "v0.0.20";
+/** The build, for support. Kept on the root element as data-build, never shown to the user. */
+const BUILD = "0.0.22";
+/** How long "Confirming" waits before it offers "Check again". */
+const CONFIRM_PATIENCE_MS = 45000;
 const EM_DASH = "—";
 
 export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs, IOutputs> {
@@ -98,17 +102,29 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
   private busy = false;
   private errorMessage = "";
   private signingUrl = "";
-  private returnUrl = "";
   private correspondenceUrl = "";
 
   // dialog state
   private pending: Decision | undefined;
   private comment = "";
   private commentError = false;
-  private signingState: "idle" | "waiting" | "confirming" | "completed" | "declined" | "closed" = "idle";
-  /** The signing page counts as navigated once it loads a second time - the return page. */
+  private signingState: SigningState = "idle";
+
+  /**
+   * The signing session's frame. It is created once per signing link and kept across renders:
+   * rebuilding it would reload the provider's page and lose the signer's progress.
+   */
+  private frame: HTMLIFrameElement | undefined;
+  private frameUrl = "";
+  /** The signing page counts as finished once the frame loads a second time (the provider's redirect). */
   private frameLoads = 0;
-  private pollTimer: number | undefined;
+  /** Parts of the signing dialog updated in place while the frame is showing. */
+  private liveError: HTMLElement | undefined;
+  private liveSignButton: HTMLButtonElement | undefined;
+
+  private confirmingSince = 0;
+  private confirmTimer: number | undefined;
+  private busyLayer: HTMLElement | undefined;
 
   // outputs
   private action: string | undefined;
@@ -125,6 +141,7 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
     this.notifyOutputChanged = notifyOutputChanged;
     this.root = document.createElement("div");
     this.root.className = "corms-ap";
+    this.root.dataset.build = BUILD;
     container.appendChild(this.root);
     this.updateView(context);
   }
@@ -135,27 +152,25 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
     this.canAct = context.parameters.CanAct?.raw === true;
     this.busy = context.parameters.Busy?.raw === true;
     this.errorMessage = (context.parameters.ErrorMessage?.raw ?? "").trim();
-    this.returnUrl = (context.parameters.ReturnUrl?.raw ?? "").trim();
     this.correspondenceUrl = (context.parameters.CorrespondenceUrl?.raw ?? "").trim();
 
     const url = (context.parameters.SigningUrl?.raw ?? "").trim();
     if (url !== this.signingUrl) {
       this.signingUrl = url;
+      this.dropFrame();
       if (/^https?:\/\//i.test(url)) {
         this.signingState = "waiting";
         this.signingResult = undefined;
-        this.frameLoads = 0;
       }
     }
 
     // The approver signed and the app recorded it: close the dialog rather than asking again.
     const current = this.data.task ?? {};
     const decided = !!current.status && current.status !== "Pending";
-    if (this.pending && (decided || !this.canAct)) {
-      this.pending = undefined;
-      this.signingState = "idle";
-      this.frameLoads = 0;
-    }
+    if (this.pending && (decided || !this.canAct)) this.resetDialog();
+
+    // The app had a problem confirming the signature: let the user see it and leave.
+    if (this.signingState === "confirming" && this.errorMessage) this.stopConfirmTimer();
 
     this.render();
   }
@@ -178,7 +193,7 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
   }
 
   public destroy(): void {
-    this.stopPolling();
+    this.stopConfirmTimer();
   }
 
   // ---------------------------------------------------------------- helpers
@@ -226,25 +241,104 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
     return "muted";
   }
 
+  private dropFrame(): void {
+    this.frame = undefined;
+    this.frameUrl = "";
+    this.frameLoads = 0;
+    this.liveError = undefined;
+    this.liveSignButton = undefined;
+  }
+
+  private resetDialog(): void {
+    this.pending = undefined;
+    this.commentError = false;
+    this.signingState = "idle";
+    this.stopConfirmTimer();
+    this.dropFrame();
+  }
+
+  private stopConfirmTimer(): void {
+    if (this.confirmTimer !== undefined) {
+      window.clearTimeout(this.confirmTimer);
+      this.confirmTimer = undefined;
+    }
+  }
+
+  private startConfirming(): void {
+    this.signingState = "confirming";
+    this.confirmingSince = Date.now();
+    this.dropFrame();
+    this.stopConfirmTimer();
+    // After a while, offer "Check again" instead of an endless spinner.
+    this.confirmTimer = window.setTimeout(() => {
+      this.confirmTimer = undefined;
+      this.render();
+    }, CONFIRM_PATIENCE_MS);
+  }
+
   // ---------------------------------------------------------------- render
 
+  /** True while the signing frame is on screen and the next render must not rebuild it. */
+  private frameIsLive(): boolean {
+    return (
+      !!this.frame &&
+      this.frame.isConnected &&
+      this.frameUrl === this.signingUrl &&
+      this.signingState === "waiting" &&
+      !!this.pending
+    );
+  }
+
   private render(): void {
-    this.root.textContent = "";
-
-    if (!this.data.task) {
-      this.root.appendChild(this.el("div", "corms-ap__empty", this.labels.empty));
-      return;
+    if (this.frameIsLive()) {
+      this.updateSigningInPlace();
+    } else {
+      this.root.textContent = "";
+      this.busyLayer = undefined;
+      this.liveError = undefined;
+      this.liveSignButton = undefined;
+      if (!this.data.task) {
+        this.root.appendChild(
+          this.el("div", "corms-ap__empty", this.busy ? this.labels.loading : this.labels.empty)
+        );
+        return;
+      }
+      const body = this.el("div", "corms-ap__body");
+      body.appendChild(this.summary());
+      body.appendChild(this.taskSection());
+      body.appendChild(this.progressSection());
+      body.appendChild(this.openLink());
+      this.root.appendChild(body);
+      this.root.appendChild(this.footer());
+      if (this.pending) this.root.appendChild(this.decisionDialog());
     }
+    this.syncBusyLayer();
+  }
 
-    const body = this.el("div", "corms-ap__body");
-    body.appendChild(this.summary());
-    body.appendChild(this.taskSection());
-    body.appendChild(this.progressSection());
-    body.appendChild(this.openLink());
-    this.root.appendChild(body);
-    this.root.appendChild(this.footer());
+  /** A spinner over the panel while the app saves or talks to a flow. */
+  private syncBusyLayer(): void {
+    const show = this.busy && !!this.data.task && this.signingState !== "confirming";
+    if (show && !this.busyLayer) {
+      const layer = this.el("div", "corms-ap__busy");
+      layer.setAttribute("role", "status");
+      layer.setAttribute("aria-live", "polite");
+      layer.appendChild(this.el("div", "corms-ap__spinner"));
+      layer.appendChild(this.el("div", "corms-ap__busyText", this.labels.working));
+      this.root.appendChild(layer);
+      this.busyLayer = layer;
+    } else if (!show && this.busyLayer) {
+      this.busyLayer.remove();
+      this.busyLayer = undefined;
+    }
+  }
 
-    if (this.pending) this.root.appendChild(this.decisionDialog());
+  /** While signing, only the error line and the Sign button change; the frame is left alone. */
+  private updateSigningInPlace(): void {
+    if (this.liveError) {
+      this.liveError.textContent = this.errorMessage;
+      this.liveError.style.display = this.errorMessage ? "" : "none";
+    }
+    if (this.liveSignButton) this.liveSignButton.disabled = true;
   }
 
   private summary(): HTMLElement {
@@ -286,8 +380,7 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
     if (task.assignedToName) parts.push(task.assignedToName);
     meta.appendChild(this.el("span", undefined, parts.join(" · ")));
     if (task.requireSignature) {
-      const sig = this.el("span", "corms-ap__signature", `✎ ${this.labels.signatureRequired}`);
-      meta.appendChild(sig);
+      meta.appendChild(this.el("span", "corms-ap__signature", `✎ ${this.labels.signatureRequired}`));
     }
     left.appendChild(meta);
 
@@ -295,6 +388,8 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
       const decided = task.decidedBy + (task.decisionComment ? ` — ${task.decisionComment}` : "");
       left.appendChild(this.el("div", "corms-ap__taskMeta", decided));
     }
+    const notice = (this.data.notice ?? "").trim();
+    if (notice) left.appendChild(this.el("div", "corms-ap__notice", notice));
 
     row.appendChild(left);
     const stateLabel = task.stateLabel ?? task.status ?? "";
@@ -306,6 +401,11 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
   /** A signer asks for a change; a reviewer returns. Both still write Returned. */
   private returnLabel(): string {
     return this.isSigningRound() ? this.labels.requestChange : this.labels.return;
+  }
+
+  /** A signer signs; a reviewer approves. Both still write Approved. */
+  private approveLabel(): string {
+    return this.isSigningRound() || !!this.data.task?.requireSignature ? this.labels.sign : this.labels.approve;
   }
 
   private isSigningRound(): boolean {
@@ -358,17 +458,16 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
 
   private footer(): HTMLElement {
     const foot = this.el("div", "corms-ap__foot");
-    foot.appendChild(this.el("span", "corms-ap__build", BUILD));
     // The host modal provides its own dismiss, so the panel does not repeat it.
     if (this.canAct) {
       foot.appendChild(this.button(this.returnLabel(), "default", () => this.openDialog("Returned")));
       foot.appendChild(this.button(this.labels.reject, "danger", () => this.openDialog("Rejected")));
-      foot.appendChild(this.button(this.labels.approve, "primary", () => this.openDialog("Approved")));
+      foot.appendChild(this.button(this.approveLabel(), "primary", () => this.openDialog("Approved")));
     }
     return foot;
   }
 
-  /** Close and Cancel stay usable while the app is saving; only the decisions are held back. */
+  /** Cancel stays usable while the app is saving; only the decisions are held back. */
   private button(text: string, variant: string, onClick: () => void, disableWhenBusy = true): HTMLButtonElement {
     const btn = this.el("button", `corms-ap__btn corms-ap__btn--${variant}`, text) as HTMLButtonElement;
     btn.disabled = disableWhenBusy && this.busy;
@@ -384,9 +483,7 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
   }
 
   private closeDialog(): void {
-    this.pending = undefined;
-    this.commentError = false;
-    this.stopPolling();
+    this.resetDialog();
     this.render();
   }
 
@@ -396,9 +493,9 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
     const outcome = this.pending as Decision;
     const task = this.data.task ?? {};
     const label =
-      outcome === "Approved" ? this.labels.approve : outcome === "Rejected" ? this.labels.reject : this.returnLabel();
+      outcome === "Approved" ? this.approveLabel() : outcome === "Rejected" ? this.labels.reject : this.returnLabel();
     const needsSignature = outcome === "Approved" && !!task.requireSignature && !task.signatureCompleted;
-    const signed = this.signingState === "completed" || !!task.signatureCompleted;
+    const signed = !!task.signatureCompleted;
 
     // Only the signing session itself needs room to read the document; the comment step does not.
     const showingDocument =
@@ -407,24 +504,33 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
 
     const overlay = this.el("div", "corms-ap__overlay");
     const dialog = this.el("div", showingDocument ? "corms-ap__dialog corms-ap__dialog--wide" : "corms-ap__dialog");
+    dialog.setAttribute("role", "dialog");
+    dialog.setAttribute("aria-label", label);
     dialog.appendChild(this.el("div", "corms-ap__dialogTitle", label));
 
     if (needsSignature) dialog.appendChild(this.signatureBlock(signed));
 
-    // While the signature is being confirmed there is nothing to ask and nothing to press -
-    // but an error must still be visible, or a failure looks like an endless spinner.
+    // Confirming: a spinner, then "Check again" if it takes too long. Cancel is always there.
     if (this.signingState === "confirming") {
-      if (this.errorMessage) {
-        dialog.appendChild(this.el("div", "corms-ap__error", this.errorMessage));
-        const actions = this.el("div", "corms-ap__dialogActions");
-        actions.appendChild(this.button(this.labels.cancel, "default", () => this.closeDialog(), false));
-        dialog.appendChild(actions);
+      if (this.errorMessage) dialog.appendChild(this.el("div", "corms-ap__error", this.errorMessage));
+      const actions = this.el("div", "corms-ap__dialogActions");
+      actions.appendChild(this.button(this.labels.cancel, "default", () => this.closeDialog(), false));
+      if (this.confirmTimer === undefined) {
+        actions.appendChild(
+          this.button(this.labels.checkAgain, "primary", () => {
+            this.startConfirming();
+            this.emit("SigningEnded");
+            this.render();
+          })
+        );
       }
+      dialog.appendChild(actions);
       overlay.appendChild(dialog);
       return overlay;
     }
 
-    if (!this.signingUrl || this.signingState !== "waiting") {
+    const signingLive = !!this.signingUrl && this.signingState === "waiting";
+    if (!signingLive) {
       const field = this.el("label", "corms-ap__field");
       const lbl = this.el("span", "corms-ap__fieldLabel", this.labels.comment);
       lbl.appendChild(this.el("span", "corms-ap__required", " *"));
@@ -436,16 +542,21 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
         this.comment = box.value;
         if (this.commentError && box.value.trim()) {
           this.commentError = false;
-          const msg = dialog.querySelector(".corms-ap__error");
+          const msg = dialog.querySelector(".corms-ap__error--comment");
           if (msg) msg.remove();
         }
       };
       field.appendChild(box);
       dialog.appendChild(field);
-      if (this.commentError) dialog.appendChild(this.el("div", "corms-ap__error", this.labels.commentRequired));
+      if (this.commentError) {
+        dialog.appendChild(this.el("div", "corms-ap__error corms-ap__error--comment", this.labels.commentRequired));
+      }
     }
 
-    if (this.errorMessage) dialog.appendChild(this.el("div", "corms-ap__error", this.errorMessage));
+    const error = this.el("div", "corms-ap__error", this.errorMessage);
+    if (!this.errorMessage) error.style.display = "none";
+    dialog.appendChild(error);
+    if (signingLive) this.liveError = error;
 
     const actions = this.el("div", "corms-ap__dialogActions");
     actions.appendChild(this.button(this.labels.cancel, "default", () => this.closeDialog(), false));
@@ -459,7 +570,8 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
         }
         this.emit("RequestSignature");
       });
-      signBtn.disabled = this.busy || this.signingState === "waiting";
+      signBtn.disabled = this.busy || signingLive;
+      if (signingLive) this.liveSignButton = signBtn;
       actions.appendChild(signBtn);
     } else {
       const confirm = this.button(label, outcome === "Rejected" ? "danger" : "primary", () => {
@@ -486,86 +598,45 @@ export class ApprovalPanel implements ComponentFramework.StandardControl<IInputs
       block.appendChild(this.el("div", "corms-ap__signingOk", this.labels.signingComplete));
       return block;
     }
-    if (this.signingState === "declined" || this.signingState === "closed") {
-      const text = this.signingState === "declined" ? this.labels.signingDeclined : this.labels.signingClosed;
-      block.appendChild(this.el("div", "corms-ap__signingWarn", text));
-    }
     if (this.signingState === "confirming") {
       const wrap = this.el("div", "corms-ap__confirm");
-      wrap.appendChild(this.el("div", "corms-ap__spinner"));
-      wrap.appendChild(this.el("div", "corms-ap__confirmText", this.labels.signingConfirming));
+      if (this.confirmTimer !== undefined) {
+        wrap.appendChild(this.el("div", "corms-ap__spinner"));
+        wrap.appendChild(this.el("div", "corms-ap__confirmText", this.labels.signingConfirming));
+      } else {
+        wrap.appendChild(this.el("div", "corms-ap__confirmText", this.labels.signingSlow));
+      }
       block.appendChild(wrap);
       return block;
     }
     if (this.signingUrl && this.signingState === "waiting") {
-      const frame = document.createElement("iframe");
-      frame.className = "corms-ap__frame";
-      frame.title = "Signing session";
-      frame.src = this.signingUrl;
-      // The frame's URL is unreadable across origins, but its load events are not: the second load
-      // is the provider sending the signer onward, i.e. signing is done.
-      frame.onload = () => {
-        this.frameLoads += 1;
-        if (this.frameLoads >= 2 && this.signingState === "waiting") {
-          this.signingState = "confirming";
-          this.render();
-        }
-      };
-      block.appendChild(frame);
+      block.appendChild(this.signingFrame());
       block.appendChild(this.el("div", "corms-ap__signingWait", this.labels.signingWaiting));
-      this.startPolling(frame);
     } else {
       block.appendChild(this.el("div", "corms-ap__signingNote", this.labels.signingRequired));
     }
     return block;
   }
 
-  // ---------------------------------------------------------------- signing return
-
-  private startPolling(frame: HTMLIFrameElement): void {
-    this.stopPolling();
-    this.pollTimer = window.setInterval(() => {
-      let href: string;
-      try {
-        href = frame.contentWindow?.location.href ?? "";
-      } catch {
-        return; // still on the provider's origin
+  /** The provider's page. Its address can't be read across origins, but its load events can: the
+   *  second load is the provider sending the signer onward, i.e. signing is done. */
+  private signingFrame(): HTMLIFrameElement {
+    if (this.frame && this.frameUrl === this.signingUrl) return this.frame;
+    const frame = document.createElement("iframe");
+    frame.className = "corms-ap__frame";
+    frame.title = "Signing session";
+    frame.src = this.signingUrl;
+    frame.onload = () => {
+      if (frame !== this.frame) return;
+      this.frameLoads += 1;
+      if (this.frameLoads >= 2 && this.signingState === "waiting") {
+        this.startConfirming();
+        this.render();
       }
-      if (!href || href === "about:blank") return;
-      const outcome = this.parseReturn(href);
-      if (!outcome) return;
-      this.stopPolling();
-      this.signingState = outcome;
-      this.signingResult = outcome;
-      this.actionAt = new Date().toISOString();
-      this.action = JSON.stringify({
-        action: "SigningEnded",
-        at: this.actionAt,
-        comment: this.outComment ?? "",
-        signingResult: outcome,
-      });
-      this.notifyOutputChanged();
-      this.render();
-    }, POLL_MS);
-  }
-
-  private stopPolling(): void {
-    if (this.pollTimer !== undefined) {
-      window.clearInterval(this.pollTimer);
-      this.pollTimer = undefined;
-    }
-  }
-
-  private parseReturn(href: string): "completed" | "declined" | "closed" | undefined {
-    if (this.returnUrl && href.split("?")[0] !== this.returnUrl.split("?")[0]) return undefined;
-    let params: URLSearchParams;
-    try {
-      params = new URL(href).searchParams;
-    } catch {
-      return undefined;
-    }
-    if (params.get(RETURN_MARKER) !== "1") return undefined;
-    const result = params.get(RESULT_PARAM);
-    return result === "declined" || result === "closed" ? result : "completed";
+    };
+    this.frame = frame;
+    this.frameUrl = this.signingUrl;
+    this.frameLoads = 0;
+    return frame;
   }
 }

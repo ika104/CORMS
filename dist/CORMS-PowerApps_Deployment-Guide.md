@@ -14,7 +14,7 @@ CORMS is a correspondence and approval system. It has four parts, and **only the
 
 | Part | Where it lives | In the package? |
 |---|---|---|
-| 2 canvas apps, 2 code components, 6 flows | Dataverse solution | **Yes** |
+| 2 canvas apps, 2 code components, 8 flows | Dataverse solution | **Yes** |
 | 17 SharePoint lists holding all the data | A SharePoint site | No — you create them (step 2) |
 | The SPFx web part that hosts the apps | SharePoint app catalog | No — deployed separately (step 8) |
 | SignNow account used for e-signatures | SignNow | No — your own account (step 7) |
@@ -26,14 +26,14 @@ CORMS is a correspondence and approval system. It has four parts, and **only the
 | App | Purpose |
 |---|---|
 | CORMS Approvals | The approval panel: approve / reject / request change, and the in-app signing session |
-| CORMS Task Form | Create a task, task details, and the approval screen |
+| CORMS Task Form | Create a task, and a task's details (fields, files, notes, audit, timeline) |
 
 **Code components (PCF)**
 
 | Component | Used by |
 |---|---|
-| `corms_CORMS.ApprovalPanel` | CORMS Approvals |
-| `corms_CORMS.SigningFrame` | CORMS Task Form |
+| `corms_CORMS.ApprovalPanel` | CORMS Approvals: the panel, its buttons and the signing session |
+| `corms_CORMS.HostSignal` | CORMS Task Form: invisible; tells the CORMS page the user is finished, so CORMS closes its panel |
 
 **Flows**
 
@@ -41,15 +41,17 @@ CORMS is a correspondence and approval system. It has four parts, and **only the
 |---|---|---|
 | CORMS - Signing Bridge | Fetches the document, calls the signing flow, saves the signed file back | Called by CORMS Approvals |
 | CORMS-eSignature-SignNow | Talks to SignNow: create document, invite, status, download | Called by the Signing Bridge |
-| CORMS - Notification Bridge | Connector-free HTTP relay to `Notification_Flow` | Called by CORMS Approvals |
-| Notification_Flow | Sends the email / Teams message | Called by the Notification Bridge |
+| CORMS - Notification Bridge | HTTP relay to `Notification_Flow`. For an external delivery it first reads the signed PDF with the app user's own SharePoint access and adds it to the message | Called by CORMS Approvals |
+| CORMS - Audit Search | Connector-free: reads a task's entries from the CORMS audit index for the CORMS Task Form's Audit tab | Called by CORMS Task Form |
+| CORMS - Audit Bridge | Connector-free: writes CORMS Approvals' and CORMS Task Form's audit entries to the CORMS audit index (Elasticsearch), the same index the CORMS web part writes to, so they appear in the correspondence's Audit tab | Called by CORMS Approvals and CORMS Task Form |
+| Notification_Flow | Sends the email, and a Teams card from Flow bot with the correspondence's details. External organisations get email only, with the signed PDF | Called by CORMS, the Notification Bridge and Signed Documents Email |
+| CORMS - Signed Documents Email | When a correspondence becomes **Signed** (in CORMS, CORMS Approvals or SignNow), emails its creator and Assigned To the signed document and its attachments as separate files (only the main document over 20 MB), using the admin's **Correspondence Email Template** for the correspondence's content type (else the one for all content types), and adds an "Email sent" Timeline entry | SharePoint: a `CORMS_Correspondence` item changes (checks every minute) |
 | CORMS - Upload Task Attachment | Uploads a file and sets its list properties | Called by CORMS Task Form |
-| CORMS - Check Overdue tasks | Marks overdue tasks | Scheduled |
 
 **Configuration carried by the solution**
 
 - 3 connection references (SharePoint, Office 365 Outlook, Microsoft Teams)
-- 12 environment variables (1 SharePoint site + 11 lists)
+- 14 environment variables: the CORMS site + 10 CORMS lists, the RecordsHub site + its `RH_SecurityLevels` list (CORMS Task Form reads the security levels from there), and the Elasticsearch base URL `corms_ElasticEndpoint` (the audit flows' fallback when Admin Settings has no `integration.elasticEndpoint`)
 
 > The environment variables ship **without values on purpose**. Your environment supplies its own. If an import leaves them empty, the apps read nothing — see *Troubleshooting*.
 
@@ -133,7 +135,7 @@ Invoke-PnPSiteTemplate -Path corms-site-template.xml
 Lists created:
 
 ```
-CORMS_Correspondence          CORMS_Attachments        CORMS_AuditLog         CORMS_Timeline
+CORMS_Correspondence          CORMS_Attachments        CORMS_Timeline
 CORMS_AdminConfig             CORMS_UserRoles          CORMS_Tasks            CORMS_Delegations
 CORMS_ApprovalTasks           CORMS_SigningSessions    CORMS_Templates        CORMS_CustomFolders
 CORMS_DelegationAttachments   CORMS_DeliveryTracking   CORMS_NavigationMenu
@@ -161,7 +163,7 @@ In the target environment (make.powerapps.com → **Connections** → **New conn
 
 | Connector | Used by |
 |---|---|
-| SharePoint | Signing Bridge, eSignature-SignNow, Upload Task Attachment, Check Overdue tasks |
+| SharePoint | Signing Bridge, Notification Bridge, eSignature-SignNow, Upload Task Attachment, Signed Documents Email |
 | Office 365 Outlook | Notification_Flow |
 | Microsoft Teams | Notification_Flow |
 
@@ -193,9 +195,9 @@ This file is the whole configuration of the import. Open it and fill every `"Val
 | `corms_sharedoffice365_63afd` | Office 365 Outlook |
 | `corms_sharedteams_0a33b` | Microsoft Teams |
 
-### Environment variables — 12 entries
+### Environment variables — 14 entries
 
-One is the **site URL**. The other eleven are **list GUIDs** from step 2.
+One is the **CORMS site URL** and ten are **CORMS list GUIDs** from step 2. Two point at the **RecordsHub** site: its URL, and the GUID of its `RH_SecurityLevels` list (display name "Security Levels"; the same list CORMS reads through `recordsHub.securityLevelsListUrl` in CORMS_AdminConfig). The CORMS Task Form uses it to offer only correspondences the user's clearance allows. The last is the **Elasticsearch base URL** for the audit flows.
 
 | SchemaName | Set it to |
 |---|---|
@@ -203,7 +205,6 @@ One is the **site URL**. The other eleven are **list GUIDs** from step 2.
 | `new_shared_sharepointonline_c53c5a63715c45818e8eb4d3b5e548a5` | GUID of `CORMS_AdminConfig` |
 | `new_shared_sharepointonline_3c087a2a3c1b45eaa366a0a9ba14b677` | GUID of `CORMS_ApprovalTasks` |
 | `new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349` | GUID of `CORMS_Attachments` |
-| `new_shared_sharepointonline_15eb33ef1bd545eab766623250d8288e` | GUID of `CORMS_AuditLog` |
 | `new_shared_sharepointonline_d2f9f57a69aa41b2b3c5611f65e36719` | GUID of `CORMS_Correspondence` |
 | `new_shared_sharepointonline_7f9d56398e534c3ba07f917e38573b53` | GUID of `CORMS_Delegations` |
 | `new_shared_sharepointonline_0ac25ac605c54096b43559e1e44fd655` | GUID of `CORMS_SigningSessions` |
@@ -211,14 +212,17 @@ One is the **site URL**. The other eleven are **list GUIDs** from step 2.
 | `new_shared_sharepointonline_f65693355dfe4fe3b41a68917be77e50` | GUID of `CORMS_Templates` |
 | `new_shared_sharepointonline_39f9161a015244d68915d0194823f536` | GUID of `CORMS_Timeline` |
 | `new_shared_sharepointonline_01455abdf9e74001b385f1be3ccc9eb6` | GUID of `CORMS_UserRoles` |
+| `new_shared_sharepointonline_02efef9697034e90b0adcc6af33b951f` | the **RecordsHub** site URL, e.g. `https://contoso.sharepoint.com/sites/RecordsHub` |
+| `new_shared_sharepointonline_8993092431064dc0be22f0a6309f2978` | GUID of the RecordsHub `RH_SecurityLevels` list |
+| `corms_ElasticEndpoint` | Elasticsearch base URL with port, e.g. `https://host:9200`; used when `integration.elasticEndpoint` in Admin Settings is blank (the Admin Setting wins). **Give it a value** (normally the same address as the Admin Setting): CORMS - Audit Bridge and Audit Search reference it, and a flow can't be saved or turned on while it has none |
 
 You do not have to match those long names by hand — every entry in the file carries a readable name:
 
 ```jsonc
 {
-  "SchemaName": "new_shared_sharepointonline_15eb33ef1bd545eab766623250d8288e",
+  "SchemaName": "new_shared_sharepointonline_fcf52443a8474cd1b2f8ff34a9e5642e",
   "Value": "",
-  "Name": { "Default": "CORMS_AuditLog" },     // <- match on this
+  "Name": { "Default": "CORMS_Tasks" },        // <- match on this
   "TypeId": 100000004,
   "ParameterKey": "table"
 }
@@ -258,7 +262,7 @@ Import takes 5–15 minutes. If it fails, read **Troubleshooting** before retryi
 
 **Flows always arrive deactivated.** Nothing works until you switch them on.
 
-Solutions → CORMSApprovals → **Cloud flows** → for each of the six: **Turn on**.
+Solutions → CORMSApprovals → **Cloud flows** → for each of the eight: **Turn on**.
 
 Then open each flow and check for warning triangles on actions — that means a connection is unbound. Click it and pick the connection.
 
@@ -270,15 +274,20 @@ Open the `CORMS_AdminConfig` list and create one item per row below. The two rel
 
 | Title | Value |
 |---|---|
-| `site.baseUrl` | `https://contoso.sharepoint.com/sites/CORMS` |
+| `site.baseUrl` | `https://contoso.sharepoint.com/sites/CORMS`. **Set it.** CORMS needs it, and the apps use it for links and for every audit entry's site. Without it the apps work the address out from the `CORMS_AdminConfig` list itself |
 | `signature.provider` | `SignNow` |
 | `signature.providerBaseUrl` | SignNow API base URL, e.g. `https://api.signnow.com` |
 | `signature.providerUsername` | SignNow account user |
 | `signature.providerPassword` | SignNow account password |
 | `signature.providerClientCredentials` | SignNow basic auth token (base64 of `client_id:client_secret`) |
 | `signature.flowUrl` | HTTP POST URL of **CORMS - Signing Bridge** |
-| `notification.flowUrl` | HTTP POST URL of **Notification_Flow** |
-| `notification.teamsTeamId` | Teams team ID for notifications, or leave blank |
+| `notification.flowUrl` | HTTP POST URL of **Notification_Flow**. CORMS, CORMS Approvals and CORMS - Signed Documents Email all send through it |
+| `notification.teamsTeamId` | Any Teams team ID turns Teams on: approvers and recipients also get a card in a chat with Flow bot. Blank = email only |
+| `admin.externalOrganizationsJson` | The external organisations and their email addresses (CORMS Administration manages it). When a correspondence with **Email** delivery is fully signed, its organisations get the signed PDF by email |
+| `powerAppsTaskFormUrl` | The CORMS Task Form play URL, `https://apps.powerapps.com/play/e/<env id>/a/<Task Form app id>?tenantId=<tenant id>&hidenavbar=true` |
+| `powerAppsTaskDetailUrl` | The same URL followed by `&taskId={taskId}`. CORMS replaces `{taskId}` |
+| `powerAppsApprovalTasksUrl` | The CORMS Approvals play URL followed by `&approvalTaskId={approvalTaskId}&correspondenceId={correspondenceId}` |
+| `integration.elasticEndpoint`, `integration.elasticApiKey`, `integration.elasticAuditIndex`, `integration.auditingEnabled` | The CORMS audit index. These are the CORMS web part's own settings (it creates the rows); CORMS Approvals and CORMS Task Form read the same rows to write their audit entries. Without a key, the apps write no audit entries. A blank endpoint falls back to the `corms_ElasticEndpoint` environment variable; change the address here at any time without touching the solution |
 
 ### Where the two flow URLs come from
 
@@ -289,30 +298,35 @@ They only exist after step 5, and they are **different in every environment**. O
 ### Also populate
 
 - **`CORMS_UserRoles`** — at least one user with role `SystemAdministrator`, or nobody can administer the system.
-- **`CORMS_NavigationMenu`** and **`CORMS_Templates`** — copy from the source site if the business expects the same menu and templates.
+- **`CORMS_NavigationMenu`** and **`CORMS_Templates`** — copy from the source site if the business expects the same menu and templates. **Templates > Correspondence Email Templates** in CORMS set the text of the signed-documents email, one per content type plus one for all content types; `{{Document.<column>}}` takes the main document's value. Without one it reads "<reference>: <subject>" with the standard text. The old **Signed** workflow email template is no longer used. Run **Provision Lists** first: it adds the `CorrespondenceEmail` template type.
 
 ---
 
 ## 10. Step 8 — Deploy the SPFx web part
 
-The canvas apps are embedded in a SharePoint page by an SPFx web part. **The apps get new App IDs in your environment**, so the web part must be repointed.
+The canvas apps are embedded in CORMS (the SPFx web part). **The apps get new App IDs in your environment**, and CORMS reads the app addresses from `CORMS_AdminConfig`, not from web part properties.
 
-1. Upload the `.sppkg` to the tenant App Catalog and deploy it.
-2. Add the web part to the CORMS page.
+1. Upload CORMS **1.0.0.41 or later** to the tenant App Catalog and deploy it. Earlier versions don't close the New Task panel when the user cancels or creates a task, and still send their own "Every signer has signed" email, so the creator would get it twice (CORMS - Signed Documents Email now sends it, with the documents attached).
+2. Add the web part to the CORMS page, then run **Provision Lists** from CORMS administration so the lists have every column CORMS and the apps use.
 3. Get the new App IDs — Solutions → CORMSApprovals → the app → **Details** → **App ID**, or:
 
 ```bash
 pac canvas list
 ```
 
-4. Put the new IDs in the web part's properties.
+4. Put the play URLs in the three `powerApps…Url` rows of `CORMS_AdminConfig` (step 7).
 
-The host passes parameters to the apps. Keep these if you are rebuilding the page:
+CORMS passes these parameters to the apps:
 
 | App | Parameters |
 |---|---|
-| CORMS Approvals | `approvalTaskId` or `taskId`, `correspondenceId` |
-| CORMS Task Form | `taskId`, `screen=create\|detail\|approval`, `subject=NeedApproval` |
+| CORMS Approvals | `approvalTaskId` (or `taskId`), `correspondenceId` |
+| CORMS Task Form | `taskId` (opens the task's details; without it, the create form), optional `screen=create\|detail`, `relatedCorrespondenceId`, `requestedBy` |
+| Both | `cormsHost=1`, added by CORMS to the panel only. It tells the app it runs inside CORMS, so Cancel and Create signal CORMS instead of leaving the page |
+
+### First run: users are asked for consent
+
+The first time each user opens an app, and again after the app is updated, Power Apps asks **"Allow CORMS Task Form (or CORMS Approvals) to access your data?"** for SharePoint and Office 365 Users. Each user must click **Allow**. Tell UAT users to expect it.
 
 ---
 
@@ -321,12 +335,14 @@ The host passes parameters to the apps. Keep these if you are rebuilding the pag
 Work through these in order. Each checks a different layer, so if an early one fails the later ones cannot pass.
 
 1. **Open CORMS Task Form.** Lists load → the environment variables resolved.
-2. **Create a task.** A row appears in `CORMS_Tasks` → writes work.
+2. **Create a task.** A row appears in `CORMS_Tasks`, the task's **Audit** tab shows *Task Created* (CORMS - Audit Bridge and Audit Search work), and the New Task panel closes by itself → writes work, and CORMS hears the app's close signal. **Cancel** should also close the panel.
 3. **Attach a file.** A row appears in `CORMS_Attachments` → *CORMS - Upload Task Attachment* works.
 4. **Send it for approval and open CORMS Approvals.** The panel shows the approval chain → the code component loaded and the data is readable.
-5. **Approve with a comment.** The task updates and rows appear in `CORMS_AuditLog` and `CORMS_Timeline` → the decision path works.
+5. **Approve with a comment.** The task updates, a row appears in `CORMS_Timeline`, and the decision shows in the correspondence's **Audit** tab in CORMS → the decision path and the Audit Bridge work.
 6. **A step that requires a signature.** Click *Sign document*. The SignNow session appears in the dialog and the task completes by itself after signing → Signing Bridge, the SignNow flow and the provider settings are all correct.
-7. **Check the recipient got the email / Teams message** → Notification Bridge and Notification_Flow.
+7. **Check the recipient got the email and the Teams card** (chat with Flow bot, Open in CORMS works) → Notification Bridge and Notification_Flow.
+8. **Email delivery to an external organisation.** Use an organisation whose address is a test mailbox. A correspondence with Email delivery and that organisation, fully signed in CORMS Approvals: the mailbox gets one email with the signed PDF and no CORMS link, and the Timeline shows "Signed document emailed to …".
+9. **Signed documents email.** Within a couple of minutes of the last signature, the correspondence's creator and Assigned To each get one email ("<reference>: <subject>", or the subject of the correspondence email template for its content type) with the signed PDF and the other attachments as separate files, and the Timeline shows "Signed documents emailed to …". Editing the signed correspondence afterwards sends nothing → CORMS - Signed Documents Email and its SharePoint connection.
 
 ---
 
@@ -334,13 +350,15 @@ Work through these in order. Each checks a different layer, so if an early one f
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Apps open, every list is empty, no error | Environment variable values empty or wrong | Solutions → CORMSApprovals → Environment variables: all 12 need a **Current Value**. Values are cached and can take up to an hour to propagate; a fresh browser session clears local caching. |
+| Apps open, every list is empty, no error | Environment variable values empty or wrong | Solutions → CORMSApprovals → Environment variables: all 14 need a **Current Value**. Values are cached and can take up to an hour to propagate; a fresh browser session clears local caching. |
 | `This site has exceeded its maximum file storage limit` on any save | SharePoint site over quota | Empty both recycle bin stages, cap version history on `CORMS_Attachments` (the signing flow writes a version per signature), raise the quota. **Every write fails until this is cleared.** |
 | Flow fails with `InvokerConnectionOverrideFailed` | A connection reference is unbound, or the flow was edited in the portal and silently re-pointed at a new reference | Open the flow and rebind the connection. If an app calls that flow, remove and re-add the flow in the app, then republish the app. |
 | Nothing happens at all; no flow runs | Flows still deactivated | Step 6. This is the most common miss. |
 | The approval panel area is blank | Code components disabled in the environment | Admin centre → Environment → Settings → Features → **Power Apps component framework for canvas apps** → On. |
 | Signing dialog spins forever on "Confirming your signature" | The signing request was never written to the task — usually a failed SharePoint write (quota) or a wrong `signature.flowUrl` | Check the site quota first, then the run history of *CORMS - Signing Bridge*. |
-| Links open the wrong tenant's site | `site.baseUrl` missing from `CORMS_AdminConfig` | Add it. The apps fall back to a built-in default when the row is absent. |
+| Links or audit entries point at the wrong site | `site.baseUrl` missing or wrong in `CORMS_AdminConfig` | Set it to the CORMS site URL. Without it the apps derive the address from the list itself. |
+| Cancel or Create Task leaves the New Task panel open | CORMS older than 1.0.0.39, or the Task Form was opened without `cormsHost=1` | Deploy CORMS 1.0.0.39 or later. In the panel, the X always closes it. |
+| Every user is asked "Allow … to access your data?" | Normal on first run and after each app update | Users click **Allow** once per update. |
 | Import fails: connection reference not found | The settings file was not applied, or an entry was renamed | Re-run the import **with** `--settings-file`. |
 | A code component looks like an older version after an update | Someone published the app from a Studio tab that was opened before the import | Re-import the solution with `--publish-changes`, and do **not** publish the app from Studio afterwards. |
 | `pac` commands hit the wrong environment | More than one auth profile | `pac auth list`, `pac auth select --index <n>`, then `pac org who`. |
@@ -376,7 +394,7 @@ The solution ships the components **compiled** - `bundle.js`, the CSS and the ma
 TypeScript is not in the package, so you cannot read or change a component from the zip alone.
 
 The source is delivered separately as **`CORMS-PCF-Source.zip`**, containing both projects
-(`pcf-approval/` = ApprovalPanel, `pcf/` = SigningFrame) and a README covering how to build them,
+(`pcf-approval/` = ApprovalPanel, `pcf-host-signal/` = HostSignal) and a README covering how to build them,
 how to push a build to your environment, and the one non-obvious part: a canvas app embeds its own
 copy of a component, so pushing a new build does **not** update an app that already uses it.
 

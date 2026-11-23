@@ -9,10 +9,11 @@ Apps canvas apps, two PCF code components and a set of Power Automate flows, ove
 |---|---|
 | `spfx/` | The SPFx single-page app that hosts everything. Its own `README.md` is the engineering log: toolchain, build and deploy steps, decisions, and per-epic implementation notes. |
 | `pcf-approval/` | PCF code component `corms_CORMS.ApprovalPanel` — the approval panel used by the CORMS Approvals canvas app, including the in-app signing session. |
-| `pcf/` | PCF code component `corms_CORMS.SigningFrame` — used by the CORMS Task Form canvas app. |
+| `pcf-host-signal/` | PCF code component `corms_CORMS.HostSignal` — invisible; the CORMS Task Form uses it to tell CORMS to close its panel (see `docs/close-panel-signal.md`). |
+| `pcf/` | PCF code component `corms_CORMS.SigningFrame` — no longer used and not in the solution since 2026-11-07; kept for reference. |
 | `approvals-app/` | Canvas source (`.pa.yaml`) for **CORMS Approvals**. |
 | `taskform-app/` | Canvas source (`.pa.yaml`) for **CORMS Task Form**. |
-| `flows/` | Power Automate flow definitions. |
+| `flows/` | Power Automate flow definitions: the seven in the solution, synced from the 1.0.0.9 export (including `CORMS-Audit-Bridge.json`, added 2026-11-05, and `CORMS-Audit-Search.json`, added 2026-11-07). `CORMS-Check-Overdue-Tasks.json` (removed from the solution on 2026-11-05; overdue is computed from the due date) and `CORMS-Approval-Notification.json` are kept as a record only. |
 | `connector/` | Custom connector definition for the audit API. |
 | `tools/` | `check_export_readiness.py` — verifies a solution export can be imported elsewhere. `Export-CormsSiteTemplate.ps1` — provisions the SharePoint lists in a new tenant. |
 | `dist/` | The deployment guide, the settings template an importing environment fills in, and the tools copied beside them. The built packages themselves are not in git. |
@@ -34,7 +35,7 @@ Two things are not in this repository and must come from whoever maintains the s
 ## Building the code components
 
 ```bash
-cd pcf-approval        # or: cd pcf
+cd pcf-approval        # or: cd pcf-host-signal
 npm install
 npm run build
 pac pcf push --publisher-prefix corms

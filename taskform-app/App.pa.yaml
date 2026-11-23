@@ -1,43 +1,8 @@
 App:
   Properties:
     Formulas: |-
-      =MyTheme = {
-          Primary: ColorValue("#000000"),
-          Gray: ColorValue("#8F8F8F"),
-          LightGray: ColorValue("#F7F7F7"),
-          LightGreen: ColorValue("#84E4CB"),
-          LightPurple: ColorValue("#CBBBFD"),
-          LightBlue: ColorValue("#D0E4FB"),
-          LightOrange: ColorValue("#FFBD9B"),
-          NavHover: ColorValue("#016d79"),
-          NavTitle: ColorValue("#F8F8F8"),
-          PrimaryTxT: "#2a6db5",
-          GrayTxT: "#8F8F8F",
-          LightGrayTxT: "#F7F7F7",
-          LightGreenTxT: "#84E4CB",
-          LightPurpleTxT: "#CBBBFD",
-          LightBlueTxT: "#D0E4FB",
-          LightOrangeTxT: "#FFBD9B",
-          NavHoverTxT: "#0f6cbd",
-          NavTitleTxT: "#F8F8F8"
-      };
-      // Admin = user with the SystemAdministrator role in CORMS_UserRoles
-      fxIsAdmin = !IsBlank(
-          LookUp(
-              CORMS_UserRoles,
-              User.Email = User().Email && Role.Value = "SystemAdministrator"
-          )
-      );
-      // Current user as a SharePoint person value, for Actor / AssignedToUser columns
-      // Page the embedded app navigates to when it is finished; the SPFx host watches for it
-      // Any lightweight same-origin URL works; the host only reads the #corms= marker after it
-      // The site address is configuration, so the solution can be imported into another
-      // tenant. The literal is only a fallback until the admin row exists.
-      fxSiteUrl = Coalesce(
-          LookUp(CORMS_AdminConfig, Title = "site.baseUrl").Value,
-          "https://ssloman.sharepoint.com/sites/CORMS"
-      );
-      fxCloseUrl = fxSiteUrl & "/_api/web/title";
+      =// ---------------------------------------------------------------- the current user
+      // As a SharePoint person value, for Actor / AssignedToUser columns.
       fxMe = {
           '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
           Claims: "i:0#.f|membership|" & Lower(User().Email),
@@ -47,42 +12,326 @@ App:
           JobTitle: "",
           Picture: ""
       };
-    OnStart: |-
-      =Set(
-          varIsLoading,
-          false
-      );
-      Set(
-          varStatusText,
-          ""
-      );
-      Set(
-          varCurrentUser,
-          User()
-      );
-      Set(
-          varMode,
-          If(
-              IsBlank(Param("taskId")),
-              "create",
-              "detail"
+      // Admin = a user with the SystemAdministrator role in CORMS_UserRoles.
+      fxIsAdmin = !IsBlank(
+          LookUp(
+              CORMS_UserRoles,
+              User.Email = User().Email && Role.Value = "SystemAdministrator"
           )
-      )
+      );
+
+      // ---------------------------------------------------------------- timeline (UAT-010)
+      // A CORMS_Timeline event type as CORMS shows it (correspondenceDetail.timeline.kind.*). An
+      // Edited event says what was edited when its description does; any other type gets spaces
+      // before its capitals (e.g. "SomeEvent" → "Some Event").
+      fxTimelineTitle(eventType: Text, description: Text): Text = Switch(
+          eventType,
+          "Created", "Created",
+          "Submitted", "Submitted",
+          "ReferenceAssigned", "Reference Assigned",
+          "Routed", "Routed",
+          "Approved", "Approved",
+          "Rejected", "Rejected",
+          "SignatureRequested", "Signature Requested",
+          "Signed", "Signed",
+          "EmailSent", "Email Sent",
+          "Delivered", "Delivered",
+          "Acknowledged", "Acknowledged",
+          "Expedited", "Expedited",
+          "Reassigned", "Reassigned",
+          "SentForReview", "Sent for Review",
+          "Reviewed", "Reviewed",
+          "Returned", "Returned",
+          "Delegated", "Delegated",
+          "Recalled", "Recalled",
+          "Declared", "Declared",
+          "ReminderSet", "Reminder",
+          "ReminderFired", "Reminder",
+          "Escalated", "Escalated",
+          "Edited", If(
+              StartsWith(description, "Sent for signing to "), "Sent for Signing",
+              " reassigned to " in description, "Reassigned",
+              StartsWith(description, "Recalled by "), "Recalled",
+              "Edited"
+          ),
+          Concat(
+              ForAll(
+                  Sequence(Len(eventType)) As i,
+                  With(
+                      {c: Mid(eventType, i.Value, 1)},
+                      If(i.Value > 1 && c = Upper(c) && c <> Lower(c), " " & c, c)
+                  )
+              ),
+              Value
+          )
+      );
+
+      // ---------------------------------------------------------------- security clearance (UAT-008)
+      // A correspondence is offered only when the user may open it in CORMS: its security level at or
+      // below the user's clearance (CORMS's Correspondence and Search pages), and a draft only to its
+      // author or sender. Levels and their order come from RecordsHub ('Security Levels' =
+      // RH_SecurityLevels, RH_SecurityNumber 1 = most sensitive), as in CORMS's securityLevelRegistry.
+      // The same spelling of a level, whatever the spaces, case or "Public/Unclassified" alias.
+      fxCanon(name: Text): Text = With(
+          {n: Lower(Substitute(Substitute(Trim(name), " ", ""), Char(160), ""))},
+          If(n = "public/unclassified" || n = "public", "unclassified", n)
+      );
+      // RecordsHub's rows; CORMS's former scale while RecordsHub can't be read.
+      nfLevelRows = With(
+          {
+              rh: IfError(
+                  Filter(
+                      ForAll('Security Levels', {name: Trim(RH_SecurityLevels), num: IfError(Value(RH_SecurityNumber), Blank()), id: ID}),
+                      !IsBlank(name)
+                  ),
+                  Blank()
+              )
+          },
+          If(
+              CountRows(rh) > 0, rh,
+              Table(
+                  {name: "Top Secret", num: 1, id: 5},
+                  {name: "Secret", num: 2, id: 4},
+                  {name: "Confidential", num: 3, id: 3},
+                  {name: "Restricted", num: 4, id: 2},
+                  {name: "Public / Unclassified", num: 5, id: 1}
+              )
+          )
+      );
+      // The levels, duplicates merged by name, with tier 1 = least sensitive … n = most sensitive.
+      nfSecurityLevels = With(
+          {
+              merged: ForAll(
+                  Distinct(ForAll(nfLevelRows As r, fxCanon(r.name)), Value) As d,
+                  With(
+                      {grp: Filter(nfLevelRows As r, fxCanon(r.name) = d.Value)},
+                      {canon: d.Value, name: First(grp).name, key: Coalesce(Min(grp, num), 999999) * 100000 + Min(grp, id)}
+                  )
+              )
+          },
+          With(
+              {ordered: Sort(merged, key)},
+              ForAll(
+                  Sequence(CountRows(ordered)) As i,
+                  With({l: Index(ordered, i.Value)}, {canon: l.canon, name: l.name, tier: CountRows(ordered) - i.Value + 1})
+              )
+          )
+      );
+      nfMaxTier = CountRows(nfSecurityLevels);
+      fxTierOfName(name: Text): Number = If(IsBlank(Trim(name)), Blank(), LookUp(nfSecurityLevels, canon = fxCanon(name)).tier);
+      // The user's clearance (CORMS_UserRoles): a SystemAdministrator sees every level; otherwise the
+      // level named in ClearanceLevel, else the old 1–5 ClearanceTier, else the lowest level.
+      nfMyClearance = With(
+          {row: LookUp(CORMS_UserRoles, User.Email = User().Email)},
+          If(
+              row.Role.Value = "SystemAdministrator", nfMaxTier,
+              Coalesce(
+                  fxTierOfName(row.ClearanceLevel),
+                  If(
+                      row.ClearanceTier >= 1,
+                      fxTierOfName(
+                          Index(
+                              ["Public/Unclassified", "Restricted", "Confidential", "Secret", "Top Secret"],
+                              Min(RoundDown(row.ClearanceTier, 0), 5)
+                          ).Value
+                      )
+                  ),
+                  1
+              )
+          )
+      );
+      // Everything is visible at the top clearance (an unrecognised level counts as the most sensitive).
+      nfSeeAllLevels = nfMyClearance >= nfMaxTier;
+      // The stored SecurityLevel values the user may see: each allowed level's name and the older
+      // spellings of it. Up to 12, as fixed slots so the filter stays a SharePoint query.
+      nfLevelSlots = FirstN(
+          Ungroup(
+              Table(
+                  {t: ForAll(Filter(nfSecurityLevels, tier <= nfMyClearance), {v: name})},
+                  {
+                      t: Filter(
+                          ForAll(["Public/Unclassified", "Public / Unclassified", "Unclassified"], {v: Value}),
+                          fxCanon(v) in Filter(nfSecurityLevels, tier <= nfMyClearance).canon
+                      )
+                  },
+                  {t: ForAll(Sequence(12), {v: "~none~"})}
+              ),
+              t
+          ),
+          12
+      );
+      // Every correspondence status except Draft (from the column's own choices), as fixed slots:
+      // SharePoint can't filter on "is not Draft", only on "is one of these".
+      nfStatusSlots = FirstN(
+          Ungroup(
+              Table(
+                  {t: ForAll(Filter(Choices(CORMS_Correspondence.Status), Value <> "Draft"), {v: Value})},
+                  {t: ForAll(Sequence(20), {v: "~none~"})}
+              ),
+              t
+          ),
+          20
+      );
+      nfSt1 = Index(nfStatusSlots, 1).v;
+      nfSt2 = Index(nfStatusSlots, 2).v;
+      nfSt3 = Index(nfStatusSlots, 3).v;
+      nfSt4 = Index(nfStatusSlots, 4).v;
+      nfSt5 = Index(nfStatusSlots, 5).v;
+      nfSt6 = Index(nfStatusSlots, 6).v;
+      nfSt7 = Index(nfStatusSlots, 7).v;
+      nfSt8 = Index(nfStatusSlots, 8).v;
+      nfSt9 = Index(nfStatusSlots, 9).v;
+      nfSt10 = Index(nfStatusSlots, 10).v;
+      nfSt11 = Index(nfStatusSlots, 11).v;
+      nfSt12 = Index(nfStatusSlots, 12).v;
+      nfSt13 = Index(nfStatusSlots, 13).v;
+      nfSt14 = Index(nfStatusSlots, 14).v;
+      nfSt15 = Index(nfStatusSlots, 15).v;
+      nfSt16 = Index(nfStatusSlots, 16).v;
+      nfSt17 = Index(nfStatusSlots, 17).v;
+      nfSt18 = Index(nfStatusSlots, 18).v;
+      nfSt19 = Index(nfStatusSlots, 19).v;
+      nfSt20 = Index(nfStatusSlots, 20).v;
+      nfLvl1 = Index(nfLevelSlots, 1).v;
+      nfLvl2 = Index(nfLevelSlots, 2).v;
+      nfLvl3 = Index(nfLevelSlots, 3).v;
+      nfLvl4 = Index(nfLevelSlots, 4).v;
+      nfLvl5 = Index(nfLevelSlots, 5).v;
+      nfLvl6 = Index(nfLevelSlots, 6).v;
+      nfLvl7 = Index(nfLevelSlots, 7).v;
+      nfLvl8 = Index(nfLevelSlots, 8).v;
+      nfLvl9 = Index(nfLevelSlots, 9).v;
+      nfLvl10 = Index(nfLevelSlots, 10).v;
+      nfLvl11 = Index(nfLevelSlots, 11).v;
+      nfLvl12 = Index(nfLevelSlots, 12).v;
+
+      // ---------------------------------------------------------------- addresses
+      // The CORMS site: site.baseUrl when an admin set it, otherwise read from the list itself,
+      // so the app works in any tenant without a hard-coded address.
+      fxSiteUrl = With(
+          {
+              cfg: Trim(LookUp(CORMS_AdminConfig, Title = "site.baseUrl").Value),
+              link: First(CORMS_AdminConfig).'Link to item'
+          },
+          If(
+              !IsBlank(cfg), If(EndsWith(cfg, "/"), Left(cfg, Len(cfg) - 1), cfg),
+              Find("/_layouts/", link) > 0, Left(link, Find("/_layouts/", link) - 1),
+              Find("/Lists/", link) > 0, Left(link, Find("/Lists/", link) - 1),
+              ""
+          )
+      );
+      // A correspondence in CORMS (not the raw SharePoint form).
+      fxCorrespondenceUrl(id: Text): Text = fxSiteUrl & "#/correspondence/" & id;
+      // A file download link, with the path encoded so names with spaces, & or # work.
+      fxDownloadUrl(fullPath: Text): Text =
+          fxSiteUrl & "/_layouts/15/download.aspx?SourceUrl=" & EncodeUrl(fxSiteUrl & "/" & fullPath);
+
+      // ---------------------------------------------------------------- task details
+      // Who may change a task's status: its assignees, its creator, or a SystemAdministrator.
+      nfCanEditStatus = varCurrentTask.Status.Value <> "Completed" && (
+          fxIsAdmin ||
+          Lower(varCurrentTask.'Created By'.Email) = Lower(User().Email) ||
+          !IsBlank(LookUp(varCurrentTask.AssignedToUser, Lower(Email) = Lower(User().Email)))
+      );
+      // The status buttons offered on the Details tab.
+      nfStatusChoices = Choices(CORMS_Tasks.Status);
+      // Security tab = the SharePoint permissions on the CORMS_Tasks list itself, which apply to every
+      // task. Reading them live needs a premium connector, so they are listed here; update this table
+      // if the site groups or their permission levels change.
+      nfTaskRoles = Table(
+          { Principal: "CORMS Owners", Level: "Full Control", TypeText: "SharePoint Group" },
+          { Principal: "CORMS Visitors", Level: "Read", TypeText: "SharePoint Group" },
+          { Principal: "CORMS Members", Level: "Edit", TypeText: "SharePoint Group" }
+      );
+      // The Details tab's rows, from the task as last read.
+      // Description first: it carries what the assignee has to do.
+      nfDetRows = ForAll(
+          Table(
+              {Idx: 1, Key: "description", Label: "Description", Editable: true},
+              {Idx: 2, Key: "ref", Label: "Reference No.", Editable: false},
+              {Idx: 3, Key: "subject", Label: "Subject", Editable: true},
+              {Idx: 4, Key: "type", Label: "Type", Editable: true},
+              {Idx: 5, Key: "status", Label: "Status", Editable: true},
+              {Idx: 6, Key: "priority", Label: "Priority", Editable: true},
+              {Idx: 7, Key: "team", Label: "Assignee Team", Editable: true},
+              {Idx: 8, Key: "member", Label: "Team Member", Editable: true},
+              {Idx: 9, Key: "createdby", Label: "Created By", Editable: false},
+              {Idx: 10, Key: "created", Label: "Date Created", Editable: false},
+              {Idx: 11, Key: "modified", Label: "Last Updated", Editable: false},
+              {Idx: 12, Key: "due", Label: "Due Date", Editable: true},
+              {Idx: 13, Key: "corr", Label: "Related Correspondence", Editable: true},
+              {Idx: 14, Key: "attach", Label: "Attachment", Editable: false}
+          ),
+          Patch(
+              ThisRecord,
+              {
+                  Val: Switch(
+                      ThisRecord.Key,
+                      "ref", varCurrentTask.ReferenceNo,
+                      "subject", varCurrentTask.Title,
+                      "type", varCurrentTask.TaskType.Value,
+                      "status", varCurrentTask.Status.Value,
+                      "priority", varCurrentTask.Priority.Value,
+                      "team", varCurrentTask.AssignedToTeam,
+                      "member", Concat(varCurrentTask.AssignedToUser, DisplayName, ", "),
+                      "createdby", varCurrentTask.'Created By'.DisplayName,
+                      "created", Text(varCurrentTask.Created, "yyyy-mm-dd hh:mm"),
+                      "modified", Text(varCurrentTask.Modified, "yyyy-mm-dd hh:mm"),
+                      "due", Text(varCurrentTask.DueDate, "yyyy-mm-dd") & If(varIsOverdue, " Overdue", ""),
+                      "corr", varRelCorr.ReferenceNo & " " & varRelCorr.Title,
+                      "attach", Concat(colTaskFiles, FileName, " "),
+                      "description", varCurrentTask.Description,
+                      ""
+                  )
+              }
+          )
+      );
+
+      // ---------------------------------------------------------------- auditing
+      // Audit entries go to the CORMS audit index (Elasticsearch), in the document CORMS writes
+      // (AuditTrailServiceCore.logEvent), through CORMS - Audit Bridge. The task's Audit tab reads
+      // them back through CORMS - Audit Search with CORMS's own query. Same settings as CORMS;
+      // integration.auditingEnabled = false turns auditing off. A blank integration.elasticEndpoint is
+      // passed on as blank: the flows then use the corms_ElasticEndpoint environment variable (UAT-006).
+      nfAuditEndpoint = Trim(Coalesce(LookUp(CORMS_AdminConfig, Title = "integration.elasticEndpoint").Value, ""));
+      nfAuditIndex = Coalesce(Trim(LookUp(CORMS_AdminConfig, Title = "integration.elasticAuditIndex").Value), "sslaudit");
+      nfAuditKey = Trim(Coalesce(LookUp(CORMS_AdminConfig, Title = "integration.elasticApiKey").Value, ""));
+      nfAuditOn = Lower(Trim(Coalesce(LookUp(CORMS_AdminConfig, Title = "integration.auditingEnabled").Value, ""))) <> "false" &&
+          !IsBlank(nfAuditKey);
+      fxAuditDoc(objectId: Text, action: Text, details: Text): Text = JSON(
+          {
+              timestamp: Now(),
+              action: action,
+              application: "CORMS",
+              objectId: objectId,
+              entity_id_record: objectId,
+              Details: details,
+              userName: User().FullName,
+              userEmail: User().Email,
+              SiteUrl: fxSiteUrl,
+              category: If(StartsWith(action, "Correspondence"), "correspondence", "system"),
+              chainStatus: "valid"
+          },
+          JSONFormat.IgnoreUnsupportedTypes
+      );
+      // The newest 200 CORMS entries for one object, newest first (buildAuditSearchBody).
+      fxAuditQuery(objectId: Text): Text =
+          "{""size"":200,""query"":{""bool"":{""filter"":[" &
+          "{""bool"":{""should"":[{""term"":{""application"":""CORMS""}},{""term"":{""application.keyword"":""CORMS""}}],""minimum_should_match"":1}}," &
+          "{""bool"":{""should"":[" &
+          "{""term"":{""objectId"":" & JSON(objectId) & "}},{""term"":{""objectId.keyword"":" & JSON(objectId) & "}}," &
+          "{""term"":{""entity_id_record"":" & JSON(objectId) & "}},{""term"":{""entity_id_record.keyword"":" & JSON(objectId) & "}}" &
+          "],""minimum_should_match"":1}}]}}," &
+          """sort"":[{""timestamp"":{""order"":""desc"",""missing"":""_last"",""unmapped_type"":""date""}}]}";
+    OnStart: =Set(varIsLoading, false)
     StartScreen: |-
-      =// The host page picks the screen with &screen=create, detail or approval.
-      // Without it the old rules still apply: no taskId = create, taskId = details.
+      =// The host page picks the screen with &screen=create or detail; without it, no taskId
+      // opens the create form and a taskId opens the task's details.
       Switch(
           Lower(Param("screen")),
           "create", TaskCreateScreen,
           "detail", TaskDetailScreen,
           "details", TaskDetailScreen,
-          "approval", ApprovalScreen,
-          If(
-              Param("subject") = "NeedApproval",
-              ApprovalScreen,
-              IsBlank(Param("taskId")),
-              TaskCreateScreen,
-              TaskDetailScreen
-          )
+          If(IsBlank(Param("taskId")), TaskCreateScreen, TaskDetailScreen)
       )
     Theme: =PowerAppsTheme

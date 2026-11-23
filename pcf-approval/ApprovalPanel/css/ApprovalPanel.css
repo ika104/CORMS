@@ -117,7 +117,6 @@
 .corms-ap__signingWarn { font-size: 13px; color: #c46e00; margin-bottom: 8px; }
 .corms-ap__frame { width: 100%; height: 420px; border: 1px solid #e5e7eb; border-radius: 4px; }
 
-.corms-ap__build { font-size: 11px; color: #9aa0a6; margin-right: auto; align-self: center; }
 
 .corms-ap__stepNote { font-size: 12px; color: #4f5a5e; margin-top: 2px; white-space: pre-wrap; }
 
@@ -145,3 +144,13 @@
 .corms-ap__dialog--wide .corms-ap__frame,
 .corms-ap__dialog--wide .corms-ap__confirm { height: 72vh; min-height: 520px; }
 .corms-ap__overlay { padding: 8px; }
+
+/* the app is saving or talking to a flow */
+.corms-ap__busy {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  background: rgba(255, 255, 255, .7);
+}
+.corms-ap__busyText { font-size: 13px; color: #4f5a5e; }
+
+.corms-ap__notice { font-size: 12px; color: #0f6cbd; margin-top: 6px; }

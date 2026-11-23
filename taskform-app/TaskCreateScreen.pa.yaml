@@ -22,14 +22,14 @@ Screens:
         Set(varAssignSelf, false);
         Reset(Checkbox1);
         Concurrent(
-        Set(VarShowForm,true),
-        Set(VarShowRev,false),
-        Set(VarShowFilles,false)
+        Set(varTypeFollowUp,true),
+        Set(varTypeToDo,false),
+        Set(varTypeReminder,false)
         );
         Concurrent(
-        Set(VarShowForm1,true),
-        Set(VarShowRev1,false),
-        Set(VarShowFilles1,false)
+        Set(varPriorityLow,true),
+        Set(varPriorityNormal,false),
+        Set(varPriorityHigh,false)
         );
     Children:
       - ScreenContainer1_1:
@@ -71,6 +71,7 @@ Screens:
                   - Text1:
                       Control: ModernText
                       Properties:
+                        AccessibleLabel: =Self.Text
                         AlignInContainer: =AlignInContainer.Stretch
                         Color: =RGBA(255, 255, 255, 1)
                         FillPortions: =1
@@ -82,6 +83,7 @@ Screens:
                   - Button1:
                       Control: ModernButton
                       Properties:
+                        AccessibleLabel: ="Close"
                         Appearance: =ButtonAppearance.Transparent
                         Color: =RGBA(255, 255, 255, 1)
                         FontWeight: =FontWeight.Bold
@@ -134,6 +136,7 @@ Screens:
                         - Text2:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               FontWeight: =FontWeight.Bold
                               LayoutMinHeight: =16
@@ -162,8 +165,9 @@ Screens:
                               - Button4:
                                   Control: ModernButton
                                   Properties:
+                                    AccessibleLabel: =Self.Text
                                     Align: =Align.Center
-                                    Appearance: =If(VarShowForm,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    Appearance: =If(varTypeFollowUp,ButtonAppearance.Primary,ButtonAppearance.Outline)
                                     BasePaletteColor: =RGBA(5, 102, 178, 1)
                                     FillPortions: =1
                                     Font: =Font.'Lato Black'
@@ -174,9 +178,9 @@ Screens:
                                     LayoutMinWidth: =16
                                     OnSelect: |-
                                       =Concurrent(
-                                      Set(VarShowForm,true),
-                                      Set(VarShowRev,false),
-                                      Set(VarShowFilles,false)
+                                      Set(varTypeFollowUp,true),
+                                      Set(varTypeToDo,false),
+                                      Set(varTypeReminder,false)
                                       );
                                       Set(varAssignSelf, false);
                                       Reset(Checkbox1);
@@ -187,8 +191,9 @@ Screens:
                               - Button4_1:
                                   Control: ModernButton
                                   Properties:
+                                    AccessibleLabel: =Self.Text
                                     Align: =Align.Center
-                                    Appearance: =If(VarShowRev,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    Appearance: =If(varTypeToDo,ButtonAppearance.Primary,ButtonAppearance.Outline)
                                     BasePaletteColor: =RGBA(5, 102, 178, 1)
                                     FillPortions: =1
                                     Font: =Font.'Lato Black'
@@ -199,9 +204,9 @@ Screens:
                                     LayoutMinWidth: =16
                                     OnSelect: |-
                                       =Concurrent(
-                                      Set(VarShowForm,false),
-                                      Set(VarShowRev,true),
-                                      Set(VarShowFilles,false)
+                                      Set(varTypeFollowUp,false),
+                                      Set(varTypeToDo,true),
+                                      Set(varTypeReminder,false)
                                       );
                                       Set(varAssignSelf, true);
                                       Reset(Checkbox1);
@@ -212,8 +217,9 @@ Screens:
                               - Button4_3:
                                   Control: ModernButton
                                   Properties:
+                                    AccessibleLabel: =Self.Text
                                     Align: =Align.Center
-                                    Appearance: =If(VarShowFilles,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    Appearance: =If(varTypeReminder,ButtonAppearance.Primary,ButtonAppearance.Outline)
                                     BasePaletteColor: =RGBA(5, 102, 178, 1)
                                     FillPortions: =1
                                     Font: =Font.'Lato Black'
@@ -224,9 +230,9 @@ Screens:
                                     LayoutMinWidth: =16
                                     OnSelect: |-
                                       =Concurrent(
-                                      Set(VarShowForm,false),
-                                      Set(VarShowRev,false),
-                                      Set(VarShowFilles,true)
+                                      Set(varTypeFollowUp,false),
+                                      Set(varTypeToDo,false),
+                                      Set(varTypeReminder,true)
                                       );
                                       Set(varAssignSelf, true);
                                       Reset(Checkbox1);
@@ -268,6 +274,7 @@ Screens:
                         - SubjectInput:
                             Control: ModernTextInput
                             Properties:
+                              AccessibleLabel: ="Task subject"
                               AlignInContainer: =AlignInContainer.Stretch
                               BorderColor: =RGBA(122, 138, 143, 1)
                               BorderStyle: =BorderStyle.Solid
@@ -302,6 +309,7 @@ Screens:
                         - Text2_2:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               FontWeight: =FontWeight.Bold
                               LayoutMinHeight: =16
@@ -310,6 +318,7 @@ Screens:
                         - TextInput1_1:
                             Control: ModernTextInput
                             Properties:
+                              AccessibleLabel: ="Task description"
                               AlignInContainer: =AlignInContainer.Stretch
                               BorderColor: =RGBA(122, 138, 143, 1)
                               BorderStyle: =BorderStyle.Solid
@@ -370,6 +379,7 @@ Screens:
                               - Combobox1_1:
                                   Control: ModernCombobox
                                   Properties:
+                                    AccessibleLabel: ="Assignee team member"
                                     AlignInContainer: =AlignInContainer.Stretch
                                     BorderColor: =If(varTriedSubmit && !Checkbox1.Checked && IsEmpty(Self.SelectedItems), RGBA(196, 49, 75, 1), RGBA(122, 138, 143, 1))
                                     BorderStyle: =BorderStyle.Solid
@@ -400,33 +410,13 @@ Screens:
                               - Checkbox1:
                                   Control: ModernCheckbox
                                   Properties:
+                                    AccessibleLabel: ="Assign to myself"
                                     Color: =RGBA(0, 0, 0, 1)
                                     Default: =varAssignSelf
                                     Height: =40
                                     Label: ="Assign to Myself"
                                     LayoutMinHeight: =16
                                     LayoutMinWidth: =16
-                        - Combobox1:
-                            Control: ModernCombobox
-                            Properties:
-                              AlignInContainer: =AlignInContainer.Stretch
-                              BorderColor: =If(varTriedSubmit && !Checkbox1.Checked && IsBlank(Self.Selected), RGBA(196, 49, 75, 1), RGBA(122, 138, 143, 1))
-                              BorderStyle: =BorderStyle.Solid
-                              BorderThickness: =If(varTriedSubmit && !Checkbox1.Checked && IsBlank(Self.Selected), 2, 1)
-                              DisplayMode: =If(Checkbox1.Checked, DisplayMode.Disabled, DisplayMode.Edit)
-                              Fill: =RGBA(255, 255, 255, 1)
-                              FillPortions: =1
-                              Height: =40
-                              InputTextPlaceholder: ="-- Select Org Units"
-                              IsSearchable: =false
-                              ItemDisplayText: =ThisItem.Value
-                              Items: =Sort(Filter(Distinct(CORMS_Tasks, AssignedToTeam), !IsBlank(Trim(Value))), Value)
-                              LayoutMinHeight: =16
-                              LayoutMinWidth: =16
-                              Required: =true
-                              SelectMultiple: =false
-                              ValidationState: =If(varTriedSubmit && !Checkbox1.Checked && IsBlank(Self.Selected), ValidationState.Error, ValidationState.None)
-                              Visible: =false
                   - AttachCon:
                       Control: GroupContainer
                       Variant: AutoLayout
@@ -451,6 +441,7 @@ Screens:
                         - TextCanvas1_49:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               FontWeight: =FontWeight.Semibold
                               LayoutMinWidth: =0
@@ -512,6 +503,7 @@ Screens:
                                           - AttachControl_4:
                                               Control: Attachments
                                               Properties:
+                                                AccessibleLabel: ="Attach documents"
                                                 AddAttachmentText: |-
                                                   ="Supported formats: PDF, DOCX, XLSX, PNG (Max 10MB)"
                                                 BorderColor: =RGBA(122, 138, 143, 1)
@@ -564,6 +556,7 @@ Screens:
                         - Text2_4:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               FontWeight: =FontWeight.Bold
                               LayoutMinHeight: =16
@@ -572,6 +565,7 @@ Screens:
                         - Combobox1_3:
                             Control: ModernCombobox
                             Properties:
+                              AccessibleLabel: ="Related correspondence"
                               AlignInContainer: =AlignInContainer.Stretch
                               BorderColor: =RGBA(122, 138, 143, 1)
                               BorderStyle: =BorderStyle.Solid
@@ -581,7 +575,43 @@ Screens:
                               Height: =40
                               InputTextPlaceholder: ="Search Correspondences..."
                               ItemDisplayText: =Trim(ThisItem.ReferenceNo & "  " & ThisItem.Title)
-                              Items: =Sort(CORMS_Correspondence, ID, SortOrder.Descending)
+                              Items: |-
+                                =With(
+                                    {
+                                        all: nfSeeAllLevels, me: User().Email,
+                                        l1: nfLvl1, l2: nfLvl2, l3: nfLvl3, l4: nfLvl4, l5: nfLvl5, l6: nfLvl6,
+                                        l7: nfLvl7, l8: nfLvl8, l9: nfLvl9, l10: nfLvl10, l11: nfLvl11, l12: nfLvl12,
+                                        s1: nfSt1, s2: nfSt2, s3: nfSt3, s4: nfSt4, s5: nfSt5, s6: nfSt6, s7: nfSt7, s8: nfSt8, s9: nfSt9, s10: nfSt10,
+                                        s11: nfSt11, s12: nfSt12, s13: nfSt13, s14: nfSt14, s15: nfSt15, s16: nfSt16, s17: nfSt17, s18: nfSt18, s19: nfSt19, s20: nfSt20
+                                    },
+                                    // Only after the SharePoint query: the user's own untitled drafts, which have no reference
+                                    // number either, would show as blank rows.
+                                    Filter(
+                                        Sort(
+                                            Filter(
+                                                CORMS_Correspondence,
+                                                (
+                                                    all || SecurityLevel.Value = Blank() ||
+                                                    SecurityLevel.Value = l1 || SecurityLevel.Value = l2 || SecurityLevel.Value = l3 ||
+                                                    SecurityLevel.Value = l4 || SecurityLevel.Value = l5 || SecurityLevel.Value = l6 ||
+                                                    SecurityLevel.Value = l7 || SecurityLevel.Value = l8 || SecurityLevel.Value = l9 ||
+                                                    SecurityLevel.Value = l10 || SecurityLevel.Value = l11 || SecurityLevel.Value = l12
+                                                ) &&
+                                                (
+                                                    Status.Value = Blank() || Author.Email = me || Sender.Email = me ||
+                                                    Status.Value = s1 || Status.Value = s2 || Status.Value = s3 || Status.Value = s4 ||
+                                                    Status.Value = s5 || Status.Value = s6 || Status.Value = s7 || Status.Value = s8 ||
+                                                    Status.Value = s9 || Status.Value = s10 || Status.Value = s11 || Status.Value = s12 ||
+                                                    Status.Value = s13 || Status.Value = s14 || Status.Value = s15 || Status.Value = s16 ||
+                                                    Status.Value = s17 || Status.Value = s18 || Status.Value = s19 || Status.Value = s20
+                                                )
+                                            ),
+                                            ID,
+                                            SortOrder.Descending
+                                        ),
+                                        !IsBlank(Trim(ReferenceNo & Title))
+                                    )
+                                )
                               LayoutMinHeight: =16
                               LayoutMinWidth: =16
                               SelectMultiple: =false
@@ -608,6 +638,7 @@ Screens:
                         - Text2_5:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               FontWeight: =FontWeight.Bold
                               LayoutMinHeight: =16
@@ -636,8 +667,9 @@ Screens:
                               - Button4_2:
                                   Control: ModernButton
                                   Properties:
+                                    AccessibleLabel: =Self.Text
                                     Align: =Align.Center
-                                    Appearance: =If(VarShowForm1,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    Appearance: =If(varPriorityLow,ButtonAppearance.Primary,ButtonAppearance.Outline)
                                     BasePaletteColor: =RGBA(5, 102, 178, 1)
                                     FillPortions: =1
                                     Font: =Font.'Lato Black'
@@ -648,9 +680,9 @@ Screens:
                                     LayoutMinWidth: =16
                                     OnSelect: |-
                                       =Concurrent(
-                                      Set(VarShowForm1,true),
-                                      Set(VarShowRev1,false),
-                                      Set(VarShowFilles1,false)
+                                      Set(varPriorityLow,true),
+                                      Set(varPriorityNormal,false),
+                                      Set(varPriorityHigh,false)
                                       );
                                     Size: =11
                                     Text: ="Low"
@@ -659,8 +691,9 @@ Screens:
                               - Button4_4:
                                   Control: ModernButton
                                   Properties:
+                                    AccessibleLabel: =Self.Text
                                     Align: =Align.Center
-                                    Appearance: =If(VarShowRev1,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    Appearance: =If(varPriorityNormal,ButtonAppearance.Primary,ButtonAppearance.Outline)
                                     BasePaletteColor: =RGBA(5, 102, 178, 1)
                                     FillPortions: =1
                                     Font: =Font.'Lato Black'
@@ -671,9 +704,9 @@ Screens:
                                     LayoutMinWidth: =16
                                     OnSelect: |-
                                       =Concurrent(
-                                      Set(VarShowForm1,false),
-                                      Set(VarShowRev1,true),
-                                      Set(VarShowFilles1,false)
+                                      Set(varPriorityLow,false),
+                                      Set(varPriorityNormal,true),
+                                      Set(varPriorityHigh,false)
                                       );
                                     Size: =11
                                     Text: =" Normal"
@@ -682,8 +715,9 @@ Screens:
                               - Button4_5:
                                   Control: ModernButton
                                   Properties:
+                                    AccessibleLabel: =Self.Text
                                     Align: =Align.Center
-                                    Appearance: =If(VarShowFilles1,ButtonAppearance.Primary,ButtonAppearance.Outline)
+                                    Appearance: =If(varPriorityHigh,ButtonAppearance.Primary,ButtonAppearance.Outline)
                                     BasePaletteColor: =RGBA(5, 102, 178, 1)
                                     FillPortions: =1
                                     Font: =Font.'Lato Black'
@@ -694,9 +728,9 @@ Screens:
                                     LayoutMinWidth: =16
                                     OnSelect: |-
                                       =Concurrent(
-                                      Set(VarShowForm1,false),
-                                      Set(VarShowRev1,false),
-                                      Set(VarShowFilles1,true)
+                                      Set(varPriorityLow,false),
+                                      Set(varPriorityNormal,false),
+                                      Set(varPriorityHigh,true)
                                       );
                                     Size: =11
                                     Text: ="High"
@@ -736,6 +770,7 @@ Screens:
                         - DatePicker1:
                             Control: ModernDatePicker
                             Properties:
+                              AccessibleLabel: ="Due date"
                               AlignInContainer: =AlignInContainer.Stretch
                               BorderColor: =RGBA(122, 138, 143, 1)
                               BorderStyle: =BorderStyle.Solid
@@ -771,6 +806,7 @@ Screens:
                         - txtCreateCommentLabel:
                             Control: ModernText
                             Properties:
+                              AccessibleLabel: =Self.Text
                               AlignInContainer: =AlignInContainer.Stretch
                               FontWeight: =FontWeight.Bold
                               LayoutMinHeight: =16
@@ -816,13 +852,13 @@ Screens:
                   - Button2:
                       Control: ModernButton
                       Properties:
+                        AccessibleLabel: =Self.Text
                         Appearance: =ButtonAppearance.Outline
                         Height: =40
                         OnSelect: |-
                           =Reset(SubjectInput);
                           Reset(TextInput1_1);
                           Reset(DatePicker1);
-                          Reset(Combobox1);
                           Reset(Combobox1_1);
                           Reset(Combobox1_3);
                           Reset(Checkbox1);
@@ -832,19 +868,20 @@ Screens:
                           Set(varAssignSelf, false);
                           Reset(Checkbox1);
                           Concurrent(
-                              Set(VarShowForm, true),
-                              Set(VarShowRev, false),
-                              Set(VarShowFilles, false),
-                              Set(VarShowForm1, true),
-                              Set(VarShowRev1, false),
-                              Set(VarShowFilles1, false)
+                              Set(varTypeFollowUp, true),
+                              Set(varTypeToDo, false),
+                              Set(varTypeReminder, false),
+                              Set(varPriorityLow, true),
+                              Set(varPriorityNormal, false),
+                              Set(varPriorityHigh, false)
                           );
 
-                          // Signal the SPFx host: it watches the iframe URL hash (#corms=...) and closes the panel
-                          Launch(
-                              fxCloseUrl & "#corms=" & Coalesce(varCloseReason, "cancel"),
-                              {},
-                              LaunchTarget.Replace
+                          // Inside CORMS (cormsHost=1), tell CORMS through hostSignal and it closes the panel.
+                          // The time makes a second Cancel a new signal. Opened on its own, go back to My Tasks.
+                          If(
+                              Param("cormsHost") = "1",
+                              Set(varHostSignal, Coalesce(varCloseReason, "cancel") & "@" & Text(Now(), "yyyymmddhhmmssfff")),
+                              Launch(fxSiteUrl & "#/my-tasks", {}, LaunchTarget.Replace)
                           );
                         Text: ="Cancel"
                         X: =8
@@ -852,6 +889,7 @@ Screens:
                   - Button2_1:
                       Control: ModernButton
                       Properties:
+                        AccessibleLabel: =Self.Text
                         DisplayMode: =If(varIsLoading, DisplayMode.Disabled, DisplayMode.Edit)
                         FontWeight: =FontWeight.Normal
                         Height: =40
@@ -862,7 +900,6 @@ Screens:
                                 locMissing: Filter(
                                   Table(
                                     { Field: "Subject", IsMissing: IsBlank(Trim(SubjectInput.Text)) },
-                                    //{ Field: "Assignee Team", IsMissing: !Checkbox1.Checked && IsBlank(Combobox1.Selected) },
                                     { Field: "Team Member", IsMissing: !Checkbox1.Checked && IsEmpty(Combobox1_1.SelectedItems) },
                                     { Field: "Due Date", IsMissing: IsBlank(DatePicker1.SelectedDate) }
                                   ),
@@ -884,15 +921,16 @@ Screens:
                                       Defaults(CORMS_Tasks),
                                       {
                                         Title: Trim(SubjectInput.Text),
-                                        TaskType: { Value: If(VarShowForm, Button4.Text, If(VarShowRev, Button4_1.Text, Button4_3.Text)) },
-                                        Priority: { Value: Trim(If(VarShowForm1, Button4_2.Text, If(VarShowRev1, Button4_4.Text, Button4_5.Text))) },
+                                        TaskType: { Value: If(varTypeFollowUp, Button4.Text, If(varTypeToDo, Button4_1.Text, Button4_3.Text)) },
+                                        Priority: { Value: Trim(If(varPriorityLow, Button4_2.Text, If(varPriorityNormal, Button4_4.Text, Button4_5.Text))) },
                                         Status: { Value: "Pending" },
                                         DueDate: DatePicker1.SelectedDate,
                                         Description: TextInput1_1.Text,
+                                        // "Assign to myself" files the task under the user's unit.
                                         AssignedToTeam: If(
                                           Checkbox1.Checked,
                                           Coalesce(LookUp(CORMS_UserRoles, User.Email = User().Email).Department, ""),
-                                          Combobox1.Selected.Value
+                                          ""
                                         ),
                                         AssignedToUser: If(
                                           Checkbox1.Checked,
@@ -935,34 +973,51 @@ Screens:
                                         )
                                       )
                                     ),
-                                    Notify("Task " & varNewRefNo & " was created, but a file could not be uploaded. " & FirstError.Message, NotificationType.Warning)
+                                    Trace("Task attachment upload failed", TraceSeverity.Error, {task: varNewRefNo, error: FirstError.Message});
+                                    Notify("Task " & varNewRefNo & " was created, but a file couldn't be uploaded. Please try adding it again.", NotificationType.Warning)
                                   );
                                   // 4. Audit + timeline entries
-                                  Patch(
-                                    CORMS_AuditLog,
-                                    Defaults(CORMS_AuditLog),
-                                    {
-                                      Title: varNewRefNo,
-                                      ObjectId: varNewRefNo,
-                                      Action: "Task Created",
-                                      Actor: fxMe,
-                                      Details: "Created " & varNewTask.TaskType.Value & " """ & varNewTask.Title & """ assigned to " & Concat(varNewTask.AssignedToUser, DisplayName, ", ") &
-                                        If(IsEmpty(AttachControl_4.Attachments), "", " with " & CountRows(AttachControl_4.Attachments) & " file(s)")
-                                    }
+                                  If(
+                                      nfAuditOn,
+                                      IfError(
+                                          If(
+                                              'CORMS-AuditBridge'.Run(
+                                                  nfAuditEndpoint,
+                                                  nfAuditKey,
+                                                  fxAuditDoc(
+                                                      varNewRefNo,
+                                                      "Task Created",
+                                                      "Created " & varNewTask.TaskType.Value & " """ & varNewTask.Title & """ assigned to " & Concat(varNewTask.AssignedToUser, DisplayName, ", ") &
+                                                          If(IsEmpty(AttachControl_4.Attachments), "", " with " & CountRows(AttachControl_4.Attachments) & " file(s)")
+                                                  ),
+                                                  {text_1: nfAuditIndex}
+                                              ).ok <> "true",
+                                              Trace("Audit entry could not be written", TraceSeverity.Warning, {action: "Task Created"})
+                                          ),
+                                          Trace("Audit entry could not be written", TraceSeverity.Warning, {action: "Task Created"})
+                                      )
                                   );
                                   // CMS-050.10: the comment is mirrored to the audit trail
                                   If(
                                     !IsBlank(Trim(inpCreateComment.Text)),
-                                    Patch(
-                                      CORMS_AuditLog,
-                                      Defaults(CORMS_AuditLog),
-                                      {
-                                        Title: varNewRefNo,
-                                        ObjectId: varNewRefNo,
-                                        Action: "Comment Added",
-                                        Actor: fxMe,
-                                        Details: Trim(inpCreateComment.Text)
-                                      }
+                                    If(
+                                        nfAuditOn,
+                                        IfError(
+                                            If(
+                                                'CORMS-AuditBridge'.Run(
+                                                    nfAuditEndpoint,
+                                                    nfAuditKey,
+                                                    fxAuditDoc(
+                                                        varNewRefNo,
+                                                        "Comment Added",
+                                                        Trim(inpCreateComment.Text)
+                                                    ),
+                                                    {text_1: nfAuditIndex}
+                                                ).ok <> "true",
+                                                Trace("Audit entry could not be written", TraceSeverity.Warning, {action: "Comment Added"})
+                                            ),
+                                            Trace("Audit entry could not be written", TraceSeverity.Warning, {action: "Comment Added"})
+                                        )
                                     )
                                   );
                                   Patch(
@@ -972,7 +1027,7 @@ Screens:
                                       Title: "Task created",
                                       CorrespondenceId: varNewRefNo,
                                       Actor: fxMe,
-                                      EventTimestamp: Today(),
+                                      EventTimestamp: Now(),
                                       Description: "Created as " & varNewTask.TaskType.Value & " - " & varNewTask.Title
                                     }
                                   );
@@ -983,7 +1038,7 @@ Screens:
                                       Title: "Assigned",
                                       CorrespondenceId: varNewRefNo,
                                       Actor: fxMe,
-                                      EventTimestamp: Today(),
+                                      EventTimestamp: Now(),
                                       Description: "Assigned to " & Concat(varNewTask.AssignedToUser, DisplayName, ", ") &
                                         If(IsBlank(varNewTask.AssignedToTeam), "", " (" & varNewTask.AssignedToTeam & ")")
                                     }
@@ -997,24 +1052,31 @@ Screens:
                                         Title: "Linked",
                                         CorrespondenceId: varNewRefNo,
                                         Actor: fxMe,
-                                        EventTimestamp: Today(),
+                                        EventTimestamp: Now(),
                                         Description: "Linked to correspondence " & Combobox1_3.Selected.ReferenceNo
                                       }
                                     )
                                   );
-                                  Set(varStatusText, "Task " & varNewRefNo & " created.");
                                   If(
                                     !IsEmpty(AttachControl_4.Attachments),
-                                    Patch(
-                                      CORMS_AuditLog,
-                                      Defaults(CORMS_AuditLog),
-                                      {
-                                        Title: varNewRefNo,
-                                        ObjectId: varNewRefNo,
-                                        Action: "Files Attached",
-                                        Actor: fxMe,
-                                        Details: CountRows(AttachControl_4.Attachments) & " file(s) uploaded: " & Concat(AttachControl_4.Attachments, Name, ", ")
-                                      }
+                                    If(
+                                        nfAuditOn,
+                                        IfError(
+                                            If(
+                                                'CORMS-AuditBridge'.Run(
+                                                    nfAuditEndpoint,
+                                                    nfAuditKey,
+                                                    fxAuditDoc(
+                                                        varNewRefNo,
+                                                        "Files Attached",
+                                                        CountRows(AttachControl_4.Attachments) & " file(s) uploaded: " & Concat(AttachControl_4.Attachments, Name, ", ")
+                                                    ),
+                                                    {text_1: nfAuditIndex}
+                                                ).ok <> "true",
+                                                Trace("Audit entry could not be written", TraceSeverity.Warning, {action: "Files Attached"})
+                                            ),
+                                            Trace("Audit entry could not be written", TraceSeverity.Warning, {action: "Files Attached"})
+                                        )
                                     );
                                     Patch(
                                       CORMS_Timeline,
@@ -1023,7 +1085,7 @@ Screens:
                                         Title: "Files attached",
                                         CorrespondenceId: varNewRefNo,
                                         Actor: fxMe,
-                                        EventTimestamp: Today(),
+                                        EventTimestamp: Now(),
                                         Description: Concat(AttachControl_4.Attachments, Name, ", ")
                                       }
                                     )
@@ -1032,7 +1094,8 @@ Screens:
                                   Set(varCloseReason, "created;ref=" & varNewRefNo);
                                   Select(Button2),
 
-                                  Notify("Could not create the task. " & FirstError.Message, NotificationType.Error)
+                                  Trace("Task creation failed", TraceSeverity.Error, {error: FirstError.Message});
+                                  Notify("The task couldn't be created. Please try again.", NotificationType.Error)
                                 );
                                 Set(varIsLoading, false)
                               )
@@ -1042,3 +1105,30 @@ Screens:
                         Width: =100
                         X: =8
                         Y: =22
+      - conCreateBusy:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =RGBA(255, 255, 255, 0.7)
+            Height: =Parent.Height
+            Visible: =varIsLoading
+            Width: =Parent.Width
+          Children:
+            - spnCreateBusy:
+                Control: ModernSpinner
+                Properties:
+                  AccessibleLabel: ="Working, please wait"
+                  Height: =96
+                  Label: ="Please wait..."
+                  LabelPosition: =SpinnerLabelPosition.Below
+                  Width: =200
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =(Parent.Height - Self.Height) / 2
+      - hostSignal:
+          Control: CodeComponent
+          ComponentName: corms_CORMS.HostSignal
+          Properties:
+            Height: =1
+            Signal: =varHostSignal
+            Width: =1

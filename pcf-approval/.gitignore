@@ -21,3 +21,6 @@
 
 # macos
 .DS_Store
+
+# pac CLI settings written under a literal ~ by pcf-scripts
+~/

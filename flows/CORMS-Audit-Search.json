@@ -1,0 +1,147 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "corms_ElasticEndpoint (corms_ElasticEndpoint)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "corms_ElasticEndpoint"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "Endpoint",
+                  "description": "integration.elasticEndpoint from CORMS Admin Settings; when blank, the corms_ElasticEndpoint environment variable",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "title": "Index",
+                  "description": "integration.elasticAuditIndex (sslaudit when blank)",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "title": "ApiKey",
+                  "description": "integration.elasticApiKey",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "title": "QueryJson",
+                  "description": "The Elasticsearch _search body, built like CORMS's buildAuditSearchBody",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_2",
+                "text_3"
+              ]
+            }
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Search_audit_index": {
+          "runAfter": {},
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "@{concat(if(endsWith(trim(coalesce(if(empty(trim(coalesce(triggerBody()?['text'], ''))), parameters('corms_ElasticEndpoint (corms_ElasticEndpoint)'), triggerBody()?['text']), '')), '/'), substring(trim(coalesce(if(empty(trim(coalesce(triggerBody()?['text'], ''))), parameters('corms_ElasticEndpoint (corms_ElasticEndpoint)'), triggerBody()?['text']), '')), 0, sub(length(trim(coalesce(if(empty(trim(coalesce(triggerBody()?['text'], ''))), parameters('corms_ElasticEndpoint (corms_ElasticEndpoint)'), triggerBody()?['text']), ''))), 1)), trim(coalesce(if(empty(trim(coalesce(triggerBody()?['text'], ''))), parameters('corms_ElasticEndpoint (corms_ElasticEndpoint)'), triggerBody()?['text']), ''))), '/', encodeUriComponent(if(empty(trim(coalesce(triggerBody()?['text_1'], ''))), 'sslaudit', trim(triggerBody()?['text_1']))), '/_search')}",
+            "headers": {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": "@{if(startsWith(toLower(trim(triggerBody()?['text_2'])), 'apikey '), trim(triggerBody()?['text_2']), concat('ApiKey ', trim(triggerBody()?['text_2'])))}"
+            },
+            "body": "@json(triggerBody()?['text_3'])"
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          }
+        },
+        "Respond_to_Power_Apps": {
+          "runAfter": {
+            "Search_audit_index": [
+              "Succeeded",
+              "Failed",
+              "TimedOut"
+            ]
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "ok": "@{if(equals(outputs('Search_audit_index')?['statusCode'], 200), 'true', 'false')}",
+              "status": "@{string(coalesce(outputs('Search_audit_index')?['statusCode'], 0))}",
+              "hits": "@{string(coalesce(body('Search_audit_index')?['hits']?['hits'], json('[]')))}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "hits": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs"
+              ]
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

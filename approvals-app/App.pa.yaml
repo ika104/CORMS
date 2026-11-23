@@ -1,7 +1,8 @@
 App:
   Properties:
     Formulas: |-
-      =// Current user as a SharePoint person value, for Actor columns
+      =// ---------------------------------------------------------------- the current user
+      // As a SharePoint person value, for Actor columns.
       fxMe = {
           '@odata.type': "#Microsoft.Azure.Connectors.SharePoint.SPListExpandedUser",
           Claims: "i:0#.f|membership|" & Lower(User().Email),
@@ -11,15 +12,190 @@ App:
           JobTitle: "",
           Picture: ""
       };
-      // Page the embedded app navigates to when it is finished; the SPFx host watches for the
-      // #corms= marker on it. Any lightweight same-origin URL works.
-      fxCloseUrl = Coalesce(
-          LookUp(CORMS_AdminConfig, Title = "site.baseUrl").Value,
-          "https://ssloman.sharepoint.com/sites/CORMS"
-      ) & "/_api/web/title";
+
+      // ---------------------------------------------------------------- addresses
+      // The CORMS site: site.baseUrl when an admin set it, otherwise read from the list itself,
+      // so the app works in any tenant without a hard-coded address.
+      fxSiteUrl = With(
+          {
+              cfg: Trim(LookUp(CORMS_AdminConfig, Title = "site.baseUrl").Value),
+              link: First(CORMS_AdminConfig).'Link to item'
+          },
+          If(
+              !IsBlank(cfg), If(EndsWith(cfg, "/"), Left(cfg, Len(cfg) - 1), cfg),
+              Find("/_layouts/", link) > 0, Left(link, Find("/_layouts/", link) - 1),
+              Find("/Lists/", link) > 0, Left(link, Find("/Lists/", link) - 1),
+              ""
+          )
+      );
+      fxTenantUrl = If(
+          Find("/sites/", fxSiteUrl) > 0, Left(fxSiteUrl, Find("/sites/", fxSiteUrl) - 1),
+          Find("/teams/", fxSiteUrl) > 0, Left(fxSiteUrl, Find("/teams/", fxSiteUrl) - 1),
+          fxSiteUrl
+      );
+      // Where the app sends its frame when it is finished. CORMS reads the #corms= marker after it
+      // and closes the panel; a blank image on the same host shows nothing meanwhile.
+      fxCloseUrl = fxTenantUrl & "/_layouts/15/images/blank.gif";
+
+      // ---------------------------------------------------------------- who a task belongs to
+      // The same rule CORMS uses (approvalActor.ts isAssignee): an id holding an email matches
+      // that email exactly (or as the claims suffix); otherwise the display name must match.
+      fxMatches(assignedToId: Text, assignedToName: Text, email: Text, name: Text): Boolean =
+          With(
+              { key: Lower(Trim(assignedToId)), mail: Lower(Trim(email)) },
+              If(
+                  Find("@", key) > 0 && !IsBlank(mail),
+                      key = mail || EndsWith(key, "|" & mail),
+                  !IsBlank(Trim(assignedToName)) && Lower(Trim(assignedToName)) = Lower(Trim(name))
+              )
+          );
+      fxIsAssignee(assignedToId: Text, assignedToName: Text): Boolean =
+          fxMatches(assignedToId, assignedToName, User().Email, User().FullName);
+
+      // ---------------------------------------------------------------- signing messages
+      // Codes from CORMS - Signing Bridge, in words for the user. The code itself goes to Trace.
+      fxSigningMessage(code: Text): Text =
+          If(
+              StartsWith(code, "DocumentUnreadable"), "The document couldn't be opened for signing. Please try again.",
+              StartsWith(code, "SaveFailed"), "Your signature was recorded, but the signed document couldn't be saved. Please try again.",
+              StartsWith(code, "NoSignedDocument"), "The signed document isn't ready yet. Please try again in a moment.",
+              "Signing isn't available right now. Please try again later."
+          );
+
+      // ---------------------------------------------------------------- the approval chain
+      // Everything below follows colSteps (the latest round), colAllSteps and varTask, and
+      // recalculates when the screen reloads them. One definition, used everywhere.
+      nfStepRaw = ForAll(
+          Sort(Distinct(colSteps, StepOrder), Value) As so,
+          With(
+              { st: Filter(colSteps, StepOrder = so.Value) },
+              {
+                  stepOrder: so.Value,
+                  stepName: First(st).StepName,
+                  actionComments: First(st).ActionComments,
+                  status: If(
+                      CountRows(Filter(st, Status.Value = "Rejected")) > 0, "Rejected",
+                      CountRows(Filter(st, Status.Value = "Returned")) > 0, "Returned",
+                      CountRows(Filter(st, Status.Value = "Cancelled")) = CountRows(st) && CountRows(st) > 0, "Cancelled",
+                      Lower(Text(First(st).ApprovalMode.Value)) = "any",
+                          If(CountRows(Filter(st, Status.Value = "Approved")) >= 1, "Approved", "Pending"),
+                      CountRows(Filter(st, Status.Value = "Approved")) = CountRows(st) && CountRows(st) > 0, "Approved",
+                      "Pending"
+                  )
+              }
+          )
+      );
+      // A rejection ends the chain: every later step reads as cancelled.
+      nfRejOrder = Min(Filter(nfStepRaw, status = "Rejected"), stepOrder);
+      nfChain = ForAll(
+          nfStepRaw As s,
+          {
+              stepOrder: s.stepOrder,
+              stepName: s.stepName,
+              actionComments: s.actionComments,
+              status: If(!IsBlank(nfRejOrder) && s.stepOrder > nfRejOrder, "Cancelled", s.status)
+          }
+      );
+      // The active step is the earliest that isn't approved; the chain's outcome is its status.
+      nfFirstOpen = First(Sort(Filter(nfChain, status <> "Approved"), stepOrder));
+      nfActiveStep = nfFirstOpen.stepOrder;
+      nfOutcomeNow = If(IsBlank(nfFirstOpen.stepOrder), "Approved", nfFirstOpen.status);
+      // A round is a review round when every task is Phase Review, a signing round when every task
+      // is Phase Signing; anything else is an older chain.
+      nfPhase = If(
+          CountRows(colSteps) = 0, "Legacy",
+          CountRows(Filter(colSteps, Text(Phase.Value) = "Review")) = CountRows(colSteps), "Review",
+          CountRows(Filter(colSteps, Text(Phase.Value) = "Signing")) = CountRows(colSteps), "Signing",
+          "Legacy"
+      );
+      nfCorrStatus = Switch(
+          nfPhase,
+          "Review", Switch(nfOutcomeNow, "Approved", "Awaiting Final Confirmation", "Rejected", "Returned to Author", "Returned", "Returned to Author", "In Review"),
+          "Signing", Switch(nfOutcomeNow, "Approved", "Signed", "Rejected", "Rejected", "Returned", "Change Requested", "Awaiting Signature"),
+          Switch(nfOutcomeNow, "Approved", "Approved", "Rejected", "Rejected", "Returned", "Draft", "In Review")
+      );
+
+      // ---------------------------------------------------------------- may this user act
+      // A Department step in "All" mode is sequential: only the most junior unsigned member may act.
+      nfMyStepTasks = Filter(colSteps, StepOrder = varTask.StepOrder);
+      nfActiveTaskId = If(
+          Text(First(nfMyStepTasks).StepType.Value) = "Department" &&
+          Lower(Text(First(nfMyStepTasks).ApprovalMode.Value)) <> "any",
+              First(Sort(Filter(nfMyStepTasks, Status.Value = "Pending"), Coalesce(Seniority, 999999))).ID,
+          varTask.ID
+      );
+      nfIsGroupTask = IsBlank(varTask.AssignedToId) && IsBlank(varTask.AssignedToName) && !IsBlank(varTask.AssignedGroupId);
+      // The task is the user's: assigned to them, or a team task for their unit (approvalActor.ts
+      // isAssignedTo). A SharePoint-group task can't be checked here (canvas can't read group
+      // membership), so it is acted on in CORMS.
+      nfIsMine = If(
+          !IsBlank(varTask.AssignedToId) || !IsBlank(varTask.AssignedToName),
+              fxIsAssignee(varTask.AssignedToId, varTask.AssignedToName),
+          nfIsGroupTask, false,
+          !IsBlank(varMyDepartment) && Lower(Trim(varTask.AssignedToTeam)) = varMyDepartment
+      );
+      // varDelegationUsed: the active delegation the user would act under for this task when it isn't
+      // theirs (CORMS supporting rule 1). Worked out once when the screen loads the task.
+      nfIsDelegate = !nfIsMine && varHasDelegation;
+      nfIsMyTurn = !IsBlank(varTask.ID) && Text(varTask.Status.Value) = "Pending" &&
+          varTask.StepOrder = nfActiveStep && varTask.ID = nfActiveTaskId;
+      nfCanAct = nfIsMyTurn && (nfIsMine || nfIsDelegate);
+      // "Zeyad Elmaghraby on behalf of Abdullah Reda" when a delegate acts.
+      nfActorLabel = User().FullName & If(nfIsDelegate && !IsBlank(varTask.AssignedToName), " on behalf of " & varTask.AssignedToName, "");
+      nfNotice = If(
+          nfIsMyTurn && nfIsGroupTask && !nfIsDelegate,
+          "This task is assigned to a SharePoint group. Open it in CORMS to act on it.",
+          ""
+      );
+
+      // ---------------------------------------------------------------- notifications
+      // The correspondence's details for the notification flow's Teams card (CORMS sends the same).
+      nfNotifyDetails = {
+          correspondenceType: Coalesce(varCorr.CorrespondenceType, Text(varCorr.Direction.Value)),
+          priority: varCorr.Priority,
+          dueDate: If(IsBlank(varCorr.DueDate), "", Text(varCorr.DueDate, "dd/mm/yyyy")),
+          sender: varCorr.Sender.DisplayName,
+          securityLevel: Text(varCorr.SecurityLevel.Value),
+          status: Text(varCorr.Status.Value)
+      };
+
+      // ---------------------------------------------------------------- what the panel shows
+      // The panel labels the primary button Sign on a signing task (signing round, or Signature
+      // required) and Approve otherwise; either way it reports Approve and the app writes Approved.
+      nfPanelData = If(
+          IsBlank(varTask.ID),
+          "",
+          JSON(
+              {
+                  subject: Coalesce(varCorr.Title, varTask.Title),
+                  referenceNo: Coalesce(varCorr.ReferenceNo, varTask.ReferenceNo),
+                  sender: varCorr.Sender.DisplayName,
+                  dueDate: If(IsBlank(varCorr.DueDate), "", Text(varCorr.DueDate, "dd/mm/yyyy")),
+                  isOverdue: !IsBlank(varCorr.DueDate) && varCorr.DueDate < Today() && nfCorrStatus <> "Approved",
+                  securityLevel: Text(varCorr.SecurityLevel.Value),
+                  correspondenceStatus: Text(varCorr.Status.Value),
+                  phase: nfPhase,
+                  round: varLatestRound,
+                  notice: nfNotice,
+                  task: {
+                      stepOrder: varTask.StepOrder,
+                      stepName: varTask.StepName,
+                      stepType: Text(varTask.StepType.Value),
+                      assignedToName: varTask.AssignedToName,
+                      requireSignature: varTask.RequireSignature,
+                      signatureCompleted: !IsBlank(varTask.SignatureCompletedAt),
+                      status: Text(varTask.Status.Value),
+                      stateLabel: If(Text(varTask.Status.Value) = "Pending", "To do", Text(varTask.Status.Value)),
+                      decidedBy: varTask.DecidedBy,
+                      decisionComment: varTask.DecisionComment
+                  },
+                  steps: nfChain
+              },
+              JSONFormat.IgnoreUnsupportedTypes
+          )
+      );
     OnStart: |-
-      =Set(
-          varActorName,
-          User().FullName
-      )
+      =Set(varActorName, User().FullName);
+      // The panel shows "Loading..." until the screen has read the task.
+      Set(varBusy, true)
     Theme: =PowerAppsTheme

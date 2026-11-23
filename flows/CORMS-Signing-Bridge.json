@@ -1,10 +1,10 @@
 {
   "properties": {
     "connectionReferences": {
-      "shared_sharepointonline": {
+      "shared_sharepointonline-1": {
         "runtimeSource": "invoker",
         "connection": {
-          "connectionReferenceLogicalName": "corms_sharedsharepointonline_d1ca8"
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_00d04"
         },
         "api": {
           "name": "shared_sharepointonline"
@@ -22,6 +22,20 @@
         "$connections": {
           "defaultValue": {},
           "type": "Object"
+        },
+        "CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)": {
+          "defaultValue": "https://ssloman.sharepoint.com/sites/CORMS",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+          }
+        },
+        "CORMS_Attachments (new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349)": {
+          "defaultValue": "48ef8677-f89d-4cd2-901c-fb7ee5cd5590",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349"
+          }
         }
       },
       "triggers": {
@@ -122,13 +136,21 @@
                 "text_1"
               ]
             }
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
           }
         }
       },
       "actions": {
         "Init_Payload": {
-          "type": "InitializeVariable",
           "runAfter": {},
+          "type": "InitializeVariable",
           "inputs": {
             "variables": [
               {
@@ -140,45 +162,28 @@
           }
         },
         "Build_payload": {
-          "type": "If",
-          "runAfter": {
-            "Init_Payload": [
-              "Succeeded"
-            ]
-          },
-          "expression": {
-            "equals": [
-              "@triggerBody()?['text_1']",
-              "CreateSigningRequest"
-            ]
-          },
           "actions": {
             "Get_main_document": {
               "type": "OpenApiConnection",
-              "runAfter": {},
               "inputs": {
                 "parameters": {
-                  "dataset": "https://ssloman.sharepoint.com/sites/CORMS",
+                  "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
                   "path": "@triggerBody()?['text_7']"
                 },
                 "host": {
                   "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
-                  "connectionName": "shared_sharepointonline",
-                  "operationId": "GetFileContentByPath"
-                },
-                "authentication": {
-                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
-                  "type": "Raw"
+                  "operationId": "GetFileContentByPath",
+                  "connectionName": "shared_sharepointonline-1"
                 }
               }
             },
             "Set_create_payload": {
-              "type": "SetVariable",
               "runAfter": {
                 "Get_main_document": [
                   "Succeeded"
                 ]
               },
+              "type": "SetVariable",
               "inputs": {
                 "name": "Payload",
                 "value": {
@@ -190,17 +195,21 @@
                     "fileName": "@{triggerBody()?['text_6']}",
                     "contentBase64": "@{base64(body('Get_main_document'))}"
                   },
-                  "signers": "@json(concat('[{\"name\":\"', triggerBody()?['text_8'], '\",\"email\":\"', triggerBody()?['text_9'], '\",\"signingOrder\":1', if(empty(triggerBody()?['text_11']), '', concat(',\"placement\":', triggerBody()?['text_11'])), '}]'))",
+                  "signers": "@createArray(if(empty(coalesce(triggerBody()?['text_11'], '')), setProperty(setProperty(setProperty(json('{}'), 'name', coalesce(triggerBody()?['text_8'], '')), 'email', coalesce(triggerBody()?['text_9'], '')), 'signingOrder', 1), setProperty(setProperty(setProperty(setProperty(json('{}'), 'name', coalesce(triggerBody()?['text_8'], '')), 'email', coalesce(triggerBody()?['text_9'], '')), 'signingOrder', 1), 'placement', json(triggerBody()?['text_11']))))",
                   "returnUrl": "@{triggerBody()?['text_10']}"
                 }
               }
             }
           },
+          "runAfter": {
+            "Init_main_file_name": [
+              "Succeeded"
+            ]
+          },
           "else": {
             "actions": {
               "Set_lookup_payload": {
                 "type": "SetVariable",
-                "runAfter": {},
                 "inputs": {
                   "name": "Payload",
                   "value": {
@@ -210,32 +219,47 @@
                 }
               }
             }
-          }
+          },
+          "expression": {
+            "equals": [
+              "@triggerBody()?['text_1']",
+              "CreateSigningRequest"
+            ]
+          },
+          "type": "If"
         },
         "Call_signing_flow": {
-          "type": "Http",
           "runAfter": {
             "Build_payload": [
               "Succeeded"
             ]
           },
+          "type": "Http",
           "inputs": {
-            "method": "POST",
             "uri": "@triggerBody()?['text']",
+            "method": "POST",
             "headers": {
               "Content-Type": "application/json"
             },
             "body": "@variables('Payload')"
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
           }
         },
         "Parse_result": {
-          "type": "ParseJson",
           "runAfter": {
             "Call_signing_flow": [
               "Succeeded",
               "Failed"
             ]
           },
+          "type": "ParseJson",
           "inputs": {
             "content": "@body('Call_signing_flow')",
             "schema": {
@@ -261,16 +285,296 @@
                 }
               }
             }
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs"
+              ]
+            }
           }
         },
         "Save_signed_as_main": {
-          "type": "If",
+          "actions": {
+            "Is_pdf": {
+              "type": "If",
+              "expression": {
+                "and": [
+                  {
+                    "endsWith": [
+                      "@toLower(coalesce(triggerBody()?['text_6'], ''))",
+                      ".pdf"
+                    ]
+                  }
+                ]
+              },
+              "actions": {
+                "Replace_main_document": {
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "parameters": {
+                      "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                      "folderPath": "@substring(triggerBody()?['text_7'], 0, lastIndexOf(triggerBody()?['text_7'], '/'))",
+                      "name": "@triggerBody()?['text_6']",
+                      "body": "@base64ToBinary(body('Parse_result')?['contentBase64'])"
+                    },
+                    "host": {
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                      "operationId": "CreateFile",
+                      "connectionName": "shared_sharepointonline-1"
+                    }
+                  },
+                  "runtimeConfiguration": {
+                    "secureData": {
+                      "properties": [
+                        "inputs"
+                      ]
+                    }
+                  }
+                },
+                "Main_is_same_file": {
+                  "runAfter": {
+                    "Replace_main_document": [
+                      "Succeeded"
+                    ]
+                  },
+                  "type": "SetVariable",
+                  "inputs": {
+                    "name": "MainFileName",
+                    "value": "@{triggerBody()?['text_6']}"
+                  }
+                }
+              },
+              "else": {
+                "actions": {
+                  "Old_main": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                        "path": "@triggerBody()?['text_7']"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                        "operationId": "GetFileMetadataByPath",
+                        "connectionName": "shared_sharepointonline-1"
+                      }
+                    },
+                    "description": "The Word main document (its item id)."
+                  },
+                  "Old_main_properties": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                        "table": "@parameters('CORMS_Attachments (new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349)')",
+                        "id": "@body('Old_main')?['ItemId']"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                        "operationId": "GetFileItem",
+                        "connectionName": "shared_sharepointonline-1"
+                      }
+                    },
+                    "runAfter": {
+                      "Old_main": [
+                        "Succeeded"
+                      ]
+                    },
+                    "description": "Its CORMS metadata, copied to the PDF."
+                  },
+                  "Folder": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                        "path": "@substring(triggerBody()?['text_7'], 0, lastIndexOf(triggerBody()?['text_7'], '/'))"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                        "operationId": "GetFolderMetadataByPath",
+                        "connectionName": "shared_sharepointonline-1"
+                      }
+                    },
+                    "runAfter": {
+                      "Old_main_properties": [
+                        "Succeeded"
+                      ]
+                    }
+                  },
+                  "List_folder": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                        "id": "@body('Folder')?['Id']"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                        "operationId": "ListFolder",
+                        "connectionName": "shared_sharepointonline-1"
+                      }
+                    },
+                    "runAfter": {
+                      "Folder": [
+                        "Succeeded"
+                      ]
+                    },
+                    "description": "The names already in the folder."
+                  },
+                  "Taken_names": {
+                    "runAfter": {
+                      "List_folder": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "Select",
+                    "inputs": {
+                      "from": "@body('List_folder')",
+                      "select": "@toLower(coalesce(item()?['Name'], ''))"
+                    }
+                  },
+                  "Candidate_names": {
+                    "runAfter": {
+                      "Taken_names": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "Select",
+                    "inputs": {
+                      "from": "@range(1, 50)",
+                      "select": "@if(equals(item(), 1), concat(if(greater(lastIndexOf(triggerBody()?['text_6'], '.'), 0), substring(triggerBody()?['text_6'], 0, lastIndexOf(triggerBody()?['text_6'], '.')), triggerBody()?['text_6']), '.pdf'), concat(if(greater(lastIndexOf(triggerBody()?['text_6'], '.'), 0), substring(triggerBody()?['text_6'], 0, lastIndexOf(triggerBody()?['text_6'], '.')), triggerBody()?['text_6']), ' (', string(item()), ').pdf'))"
+                    },
+                    "description": "<name>.pdf, <name> (2).pdf, <name> (3).pdf \u2026"
+                  },
+                  "Free_names": {
+                    "runAfter": {
+                      "Candidate_names": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "Query",
+                    "inputs": {
+                      "from": "@body('Candidate_names')",
+                      "where": "@not(contains(body('Taken_names'), toLower(item())))"
+                    }
+                  },
+                  "PDF_name": {
+                    "runAfter": {
+                      "Free_names": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "Compose",
+                    "inputs": "@first(body('Free_names'))",
+                    "description": "The first name not taken in the folder."
+                  },
+                  "Create_pdf": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                        "folderPath": "@substring(triggerBody()?['text_7'], 0, lastIndexOf(triggerBody()?['text_7'], '/'))",
+                        "name": "@outputs('PDF_name')",
+                        "body": "@base64ToBinary(body('Parse_result')?['contentBase64'])"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                        "operationId": "CreateFile",
+                        "connectionName": "shared_sharepointonline-1"
+                      }
+                    },
+                    "runAfter": {
+                      "PDF_name": [
+                        "Succeeded"
+                      ]
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": [
+                          "inputs"
+                        ]
+                      }
+                    },
+                    "description": "The signed PDF beside the Word document."
+                  },
+                  "Set_new_main": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                        "table": "@parameters('CORMS_Attachments (new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349)')",
+                        "id": "@body('Create_pdf')?['ItemId']",
+                        "item/Title": "@outputs('PDF_name')",
+                        "item/FileName": "@outputs('PDF_name')",
+                        "item/CorrespondenceId": "@body('Old_main_properties')?['CorrespondenceId']",
+                        "item/IsMainLetter": true,
+                        "item/Source/Value": "Uploaded",
+                        "item/SecurityLevel": "@body('Old_main_properties')?['SecurityLevel']",
+                        "item/SecurityTier": "@body('Old_main_properties')?['SecurityTier']",
+                        "item/RecordHubReferenceNumber": ""
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                        "operationId": "PatchFileItem",
+                        "connectionName": "shared_sharepointonline-1"
+                      }
+                    },
+                    "runAfter": {
+                      "Create_pdf": [
+                        "Succeeded"
+                      ]
+                    },
+                    "description": "The PDF becomes the main document, with the Word document's CORMS metadata."
+                  },
+                  "Old_not_main": {
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                        "table": "@parameters('CORMS_Attachments (new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349)')",
+                        "id": "@body('Old_main')?['ItemId']",
+                        "item/IsMainLetter": false
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                        "operationId": "PatchFileItem",
+                        "connectionName": "shared_sharepointonline-1"
+                      }
+                    },
+                    "runAfter": {
+                      "Set_new_main": [
+                        "Succeeded"
+                      ]
+                    },
+                    "description": "The Word document stays among the correspondence's files."
+                  },
+                  "Main_is_pdf": {
+                    "runAfter": {
+                      "Old_not_main": [
+                        "Succeeded"
+                      ]
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "MainFileName",
+                      "value": "@{outputs('PDF_name')}"
+                    }
+                  }
+                }
+              },
+              "description": "A PDF gets a new version; a Word (or other) document gets the signed PDF beside it as the new main document, so it never holds PDF bytes."
+            }
+          },
           "runAfter": {
             "Parse_result": [
               "Succeeded",
               "Failed",
               "Skipped"
             ]
+          },
+          "else": {
+            "actions": {}
           },
           "expression": {
             "and": [
@@ -298,36 +602,9 @@
               }
             ]
           },
-          "actions": {
-            "Replace_main_document": {
-              "type": "OpenApiConnection",
-              "runAfter": {},
-              "inputs": {
-                "parameters": {
-                  "dataset": "https://ssloman.sharepoint.com/sites/CORMS",
-                  "folderPath": "@substring(triggerBody()?['text_7'], 0, lastIndexOf(triggerBody()?['text_7'], '/'))",
-                  "name": "@triggerBody()?['text_6']",
-                  "body": "@base64ToBinary(body('Parse_result')?['contentBase64'])"
-                },
-                "host": {
-                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
-                  "connectionName": "shared_sharepointonline",
-                  "operationId": "CreateFile"
-                },
-                "authentication": {
-                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
-                  "type": "Raw"
-                }
-              }
-            }
-          },
-          "else": {
-            "actions": {}
-          }
+          "type": "If"
         },
         "Respond_to_Power_Apps": {
-          "type": "Response",
-          "kind": "PowerApp",
           "runAfter": {
             "Save_signed_as_main": [
               "Succeeded",
@@ -335,15 +612,9 @@
               "Skipped"
             ]
           },
+          "type": "Response",
+          "kind": "PowerApp",
           "inputs": {
-            "statusCode": 200,
-            "body": {
-              "externaldocumentid": "@{coalesce(body('Parse_result')?['externalDocumentId'], '')}",
-              "signingurl": "@{coalesce(body('Parse_result')?['signingUrl'], '')}",
-              "status": "@{coalesce(body('Parse_result')?['status'], '')}",
-              "iscompleted": "@{if(equals(coalesce(body('Parse_result')?['isCompleted'], false), true), 'true', 'false')}",
-              "error": "@{coalesce(body('Parse_result')?['error'], '')}"
-            },
             "schema": {
               "type": "object",
               "properties": {
@@ -361,14 +632,46 @@
                 },
                 "error": {
                   "type": "string"
+                },
+                "mainfilename": {
+                  "type": "string"
                 }
-              }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "externaldocumentid": "@{coalesce(body('Parse_result')?['externalDocumentId'], '')}",
+              "signingurl": "@{coalesce(body('Parse_result')?['signingUrl'], '')}",
+              "status": "@{coalesce(body('Parse_result')?['status'], '')}",
+              "iscompleted": "@{if(equals(coalesce(body('Parse_result')?['isCompleted'], false), true), 'true', 'false')}",
+              "error": "@{if(equals(actions('Build_payload')?['status'], 'Failed'), 'DocumentUnreadable: the main document could not be read from SharePoint.', if(equals(actions('Save_signed_as_main')?['status'], 'Failed'), 'SaveFailed: the signed document could not be saved to SharePoint.', if(not(empty(coalesce(body('Parse_result')?['error'], ''))), body('Parse_result')?['error'], if(not(equals(actions('Call_signing_flow')?['status'], 'Succeeded')), concat('ProviderUnavailable: the signing flow answered ', string(coalesce(outputs('Call_signing_flow')?['statusCode'], 0)), '.'), if(and(equals(triggerBody()?['text_1'], 'GetSignedDocument'), empty(coalesce(body('Parse_result')?['contentBase64'], ''))), 'NoSignedDocument: the signing service returned no signed document.', '')))))}",
+              "mainfilename": "@{variables('MainFileName')}"
             }
           }
+        },
+        "Init_main_file_name": {
+          "runAfter": {
+            "Init_Payload": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "MainFileName",
+                "type": "string",
+                "value": ""
+              }
+            ]
+          },
+          "description": "GetSignedDocument: the main document's name after saving (a Word document's signed PDF has a new name)."
         }
       },
       "outputs": {}
-    }
+    },
+    "templateName": null
   },
   "schemaVersion": "1.0.0.0"
 }

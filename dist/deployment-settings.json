@@ -31,21 +31,6 @@
       "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
     },
     {
-      "SchemaName": "new_shared_sharepointonline_15eb33ef1bd545eab766623250d8288e",
-      "Value": "",
-      "Name": {
-        "Default": "CORMS_AuditLog",
-        "ByLcid": {
-          "1033": "CORMS_AuditLog"
-        }
-      },
-      "TypeId": 100000004,
-      "IsRequired": false,
-      "ParameterKey": "table",
-      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
-      "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
-    },
-    {
       "SchemaName": "new_shared_sharepointonline_39f9161a015244d68915d0194823f536",
       "Value": "",
       "Name": {
@@ -178,6 +163,47 @@
       "ParameterKey": "table",
       "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
       "ParentSchemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_02efef9697034e90b0adcc6af33b951f",
+      "Value": "",
+      "Name": {
+        "Default": "RecordsHub site (SPEDRMSRecordsHubDev2 on SSL)",
+        "ByLcid": {
+          "1033": "RecordsHub site (SPEDRMSRecordsHubDev2 on SSL)"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "dataset",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline"
+    },
+    {
+      "SchemaName": "new_shared_sharepointonline_8993092431064dc0be22f0a6309f2978",
+      "Value": "",
+      "Name": {
+        "Default": "Security Levels (RH_SecurityLevels on the RecordsHub site)",
+        "ByLcid": {
+          "1033": "Security Levels (RH_SecurityLevels on the RecordsHub site)"
+        }
+      },
+      "TypeId": 100000004,
+      "IsRequired": false,
+      "ParameterKey": "table",
+      "ApiId": "/providers/microsoft.powerapps/apis/shared_sharepointonline",
+      "ParentSchemaName": "new_shared_sharepointonline_02efef9697034e90b0adcc6af33b951f"
+    },
+    {
+      "SchemaName": "corms_ElasticEndpoint",
+      "Value": "",
+      "Name": {
+        "Default": "Elasticsearch base URL (corms_ElasticEndpoint)",
+        "ByLcid": {
+          "1033": "Elasticsearch base URL (corms_ElasticEndpoint)"
+        }
+      },
+      "TypeId": 100000000,
+      "IsRequired": false
     }
   ],
   "ConnectionReferences": [

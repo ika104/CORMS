@@ -1,0 +1,1451 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_00d04"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.2.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)": {
+          "defaultValue": "https://ssloman.sharepoint.com/sites/CORMS",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+          }
+        },
+        "CORMS_AdminConfig (new_shared_sharepointonline_c53c5a63715c45818e8eb4d3b5e548a5)": {
+          "defaultValue": "c23d295d-dfa9-425a-b314-219e3eaeed9d",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_c53c5a63715c45818e8eb4d3b5e548a5"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "5b78cb59-ff34-42a3-9d9d-d82249cf8d7b"
+          },
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "triggerAuthenticationType": "All",
+            "schema": {
+              "type": "object",
+              "required": [
+                "operation"
+              ],
+              "properties": {
+                "operation": {
+                  "type": "string",
+                  "enum": [
+                    "CreateSigningRequest",
+                    "GetSigningStatus",
+                    "GetSignedDocument",
+                    "PrepareSignatureLayout",
+                    "GetSignatureLayout"
+                  ]
+                },
+                "externalDocumentId": {
+                  "type": "string"
+                },
+                "correspondenceId": {
+                  "type": "string"
+                },
+                "referenceNumber": {
+                  "type": "string"
+                },
+                "subject": {
+                  "type": "string"
+                },
+                "document": {
+                  "type": "object",
+                  "properties": {
+                    "fileName": {
+                      "type": "string"
+                    },
+                    "contentBase64": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "signers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "signingOrder": {
+                        "type": "integer"
+                      },
+                      "fields": {
+                        "type": "array",
+                        "description": "The fields this signer completes. Absent: one signature at the default spot.",
+                        "items": {
+                          "type": "object",
+                          "description": "A field: page (1-based) and x/y/width/height as percentages of the page; settings are the provider's other field settings, re-applied as they are.",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "page": {
+                              "type": "number"
+                            },
+                            "x": {
+                              "type": "number"
+                            },
+                            "y": {
+                              "type": "number"
+                            },
+                            "width": {
+                              "type": "number"
+                            },
+                            "height": {
+                              "type": "number"
+                            },
+                            "required": {
+                              "type": "boolean"
+                            },
+                            "settings": {
+                              "type": "object"
+                            }
+                          }
+                        }
+                      },
+                      "placement": {
+                        "type": "object",
+                        "description": "Also accepted: the approval task's saved SignaturePlacement value - {fields:[...]} or an older single box {page,x,y,width,height}."
+                      }
+                    }
+                  }
+                },
+                "returnUrl": {
+                  "type": "string"
+                },
+                "fields": {
+                  "type": "array",
+                  "description": "PrepareSignatureLayout: every recipient's fields.",
+                  "items": {
+                    "type": "object",
+                    "description": "A field: page (1-based) and x/y/width/height as percentages of the page; settings are the provider's other field settings, re-applied as they are.",
+                    "properties": {
+                      "role": {
+                        "type": "string",
+                        "description": "The recipient the field belongs to (one per approver who signs)."
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "page": {
+                        "type": "number"
+                      },
+                      "x": {
+                        "type": "number"
+                      },
+                      "y": {
+                        "type": "number"
+                      },
+                      "width": {
+                        "type": "number"
+                      },
+                      "height": {
+                        "type": "number"
+                      },
+                      "required": {
+                        "type": "boolean"
+                      },
+                      "settings": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                },
+                "layoutDocumentId": {
+                  "type": "string",
+                  "description": "GetSignatureLayout: the document PrepareSignatureLayout returned."
+                }
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_provider_settings": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "c45d2a73-79bb-43dc-8537-c6324f9d539b"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+              "table": "@parameters('CORMS_AdminConfig (new_shared_sharepointonline_c53c5a63715c45818e8eb4d3b5e548a5)')",
+              "$filter": "startswith(Title, 'signature.provider')",
+              "$top": 20
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "operationId": "GetItems",
+              "connectionName": "shared_sharepointonline_1"
+            }
+          },
+          "description": "Reads the signature.provider* rows from CORMS Admin Configuration. Set Site Address to the CORMS site.",
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "outputs"
+              ]
+            }
+          }
+        },
+        "Filter_base_url": {
+          "runAfter": {
+            "Get_provider_settings": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "23b72eb1-33bd-44f7-9a27-80cf2ef28307"
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@outputs('Get_provider_settings')?['body/value']",
+            "where": "@equals(item()?['Title'], 'signature.providerBaseUrl')"
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          }
+        },
+        "Filter_client_credentials": {
+          "runAfter": {
+            "Filter_base_url": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4865285e-e890-487b-8f24-294f326bc336"
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@outputs('Get_provider_settings')?['body/value']",
+            "where": "@equals(item()?['Title'], 'signature.providerClientCredentials')"
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          }
+        },
+        "Filter_username": {
+          "runAfter": {
+            "Filter_client_credentials": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "15bfdad2-eaed-4ab8-94ce-2ef010bd2cd5"
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@outputs('Get_provider_settings')?['body/value']",
+            "where": "@equals(item()?['Title'], 'signature.providerUsername')"
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          }
+        },
+        "Filter_password": {
+          "runAfter": {
+            "Filter_username": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "14885307-0b6f-489f-8769-43ff5259bf63"
+          },
+          "type": "Query",
+          "inputs": {
+            "from": "@outputs('Get_provider_settings')?['body/value']",
+            "where": "@equals(item()?['Title'], 'signature.providerPassword')"
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          }
+        },
+        "Provider_settings": {
+          "runAfter": {
+            "Filter_password": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "918e409c-a8c9-48e4-af86-5168f8d00a75"
+          },
+          "type": "Compose",
+          "inputs": {
+            "baseUrl": "@{trim(coalesce(first(body('Filter_base_url'))?['Value'], ''))}",
+            "clientCredentials": "@{replace(replace(replace(replace(coalesce(first(body('Filter_client_credentials'))?['Value'], ''), 'Basic ', ''), ' ', ''), decodeUriComponent('%0D'), ''), decodeUriComponent('%0A'), '')}",
+            "username": "@{trim(coalesce(first(body('Filter_username'))?['Value'], ''))}",
+            "password": "@{replace(replace(coalesce(first(body('Filter_password'))?['Value'], ''), decodeUriComponent('%0D'), ''), decodeUriComponent('%0A'), '')}"
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs"
+              ]
+            }
+          }
+        },
+        "Check_provider_settings": {
+          "actions": {
+            "Response_settings_missing": {
+              "metadata": {
+                "operationMetadataId": "81131fc5-bd6f-40eb-a556-e562a682cd86"
+              },
+              "type": "Response",
+              "kind": "Http",
+              "inputs": {
+                "statusCode": 500,
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": {
+                  "error": "Signing provider settings are incomplete. Complete the signature.provider* rows in Admin Configuration."
+                }
+              }
+            },
+            "Stop_settings_missing": {
+              "runAfter": {
+                "Response_settings_missing": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "bcb88e54-2485-49fa-806e-d9752e8a4442"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Failed",
+                "runError": {
+                  "code": "SettingsMissing",
+                  "message": "Signing provider settings are incomplete."
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Provider_settings": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {}
+          },
+          "expression": {
+            "or": [
+              {
+                "equals": [
+                  "@outputs('Provider_settings')?['baseUrl']",
+                  ""
+                ]
+              },
+              {
+                "equals": [
+                  "@outputs('Provider_settings')?['clientCredentials']",
+                  ""
+                ]
+              },
+              {
+                "equals": [
+                  "@outputs('Provider_settings')?['username']",
+                  ""
+                ]
+              },
+              {
+                "equals": [
+                  "@outputs('Provider_settings')?['password']",
+                  ""
+                ]
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "40e169cd-533d-4645-9c05-f440c8dad572"
+          },
+          "type": "If"
+        },
+        "Init_ExternalDocumentId": {
+          "runAfter": {
+            "Check_provider_settings": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b45b0a9c-0916-47af-9dcf-5e542fe53068"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ExternalDocumentId",
+                "type": "string",
+                "value": ""
+              }
+            ]
+          }
+        },
+        "Init_SigningUrl": {
+          "runAfter": {
+            "Init_ExternalDocumentId": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "696ee13e-deff-4c06-8edb-221c6a0dabda"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SigningUrl",
+                "type": "string",
+                "value": ""
+              }
+            ]
+          }
+        },
+        "Init_SigningStatus": {
+          "runAfter": {
+            "Init_SigningUrl": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9a5993b3-9de1-4e74-b800-39a79ed6cab5"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SigningStatus",
+                "type": "string",
+                "value": ""
+              }
+            ]
+          }
+        },
+        "Init_SignedContent": {
+          "runAfter": {
+            "Init_SigningStatus": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2825ffe1-8ab0-4cec-a49e-ffe31a73b3ce"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "SignedContent",
+                "type": "string",
+                "value": ""
+              }
+            ]
+          }
+        },
+        "Init_LayoutFields": {
+          "runAfter": {
+            "Init_SignedContent": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d12dd58a-937f-4088-a69d-5b725544c7a2"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "LayoutFields",
+                "type": "array",
+                "value": []
+              }
+            ]
+          }
+        },
+        "Try_signing_provider": {
+          "actions": {
+            "Get_access_token": {
+              "metadata": {
+                "operationMetadataId": "0771513d-652f-4f5a-ab15-0d60363619c3"
+              },
+              "type": "Http",
+              "inputs": {
+                "uri": "@{outputs('Provider_settings')?['baseUrl']}/oauth2/token",
+                "method": "POST",
+                "headers": {
+                  "Authorization": "Basic @{outputs('Provider_settings')?['clientCredentials']}",
+                  "Content-Type": "application/x-www-form-urlencoded"
+                },
+                "body": "grant_type=password&scope=*&username=@{encodeUriComponent(outputs('Provider_settings')?['username'])}&password=@{encodeUriComponent(outputs('Provider_settings')?['password'])}"
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs",
+                    "outputs"
+                  ]
+                }
+              }
+            },
+            "Parse_token": {
+              "runAfter": {
+                "Get_access_token": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "c2e07006-cf0e-46b4-98da-d914968d5bdf"
+              },
+              "type": "ParseJson",
+              "inputs": {
+                "content": "@body('Get_access_token')",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "token_type": {
+                      "type": "string"
+                    },
+                    "expires_in": {
+                      "type": "integer"
+                    },
+                    "refresh_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "inputs"
+                  ]
+                }
+              }
+            },
+            "Route_operation": {
+              "runAfter": {
+                "Parse_token": [
+                  "Succeeded"
+                ]
+              },
+              "cases": {
+                "Get_signing_status": {
+                  "case": "GetSigningStatus",
+                  "actions": {
+                    "Get_document_status": {
+                      "metadata": {
+                        "operationMetadataId": "4f122548-d9e8-4909-a653-8ccd646c6bec"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{encodeUriComponent(triggerBody()?['externalDocumentId'])}",
+                        "method": "GET",
+                        "headers": {
+                          "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                        }
+                      },
+                      "runtimeConfiguration": {
+                        "secureData": {
+                          "properties": [
+                            "inputs"
+                          ]
+                        }
+                      }
+                    },
+                    "Set_status_document_id": {
+                      "runAfter": {
+                        "Get_document_status": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "75fafa5e-b74d-4d9c-95ec-9cab2ed309b4"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "ExternalDocumentId",
+                        "value": "@{triggerBody()?['externalDocumentId']}"
+                      }
+                    },
+                    "Set_status": {
+                      "runAfter": {
+                        "Set_status_document_id": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "da392f2a-3071-46ec-a39d-ab18fc8bbac5"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "SigningStatus",
+                        "value": "@if(or(equals(toLower(coalesce(first(body('Get_document_status')?['field_invites'])?['status'],'')),'fulfilled'),greater(length(coalesce(body('Get_document_status')?['signatures'],createArray())),0)),'Completed','Pending')"
+                      },
+                      "description": "Completed once the field invite is fulfilled or the document carries a signature; otherwise Pending."
+                    }
+                  }
+                },
+                "Get_signed_document": {
+                  "case": "GetSignedDocument",
+                  "actions": {
+                    "Download_signed_document": {
+                      "metadata": {
+                        "operationMetadataId": "c60d4817-3847-455e-ac3b-02c82a3c8fde"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{encodeUriComponent(triggerBody()?['externalDocumentId'])}/download?type=collapsed",
+                        "method": "GET",
+                        "headers": {
+                          "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                        }
+                      },
+                      "runtimeConfiguration": {
+                        "secureData": {
+                          "properties": [
+                            "inputs",
+                            "outputs"
+                          ]
+                        }
+                      }
+                    },
+                    "Set_signed_document_id": {
+                      "runAfter": {
+                        "Download_signed_document": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "700f8ec2-7e1a-4c9b-ab05-7f9e45e377ae"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "ExternalDocumentId",
+                        "value": "@{triggerBody()?['externalDocumentId']}"
+                      }
+                    },
+                    "Set_signed_content": {
+                      "runAfter": {
+                        "Set_signed_document_id": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "b33ca087-25e0-4c16-86a2-48794f9cd392"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "SignedContent",
+                        "value": "@{body('Download_signed_document')?['$content']}"
+                      },
+                      "description": "The signed PDF, base64-encoded."
+                    },
+                    "Set_signed_status": {
+                      "runAfter": {
+                        "Set_signed_content": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "6b381e43-6a21-41e6-b84c-b5df43745195"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "SigningStatus",
+                        "value": "Completed"
+                      }
+                    }
+                  }
+                },
+                "Prepare_signature_layout": {
+                  "case": "PrepareSignatureLayout",
+                  "actions": {
+                    "Upload_layout_document": {
+                      "metadata": {
+                        "operationMetadataId": "04e28f2a-8c6f-4012-b55e-eabffed6a36c"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "uri": "@{outputs('Provider_settings')?['baseUrl']}/document",
+                        "method": "POST",
+                        "headers": {
+                          "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                        },
+                        "body": {
+                          "$content-type": "multipart/form-data",
+                          "$multipart": [
+                            {
+                              "headers": {
+                                "Content-Disposition": "form-data; name=\"file\"; filename=\"@{triggerBody()?['document']?['fileName']}\""
+                              },
+                              "body": {
+                                "$content-type": "application/octet-stream",
+                                "$content": "@{triggerBody()?['document']?['contentBase64']}"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "description": "The main document the requestor places the fields on.",
+                      "runtimeConfiguration": {
+                        "secureData": {
+                          "properties": [
+                            "inputs"
+                          ]
+                        }
+                      }
+                    },
+                    "Get_layout_pages": {
+                      "runAfter": {
+                        "Upload_layout_document": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "2904f256-f0d9-4135-9d06-99749632e5e1"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{body('Upload_layout_document')?['id']}",
+                        "method": "GET",
+                        "headers": {
+                          "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                        }
+                      },
+                      "description": "Page sizes, to turn CORMS's percentages into SignNow coordinates.",
+                      "runtimeConfiguration": {
+                        "secureData": {
+                          "properties": [
+                            "inputs"
+                          ]
+                        }
+                      }
+                    },
+                    "Layout_fields": {
+                      "runAfter": {
+                        "Get_layout_pages": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "0be2f4a6-fbf5-4ec2-94fe-608f8f68c8fd"
+                      },
+                      "type": "Select",
+                      "inputs": {
+                        "from": "@coalesce(triggerBody()?['fields'], json('[]'))",
+                        "select": "@setProperty(setProperty(setProperty(setProperty(setProperty(setProperty(setProperty(setProperty(coalesce(item()?['settings'], json('{}')), 'x', int(formatNumber(div(mul(float(item()?['x']), float(coalesce(first(skip(coalesce(body('Get_layout_pages')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(item()?['page'], 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['width'])), 100), '0', 'en-US'))), 'y', int(formatNumber(div(mul(float(item()?['y']), float(coalesce(first(skip(coalesce(body('Get_layout_pages')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(item()?['page'], 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['height'])), 100), '0', 'en-US'))), 'width', int(formatNumber(div(mul(float(item()?['width']), float(coalesce(first(skip(coalesce(body('Get_layout_pages')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(item()?['page'], 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['width'])), 100), '0', 'en-US'))), 'height', int(formatNumber(div(mul(float(item()?['height']), float(coalesce(first(skip(coalesce(body('Get_layout_pages')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(item()?['page'], 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['height'])), 100), '0', 'en-US'))), 'page_number', sub(int(formatNumber(float(coalesce(item()?['page'], 1)), '0', 'en-US')), 1)), 'role', item()?['role']), 'type', item()?['type']), 'required', coalesce(item()?['required'], true))"
+                      },
+                      "description": "Each recipient's fields in SignNow coordinates; the role names become the editor's recipients."
+                    },
+                    "Add_layout_fields": {
+                      "runAfter": {
+                        "Layout_fields": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "8afd3598-64b8-41cd-9cd9-b2297d23ecb4"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{body('Upload_layout_document')?['id']}",
+                        "method": "PUT",
+                        "headers": {
+                          "Authorization": "Bearer @{body('Parse_token')?['access_token']}",
+                          "Content-Type": "application/json"
+                        },
+                        "body": {
+                          "fields": "@body('Layout_fields')"
+                        }
+                      },
+                      "runtimeConfiguration": {
+                        "secureData": {
+                          "properties": [
+                            "inputs"
+                          ]
+                        }
+                      }
+                    },
+                    "Editor_link_options": {
+                      "runAfter": {
+                        "Add_layout_fields": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "2f4dc1cd-6a28-415e-9a68-c7d93a2b7fec"
+                      },
+                      "type": "Compose",
+                      "inputs": "@if(empty(triggerBody()?['returnUrl']), json('{\"redirect_target\":\"self\",\"link_expiration\":45}'), addProperty(json('{\"redirect_target\":\"self\",\"link_expiration\":45}'), 'redirect_uri', triggerBody()?['returnUrl']))",
+                      "description": "The editor returns to CORMS (returnUrl) when the user finishes, so the in-app window can close itself."
+                    },
+                    "Create_editor_link": {
+                      "runAfter": {
+                        "Editor_link_options": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "311748e1-4772-4b8b-8aeb-17931b35a1d5"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "uri": "@{outputs('Provider_settings')?['baseUrl']}/v2/documents/@{body('Upload_layout_document')?['id']}/embedded-editor",
+                        "method": "POST",
+                        "headers": {
+                          "Authorization": "Bearer @{body('Parse_token')?['access_token']}",
+                          "Content-Type": "application/json"
+                        },
+                        "body": "@outputs('Editor_link_options')"
+                      },
+                      "description": "SignNow Embedded Editor: places and edits fields without sending the document.",
+                      "runtimeConfiguration": {
+                        "secureData": {
+                          "properties": [
+                            "inputs"
+                          ]
+                        }
+                      }
+                    },
+                    "Set_layout_document_id": {
+                      "runAfter": {
+                        "Create_editor_link": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "bbc3fdeb-0ce9-4ef6-a552-1933a6b120b6"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "ExternalDocumentId",
+                        "value": "@{body('Upload_layout_document')?['id']}"
+                      }
+                    },
+                    "Set_editor_url": {
+                      "runAfter": {
+                        "Set_layout_document_id": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "c24eff42-8963-4eaf-9493-d0422abdadba"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "SigningUrl",
+                        "value": "@{body('Create_editor_link')?['data']?['url']}"
+                      }
+                    },
+                    "Set_layout_status": {
+                      "runAfter": {
+                        "Set_editor_url": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "518e3e01-00d4-49ec-a8ad-fcc7a7962d3b"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "SigningStatus",
+                        "value": "Pending"
+                      }
+                    }
+                  }
+                },
+                "Get_signature_layout": {
+                  "case": "GetSignatureLayout",
+                  "actions": {
+                    "Get_layout_document": {
+                      "metadata": {
+                        "operationMetadataId": "451c0b0c-d1df-4979-9e1c-96f3f6263155"
+                      },
+                      "type": "Http",
+                      "inputs": {
+                        "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{encodeUriComponent(triggerBody()?['layoutDocumentId'])}",
+                        "method": "GET",
+                        "headers": {
+                          "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                        }
+                      },
+                      "description": "The fields as the requestor left them in the editor.",
+                      "runtimeConfiguration": {
+                        "secureData": {
+                          "properties": [
+                            "inputs"
+                          ]
+                        }
+                      }
+                    },
+                    "Read_layout_fields": {
+                      "runAfter": {
+                        "Get_layout_document": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "dde1ddbb-dfdc-494a-8dde-aa809f47e5d8"
+                      },
+                      "type": "Select",
+                      "inputs": {
+                        "from": "@coalesce(body('Get_layout_document')?['fields'], json('[]'))",
+                        "select": {
+                          "role": "@item()?['role']",
+                          "type": "@item()?['type']",
+                          "page": "@add(int(coalesce(item()?['json_attributes']?['page_number'], 0)), 1)",
+                          "x": "@div(float(formatNumber(div(mul(float(coalesce(item()?['json_attributes']?['x'], 0)), 10000), float(coalesce(first(skip(coalesce(body('Get_layout_document')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(add(int(coalesce(item()?['json_attributes']?['page_number'], 0)), 1), 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['width'])), '0', 'en-US')), 100)",
+                          "y": "@div(float(formatNumber(div(mul(float(coalesce(item()?['json_attributes']?['y'], 0)), 10000), float(coalesce(first(skip(coalesce(body('Get_layout_document')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(add(int(coalesce(item()?['json_attributes']?['page_number'], 0)), 1), 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['height'])), '0', 'en-US')), 100)",
+                          "width": "@div(float(formatNumber(div(mul(float(coalesce(item()?['json_attributes']?['width'], 0)), 10000), float(coalesce(first(skip(coalesce(body('Get_layout_document')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(add(int(coalesce(item()?['json_attributes']?['page_number'], 0)), 1), 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['width'])), '0', 'en-US')), 100)",
+                          "height": "@div(float(formatNumber(div(mul(float(coalesce(item()?['json_attributes']?['height'], 0)), 10000), float(coalesce(first(skip(coalesce(body('Get_layout_document')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(add(int(coalesce(item()?['json_attributes']?['page_number'], 0)), 1), 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['height'])), '0', 'en-US')), 100)",
+                          "required": "@contains(createArray('true', '1'), toLower(string(coalesce(item()?['json_attributes']?['required'], true))))",
+                          "settings": "@removeProperty(removeProperty(removeProperty(removeProperty(removeProperty(removeProperty(coalesce(item()?['json_attributes'], json('{}')), 'page_number'), 'x'), 'y'), 'width'), 'height'), 'required')"
+                        }
+                      },
+                      "description": "Back to CORMS's provider-neutral shape: page 1-based, position as % of the page; the other attributes are kept as settings."
+                    },
+                    "Set_layout_fields": {
+                      "runAfter": {
+                        "Read_layout_fields": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "d0c7907f-4732-439f-abf9-8787f997e1a5"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "LayoutFields",
+                        "value": "@body('Read_layout_fields')"
+                      }
+                    },
+                    "Set_read_layout_id": {
+                      "runAfter": {
+                        "Set_layout_fields": [
+                          "Succeeded"
+                        ]
+                      },
+                      "metadata": {
+                        "operationMetadataId": "d4c0be6c-0944-4980-8e11-d107f9529d8d"
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "ExternalDocumentId",
+                        "value": "@{triggerBody()?['layoutDocumentId']}"
+                      }
+                    },
+                    "Set_layout_additions": {
+                      "runAfter": {
+                        "Read_layout_fields": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "SetVariable",
+                      "inputs": {
+                        "name": "LayoutAdditions",
+                        "value": "@add(add(add(add(length(coalesce(body('Get_layout_document')?['signatures'], json('[]'))), length(coalesce(body('Get_layout_document')?['texts'], json('[]')))), length(coalesce(body('Get_layout_document')?['checks'], json('[]')))), length(coalesce(body('Get_layout_document')?['lines'], json('[]')))), length(coalesce(body('Get_layout_document')?['images'], json('[]'))))"
+                      },
+                      "description": "The author's own signatures, texts, checks, lines and images on the editor's copy (the signers' fields are in 'fields' and aren't counted)."
+                    }
+                  }
+                }
+              },
+              "default": {
+                "actions": {
+                  "Upload_document": {
+                    "metadata": {
+                      "operationMetadataId": "8f331058-6f92-4982-945e-b25834053f02"
+                    },
+                    "type": "Http",
+                    "inputs": {
+                      "uri": "@{outputs('Provider_settings')?['baseUrl']}/document",
+                      "method": "POST",
+                      "headers": {
+                        "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                      },
+                      "body": {
+                        "$content-type": "multipart/form-data",
+                        "$multipart": [
+                          {
+                            "headers": {
+                              "Content-Disposition": "form-data; name=\"file\"; filename=\"@{triggerBody()?['document']?['fileName']}\""
+                            },
+                            "body": {
+                              "$content-type": "application/octet-stream",
+                              "$content": "@{triggerBody()?['document']?['contentBase64']}"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": [
+                          "inputs"
+                        ]
+                      }
+                    }
+                  },
+                  "Get_uploaded_document": {
+                    "runAfter": {
+                      "Upload_document": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "985d9095-7678-45df-a9ff-a67b7f5253f5"
+                    },
+                    "type": "Http",
+                    "inputs": {
+                      "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{body('Upload_document')?['id']}",
+                      "method": "GET",
+                      "headers": {
+                        "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                      }
+                    },
+                    "description": "Reads the page sizes needed to turn CORMS's percentage placement into SignNow coordinates.",
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": [
+                          "inputs"
+                        ]
+                      }
+                    }
+                  },
+                  "Signature_placement": {
+                    "runAfter": {
+                      "Get_uploaded_document": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "47679e11-0ce8-4429-8f3f-fcd381466499"
+                    },
+                    "type": "Compose",
+                    "inputs": "@json('{\"page\":1,\"x\":70,\"y\":85,\"width\":20,\"height\":8}')",
+                    "description": "Where one signature goes when the signer has no fields (page 1-based, % of the page)."
+                  },
+                  "Page_index": {
+                    "runAfter": {
+                      "Signature_placement": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "b0838f9a-a341-496a-bd86-7f435f6f8148"
+                    },
+                    "type": "Compose",
+                    "inputs": "@sub(int(formatNumber(float(coalesce(outputs('Signature_placement')?['page'], 1)), '0', 'en-US')), 1)"
+                  },
+                  "Page_size": {
+                    "runAfter": {
+                      "Page_index": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "e3f6ec55-ad83-455e-9f2d-bf98111dcd43"
+                    },
+                    "type": "Compose",
+                    "inputs": "@coalesce(first(skip(coalesce(body('Get_uploaded_document')?['pages'], json('[]')), outputs('Page_index')))?['size'], json('{\"width\":612,\"height\":792}'))",
+                    "description": "That page's size from SignNow; US Letter when the document does not report it."
+                  },
+                  "Signature_field": {
+                    "runAfter": {
+                      "Page_size": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "66577315-2c0d-428a-bab7-0ccdab0195e8"
+                    },
+                    "type": "Compose",
+                    "inputs": {
+                      "x": "@int(formatNumber(div(mul(float(outputs('Signature_placement')?['x']), float(outputs('Page_size')?['width'])), 100), '0', 'en-US'))",
+                      "y": "@int(formatNumber(div(mul(float(outputs('Signature_placement')?['y']), float(outputs('Page_size')?['height'])), 100), '0', 'en-US'))",
+                      "width": "@int(formatNumber(div(mul(float(outputs('Signature_placement')?['width']), float(outputs('Page_size')?['width'])), 100), '0', 'en-US'))",
+                      "height": "@int(formatNumber(div(mul(float(outputs('Signature_placement')?['height']), float(outputs('Page_size')?['height'])), 100), '0', 'en-US'))",
+                      "page_number": "@outputs('Page_index')",
+                      "role": "Signer 1",
+                      "required": true,
+                      "type": "signature",
+                      "name": "SignatureField1"
+                    }
+                  },
+                  "Signer_fields": {
+                    "runAfter": {
+                      "Signature_field": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "d49ef8d3-3b0c-460d-bc19-1a88cc500a52"
+                    },
+                    "type": "Select",
+                    "inputs": {
+                      "from": "@coalesce(triggerBody()?['signers'][0]?['fields'], triggerBody()?['signers'][0]?['placement']?['fields'], if(empty(triggerBody()?['signers'][0]?['placement']?['page']), json('[]'), createArray(setProperty(triggerBody()?['signers'][0]?['placement'], 'type', 'signature'))))",
+                      "select": "@setProperty(setProperty(setProperty(setProperty(setProperty(setProperty(setProperty(setProperty(coalesce(item()?['settings'], json('{}')), 'x', int(formatNumber(div(mul(float(item()?['x']), float(coalesce(first(skip(coalesce(body('Get_uploaded_document')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(item()?['page'], 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['width'])), 100), '0', 'en-US'))), 'y', int(formatNumber(div(mul(float(item()?['y']), float(coalesce(first(skip(coalesce(body('Get_uploaded_document')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(item()?['page'], 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['height'])), 100), '0', 'en-US'))), 'width', int(formatNumber(div(mul(float(item()?['width']), float(coalesce(first(skip(coalesce(body('Get_uploaded_document')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(item()?['page'], 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['width'])), 100), '0', 'en-US'))), 'height', int(formatNumber(div(mul(float(item()?['height']), float(coalesce(first(skip(coalesce(body('Get_uploaded_document')?['pages'], json('[]')), sub(int(formatNumber(float(coalesce(item()?['page'], 1)), '0', 'en-US')), 1)))?['size'], json('{\"width\":612,\"height\":792}'))?['height'])), 100), '0', 'en-US'))), 'page_number', sub(int(formatNumber(float(coalesce(item()?['page'], 1)), '0', 'en-US')), 1)), 'role', 'Signer 1'), 'type', item()?['type']), 'required', coalesce(item()?['required'], true))"
+                    },
+                    "description": "This signer's fields: signers[0].fields, or the task's saved value sent as placement ({fields} or an older single box)."
+                  },
+                  "Add_signature_field": {
+                    "runAfter": {
+                      "Signer_fields": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "a1433742-7860-4bba-bf84-d3d6739b71c2"
+                    },
+                    "type": "Http",
+                    "inputs": {
+                      "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{body('Upload_document')?['id']}",
+                      "method": "PUT",
+                      "headers": {
+                        "Authorization": "Bearer @{body('Parse_token')?['access_token']}",
+                        "Content-Type": "application/json"
+                      },
+                      "body": {
+                        "fields": "@if(empty(body('Signer_fields')), createArray(outputs('Signature_field')), body('Signer_fields'))"
+                      }
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": [
+                          "inputs"
+                        ]
+                      }
+                    }
+                  },
+                  "Get_document": {
+                    "runAfter": {
+                      "Add_signature_field": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "ecfa8e69-ab42-41fb-81ab-fea05db86919"
+                    },
+                    "type": "Http",
+                    "inputs": {
+                      "uri": "@{outputs('Provider_settings')?['baseUrl']}/document/@{body('Upload_document')?['id']}",
+                      "method": "GET",
+                      "headers": {
+                        "Authorization": "Bearer @{body('Parse_token')?['access_token']}"
+                      }
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": [
+                          "inputs"
+                        ]
+                      }
+                    }
+                  },
+                  "Signing_invite": {
+                    "runAfter": {
+                      "Get_document": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "f5e5c45c-cbb5-433f-aab9-f9ec4055e78d"
+                    },
+                    "type": "Compose",
+                    "inputs": {
+                      "email": "@{triggerBody()?['signers'][0]?['email']}",
+                      "role_id": "@{body('Get_document')?['roles'][0]?['unique_id']}",
+                      "order": 1,
+                      "auth_method": "none",
+                      "first_name": "@{triggerBody()?['signers'][0]?['name']}",
+                      "last_name": ""
+                    },
+                    "description": "The signer's invite. When CORMS sends a returnUrl, the signing page returns there on finish, decline or close so the in-app signing window can close itself."
+                  },
+                  "Return_url_prefix": {
+                    "runAfter": {
+                      "Signing_invite": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "aa0fb9dc-719c-4079-8a78-852027cb699f"
+                    },
+                    "type": "Compose",
+                    "inputs": "@{if(empty(triggerBody()?['returnUrl']), '', concat(triggerBody()?['returnUrl'], if(contains(triggerBody()?['returnUrl'], '?'), '&', '?'), 'signingResult='))}"
+                  },
+                  "Create_embedded_invite": {
+                    "runAfter": {
+                      "Return_url_prefix": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "0e484f9d-d74f-404f-a124-cc739fb1ef9a"
+                    },
+                    "type": "Http",
+                    "inputs": {
+                      "uri": "@{outputs('Provider_settings')?['baseUrl']}/v2/documents/@{body('Upload_document')?['id']}/embedded-invites",
+                      "method": "POST",
+                      "headers": {
+                        "Authorization": "Bearer @{body('Parse_token')?['access_token']}",
+                        "Content-Type": "application/json"
+                      },
+                      "body": {
+                        "invites": [
+                          "@if(empty(outputs('Return_url_prefix')), outputs('Signing_invite'), addProperty(addProperty(addProperty(addProperty(outputs('Signing_invite'), 'redirect_uri', concat(outputs('Return_url_prefix'), 'completed')), 'decline_redirect_uri', concat(outputs('Return_url_prefix'), 'declined')), 'close_redirect_uri', concat(outputs('Return_url_prefix'), 'closed')), 'redirect_target', 'self'))"
+                        ]
+                      }
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": [
+                          "inputs"
+                        ]
+                      }
+                    }
+                  },
+                  "Create_signing_link": {
+                    "runAfter": {
+                      "Create_embedded_invite": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "a30b3484-03ea-4628-b1ee-435a862d3a2d"
+                    },
+                    "type": "Http",
+                    "inputs": {
+                      "uri": "@{outputs('Provider_settings')?['baseUrl']}/v2/documents/@{body('Upload_document')?['id']}/embedded-invites/@{body('Create_embedded_invite')?['data'][0]?['id']}/link",
+                      "method": "POST",
+                      "headers": {
+                        "Authorization": "Bearer @{body('Parse_token')?['access_token']}",
+                        "Content-Type": "application/json"
+                      },
+                      "body": {
+                        "auth_method": "none"
+                      }
+                    },
+                    "runtimeConfiguration": {
+                      "secureData": {
+                        "properties": [
+                          "inputs"
+                        ]
+                      }
+                    }
+                  },
+                  "Set_created_document_id": {
+                    "runAfter": {
+                      "Create_signing_link": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "a610365c-7408-49b2-a8db-420a89d3c0e9"
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "ExternalDocumentId",
+                      "value": "@{body('Upload_document')?['id']}"
+                    }
+                  },
+                  "Set_created_signing_url": {
+                    "runAfter": {
+                      "Set_created_document_id": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "e86338b2-4cb3-43f0-9014-5447f79105bc"
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "SigningUrl",
+                      "value": "@{body('Create_signing_link')?['data']?['link']}"
+                    }
+                  },
+                  "Set_created_status": {
+                    "runAfter": {
+                      "Set_created_signing_url": [
+                        "Succeeded"
+                      ]
+                    },
+                    "metadata": {
+                      "operationMetadataId": "d28d1427-fb21-4296-914b-b946f4971d3e"
+                    },
+                    "type": "SetVariable",
+                    "inputs": {
+                      "name": "SigningStatus",
+                      "value": "Pending"
+                    }
+                  }
+                }
+              },
+              "expression": "@triggerBody()?['operation']",
+              "metadata": {
+                "operationMetadataId": "c7e3b1b1-b2f7-4602-a167-a68d0be06e18"
+              },
+              "type": "Switch"
+            }
+          },
+          "runAfter": {
+            "Init_LayoutAdditions": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "715a326f-7e1a-40ea-894a-4e21bc99201e"
+          },
+          "type": "Scope"
+        },
+        "Response_success": {
+          "runAfter": {
+            "Try_signing_provider": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5f2ca142-4d65-4ad5-939d-ab0b6cb5a419"
+          },
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 200,
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "externalDocumentId": "@{variables('ExternalDocumentId')}",
+              "signingUrl": "@{variables('SigningUrl')}",
+              "status": "@{variables('SigningStatus')}",
+              "isCompleted": "@equals(variables('SigningStatus'), 'Completed')",
+              "contentBase64": "@{variables('SignedContent')}",
+              "layoutDocumentId": "@{variables('ExternalDocumentId')}",
+              "editorUrl": "@{variables('SigningUrl')}",
+              "fields": "@variables('LayoutFields')",
+              "additions": "@variables('LayoutAdditions')"
+            }
+          }
+        },
+        "Failed_steps": {
+          "runAfter": {
+            "Try_signing_provider": [
+              "Failed",
+              "TimedOut"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4b795e10-42fa-40dc-8d65-af5941413e45"
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@result('Try_signing_provider')",
+            "select": {
+              "step": "@item()?['name']",
+              "status": "@item()?['status']",
+              "code": "@item()?['code']"
+            }
+          },
+          "description": "Only action names and status codes are returned to CORMS; provider responses stay in the run history."
+        },
+        "Response_error": {
+          "runAfter": {
+            "Failed_steps": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1a22baee-b8f1-4325-802a-dd5002cbaa17"
+          },
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 502,
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "error": "Signing provider request failed",
+              "steps": "@body('Failed_steps')"
+            }
+          }
+        },
+        "Init_LayoutAdditions": {
+          "runAfter": {
+            "Init_LayoutFields": [
+              "Succeeded"
+            ]
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "LayoutAdditions",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          },
+          "description": "GetSignatureLayout: how many things the author added in the editor besides the signers' fields."
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

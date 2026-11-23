@@ -1,0 +1,192 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_sharepointonline-1": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_00d04"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "undefined",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)": {
+          "defaultValue": "https://ssloman.sharepoint.com/sites/CORMS",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+          }
+        },
+        "CORMS_Attachments (new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349)": {
+          "defaultValue": "48ef8677-f89d-4cd2-901c-fb7ee5cd5590",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "783ee854-b247-4f19-bb4d-a97cee2f4f30"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "file": {
+                  "description": "Please select file or image",
+                  "title": "File",
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "contentBytes": {
+                      "type": "string",
+                      "format": "byte"
+                    }
+                  },
+                  "x-ms-content-hint": "FILE",
+                  "x-ms-dynamically-added": true
+                },
+                "text": {
+                  "description": "Please enter your input",
+                  "title": "TaskReferenceNo",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "description": "Please enter your input",
+                  "title": "CorrespondenceId",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "file",
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Create_file": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "d7da2a7d-da6f-4554-9db7-08e7d06d9c30"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "connectionName": "shared_sharepointonline-1",
+              "operationId": "CreateFile"
+            },
+            "parameters": {
+              "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+              "folderPath": "/CORMS_Attachments",
+              "name": "@concat(triggerBody()?['text'], '_', triggerBody()?['file']?['name'])",
+              "body": "@triggerBody()?['file']?['contentBytes']"
+            }
+          },
+          "runtimeConfiguration": {
+            "contentTransfer": {
+              "transferMode": "Chunked"
+            }
+          }
+        },
+        "Build_file_properties": {
+          "runAfter": {
+            "Create_file": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "description": "Only CORMS columns, so the flow works whether or not RecordsHub has added its columns to the list.",
+          "inputs": {
+            "TaskReferenceNo": "@{triggerBody()?['text']}",
+            "IsMainLetter": false,
+            "IsQualityOverridden": false
+          }
+        },
+        "Update_file_properties": {
+          "runAfter": {
+            "Build_file_properties": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "description": "MERGE through the SharePoint REST API instead of Update file properties, which binds to every column the list has.",
+          "inputs": {
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+              "connectionName": "shared_sharepointonline-1",
+              "operationId": "HttpRequest"
+            },
+            "parameters": {
+              "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+              "parameters/method": "POST",
+              "parameters/uri": "_api/web/lists(guid'@{parameters('CORMS_Attachments (new_shared_sharepointonline_a694d47836fa466aa4149c8d68f76349)')}')/items(@{outputs('Create_file')?['body/ItemId']})",
+              "parameters/headers": {
+                "Accept": "application/json;odata=nometadata",
+                "Content-Type": "application/json;odata=nometadata",
+                "IF-MATCH": "*",
+                "X-HTTP-Method": "MERGE"
+              },
+              "parameters/body": "@{outputs('Build_file_properties')}"
+            }
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Update_file_properties": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f38cf3eb-cc58-4186-8cce-ddfd2247a8a5"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "filename": "@{outputs('Create_file')?['body/Name']}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "title": "FileName",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

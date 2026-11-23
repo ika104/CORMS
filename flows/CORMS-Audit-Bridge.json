@@ -1,0 +1,143 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "corms_ElasticEndpoint (corms_ElasticEndpoint)": {
+          "defaultValue": "",
+          "type": "String",
+          "metadata": {
+            "schemaName": "corms_ElasticEndpoint"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "Endpoint",
+                  "description": "integration.elasticEndpoint from CORMS Admin Settings; when blank, the corms_ElasticEndpoint environment variable",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "title": "Index",
+                  "description": "integration.elasticAuditIndex (sslaudit when blank)",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "title": "ApiKey",
+                  "description": "integration.elasticApiKey",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "title": "DocumentJson",
+                  "description": "The audit document, already shaped like the CORMS (SPFx) audit writer's",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_2",
+                "text_3"
+              ]
+            }
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Post_audit_entry": {
+          "runAfter": {},
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "@{concat(if(endsWith(trim(coalesce(if(empty(trim(coalesce(triggerBody()?['text'], ''))), parameters('corms_ElasticEndpoint (corms_ElasticEndpoint)'), triggerBody()?['text']), '')), '/'), substring(trim(coalesce(if(empty(trim(coalesce(triggerBody()?['text'], ''))), parameters('corms_ElasticEndpoint (corms_ElasticEndpoint)'), triggerBody()?['text']), '')), 0, sub(length(trim(coalesce(if(empty(trim(coalesce(triggerBody()?['text'], ''))), parameters('corms_ElasticEndpoint (corms_ElasticEndpoint)'), triggerBody()?['text']), ''))), 1)), trim(coalesce(if(empty(trim(coalesce(triggerBody()?['text'], ''))), parameters('corms_ElasticEndpoint (corms_ElasticEndpoint)'), triggerBody()?['text']), ''))), '/', encodeUriComponent(if(empty(trim(coalesce(triggerBody()?['text_1'], ''))), 'sslaudit', trim(triggerBody()?['text_1']))), '/_doc')}",
+            "headers": {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": "@{if(startsWith(toLower(trim(triggerBody()?['text_2'])), 'apikey '), trim(triggerBody()?['text_2']), concat('ApiKey ', trim(triggerBody()?['text_2'])))}"
+            },
+            "body": "@json(triggerBody()?['text_3'])"
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs"
+              ]
+            }
+          }
+        },
+        "Respond_to_Power_Apps": {
+          "runAfter": {
+            "Post_audit_entry": [
+              "Succeeded",
+              "Failed",
+              "TimedOut"
+            ]
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "ok": "@{if(or(equals(outputs('Post_audit_entry')?['statusCode'], 200), equals(outputs('Post_audit_entry')?['statusCode'], 201)), 'true', 'false')}",
+              "status": "@{string(coalesce(outputs('Post_audit_entry')?['statusCode'], 0))}",
+              "id": "@{coalesce(body('Post_audit_entry')?['_id'], '')}",
+              "error": "@{if(or(equals(outputs('Post_audit_entry')?['statusCode'], 200), equals(outputs('Post_audit_entry')?['statusCode'], 201)), '', string(coalesce(body('Post_audit_entry'), '')))}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

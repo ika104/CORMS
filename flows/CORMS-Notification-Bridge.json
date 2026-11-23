@@ -1,17 +1,48 @@
 {
   "properties": {
-    "connectionReferences": {},
+    "connectionReferences": {
+      "shared_sharepointonline-1": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedsharepointonline_00d04"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      }
+    },
     "definition": {
       "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
       "contentVersion": "1.0.0.0",
       "parameters": {
-        "$authentication": { "defaultValue": {}, "type": "SecureObject" },
-        "$connections": { "defaultValue": {}, "type": "Object" }
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)": {
+          "defaultValue": "https://ssloman.sharepoint.com/sites/CORMS",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4"
+          }
+        }
       },
       "triggers": {
         "manual": {
           "type": "Request",
           "kind": "PowerAppV2",
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          },
           "inputs": {
             "schema": {
               "type": "object",
@@ -29,48 +60,153 @@
                   "type": "string",
                   "x-ms-content-hint": "TEXT",
                   "x-ms-dynamically-added": true
+                },
+                "text_2": {
+                  "title": "AttachmentPath",
+                  "description": "Optional. A file to attach to External emails: its Full Path on the CORMS site (the signed PDF). Read with the app user's own access.",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_3": {
+                  "title": "AttachmentName",
+                  "description": "Optional. The attachment's file name.",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
                 }
               },
-              "required": ["text", "text_1"]
+              "required": [
+                "text",
+                "text_1"
+              ]
             }
           }
         }
       },
       "actions": {
-        "Post_to_CORMS_notification_flow": {
-          "type": "Http",
+        "Has_attachment": {
           "runAfter": {},
+          "type": "If",
+          "expression": {
+            "not": {
+              "equals": [
+                "@empty(trim(coalesce(triggerBody()?['text_2'], '')))",
+                true
+              ]
+            }
+          },
+          "description": "Read the file only when the app asks for one (external delivery).",
+          "actions": {
+            "Get_attachment": {
+              "type": "OpenApiConnection",
+              "runtimeConfiguration": {
+                "secureData": {
+                  "properties": [
+                    "outputs"
+                  ]
+                }
+              },
+              "inputs": {
+                "parameters": {
+                  "dataset": "@parameters('CORMS - https://ssloman.sharepoint.com/sites/CORMS (new_shared_sharepointonline_bd59cc0b92d9464a9a9513b62f1674c4)')",
+                  "path": "@triggerBody()?['text_2']",
+                  "inferContentType": true
+                },
+                "host": {
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+                  "operationId": "GetFileContentByPath",
+                  "connectionName": "shared_sharepointonline-1"
+                }
+              }
+            }
+          },
+          "else": {
+            "actions": {}
+          }
+        },
+        "Payload": {
+          "runAfter": {
+            "Has_attachment": [
+              "Succeeded",
+              "Failed"
+            ]
+          },
+          "type": "Compose",
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs"
+              ]
+            }
+          },
+          "description": "The app's payload, plus the file as attachments[0] when one was asked for. A file that couldn't be read goes with empty content, so the notification flow doesn't send an empty email.",
+          "inputs": "@if(empty(trim(coalesce(triggerBody()?['text_2'], ''))), json(triggerBody()?['text_1']), setProperty(json(triggerBody()?['text_1']), 'attachments', createArray(addProperty(addProperty(json('{}'), 'name', coalesce(triggerBody()?['text_3'], last(split(coalesce(triggerBody()?['text_2'], ''), '/')))), 'contentBytes', coalesce(actions('Get_attachment')?['outputs']?['body']?['$content'], '')))))"
+        },
+        "Post_to_CORMS_notification_flow": {
+          "runAfter": {
+            "Payload": [
+              "Succeeded"
+            ]
+          },
+          "type": "Http",
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs"
+              ]
+            }
+          },
           "inputs": {
             "method": "POST",
             "uri": "@triggerBody()?['text']",
-            "headers": { "Content-Type": "application/json" },
-            "body": "@json(triggerBody()?['text_1'])"
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": "@outputs('Payload')"
           }
         },
         "Respond_to_Power_Apps": {
+          "runAfter": {
+            "Post_to_CORMS_notification_flow": [
+              "Succeeded",
+              "Failed",
+              "TimedOut"
+            ]
+          },
           "type": "Response",
           "kind": "PowerApp",
-          "runAfter": { "Post_to_CORMS_notification_flow": ["Succeeded", "Failed", "TimedOut"] },
           "inputs": {
             "statusCode": 200,
             "body": {
-              "sent": "@{if(equals(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 200), 'true', 'false')}",
+              "sent": "@{if(and(greaterOrEquals(coalesce(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 0), 200), less(coalesce(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 0), 300)), 'true', 'false')}",
               "status": "@{string(coalesce(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 0))}",
-              "error": "@{if(equals(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 200), '', string(coalesce(body('Post_to_CORMS_notification_flow'), '')))}"
+              "error": "@{if(and(greaterOrEquals(coalesce(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 0), 200), less(coalesce(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 0), 300)), '', concat('Notification flow answered ', string(coalesce(outputs('Post_to_CORMS_notification_flow')?['statusCode'], 0)), ': ', string(coalesce(body('Post_to_CORMS_notification_flow'), ''))))}",
+              "attached": "@{if(empty(trim(coalesce(triggerBody()?['text_2'], ''))), '', if(empty(coalesce(actions('Get_attachment')?['outputs']?['body']?['$content'], '')), 'false', 'true'))}"
             },
             "schema": {
               "type": "object",
               "properties": {
-                "sent": { "type": "string" },
-                "status": { "type": "string" },
-                "error": { "type": "string" }
+                "sent": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "error": {
+                  "type": "string"
+                },
+                "attached": {
+                  "type": "string"
+                }
               }
             }
           }
         }
       },
       "outputs": {}
-    }
+    },
+    "templateName": null
   },
   "schemaVersion": "1.0.0.0"
 }
